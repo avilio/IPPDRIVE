@@ -1,6 +1,6 @@
 # ippdrive
 
-A new Flutter project.
+A Flutter final degree project.
 
 ## Getting Started
 
