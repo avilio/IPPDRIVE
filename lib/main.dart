@@ -10,8 +10,8 @@ class IppDriveApp extends StatelessWidget {
     return new MaterialApp(
       title: "Ipp Drive",
       theme: new ThemeData(
-        accentColor: Colors.yellowAccent,
-        brightness: Brightness.dark
+        //brightness: Brightness.dark
+        primaryColor: Colors.blueGrey[700]
       ),
       home: new HomePage(),
           );
