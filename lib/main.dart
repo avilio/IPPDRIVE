@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ippdrive/Pages/list_folder.dart';
 
 import './Pages/home_page.dart';
 
@@ -14,6 +15,9 @@ class IppDriveApp extends StatelessWidget {
         primaryColor: Colors.blueGrey[700]
       ),
       home: new HomePage(),
+      routes: <String, WidgetBuilder>{
+        "/listView": (BuildContext context) => new ListFolder()
+      }
           );
         }
 }
