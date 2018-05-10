@@ -9,17 +9,18 @@ import 'package:ippdrive/dataJ.dart';
 Future<HttpClientRequest> postRequest () async {
 
   var url ='https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
-  var body = { 'data': { 'apikey': '12345678901234567890' } };
+ // var body = { 'data': { 'apikey': '12345678901234567890' } };
 
-  Map <String, dynamic> userMap = jsonDecode(body);
-  var dataj = new DataJ.fromJson(body);
-
-  print(jsonEncode(dataj));
-
+ // Map <String, dynamic> userMap = jsonDecode(body);
+  //print(userMap);
+ // var apk = new AppKey.fromJson({ 'apikey': '12345678901234567890' });
+  print(jsonEncode(glossaryData));
+  //var dataj= new DataJ.fromJson({ 'data': jsonEncode(apk) });
+  //print(jsonEncode(dataj));
 
   http.post(url,
-      headers: { "Content-type": "application/json"},
-      body: jsonEncode(dataj)
+      headers: {"Content-Type": "application/json"},
+      body: 'data.json'
   ).then((http.Response response) {
     print("Response status: ${response.statusCode}");
     print("Response body: ${response.body}");
