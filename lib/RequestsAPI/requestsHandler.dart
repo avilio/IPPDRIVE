@@ -2,24 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:ippdrive/RequestsAPI/apiPostRequests.dart';
+import 'package:ippdrive/Pages/loginPage.dart';
 
-class inputFormValues extends Object {
 
-  String _user;
-  String _pass;
-
-  inputFormValues(this._user, this._pass);
-
-  set user(String value) {
-    _user = value;
-  }
-
-  set pass(String value) {
-    _pass = value;
-  }
-}
-
-Future Handler( inputFormValues values)async {
+Future Handler(LoginData data)async {
 
   var url ='https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
   Map body = { "data": { "apikey": "12345678901234567890" } };
@@ -32,6 +18,7 @@ Future Handler( inputFormValues values)async {
 
   String bacosess = jsonResponse['BACOSESS'];
   print(bacosess);
-  print(values._user);
-  print(values._pass);
+  print(data.user);
+  print(data.password);
+
 }

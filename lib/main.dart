@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/list_folder.dart';
+import 'package:ippdrive/Pages/loginPage.dart';
 
 import './Pages/home_page.dart';
 
-void main() => runApp(new IppDriveApp());
+/*void main() => runApp(new IppDriveApp());
 
 class IppDriveApp extends StatelessWidget {
   @override
@@ -21,3 +21,10 @@ class IppDriveApp extends StatelessWidget {
           );
         }
 }
+*/
+
+void main() => runApp(new MaterialApp(
+  title: 'IppDrive',
+   home: new LoginPage(),
+));
+
