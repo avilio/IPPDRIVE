@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ippdrive/RequestsAPI/requestsHandler.dart';
+import 'colors.dart';
+
 
 class HomePage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+
     return new Material(
         child: new Padding(
       padding: new EdgeInsets.only(top: 70.0, left: 60.0, right: 60.0),
@@ -39,10 +43,12 @@ class HomePage extends StatelessWidget {
           new Padding(padding: const EdgeInsets.only(top: 40.0)),
           new RaisedButton(
            // onPressed: () {Navigator.of(context).pushNamed("/listView");},
-            onPressed: Handler,
+            onPressed: (){
+              //todo get values from input
+            },
             child: new Text('Login',textScaleFactor: 1.2, maxLines: 1,
               style: new TextStyle(fontFamily: 'Exo2')),
-            color: Colors.yellow,
+            color: kPrimaryColor,
             highlightColor: Colors.amber,
             elevation: 8.0,
             padding: new EdgeInsets.symmetric(horizontal: 80.0, vertical: 5.0),
