@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:ippdrive/RequestsAPI/apiPostRequests.dart';
-import 'package:ippdrive/Pages/loginPage.dart';
+import 'package:ippdrive/RequestsAPI/ApiPostRequests.dart';
+import 'package:ippdrive/Pages/Login/LoginPage.dart';
 
 
 Future Handler(LoginData data)async {

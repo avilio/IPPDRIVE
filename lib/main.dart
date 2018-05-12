@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/loginPage.dart';
+import 'package:ippdrive/Pages/Login/LoginPage.dart';
 
-import './Pages/home_page.dart';
+import 'package:ippdrive/Pages/Login/LoginPageSecondary.dart';
 
 /*void main() => runApp(new IppDriveApp());
 
@@ -25,6 +25,8 @@ class IppDriveApp extends StatelessWidget {
 
 void main() => runApp(new MaterialApp(
   title: 'IppDrive',
-   home: new LoginPage(),
+  home: new LoginPage(),
+  debugShowCheckedModeBanner: false,
+
 ));
 
