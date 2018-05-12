@@ -14,7 +14,7 @@ class IppDriveApp extends StatelessWidget {
         //brightness: Brightness.dark
         primaryColor: Colors.blueGrey[700]
       ),
-      home: new HomePage(),
+      home: HomePage(),
       routes: <String, WidgetBuilder>{
         "/listView": (BuildContext context) => new ListFolder()
       }

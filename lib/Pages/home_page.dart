@@ -12,34 +12,42 @@ class HomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           new Image.asset(
-            "images/icon.png",
+            "assets/images/icon.png",
             width: 150.0,
             height: 150.0,
           ),
           new TextField(
-            style: new TextStyle(color: Colors.black, fontSize: 20.0),
+            style: new TextStyle(fontFamily: 'Exo2', color: Colors.black),
             decoration: new InputDecoration(
               labelText: "Number of Student",
               hintText: "your student number",
-              labelStyle: new TextStyle(color: Colors.blueGrey[700]),
+              labelStyle: new TextStyle(fontFamily: 'Exo2', color: Colors.blueGrey[700]),
+              border: OutlineInputBorder(),
             ),
           ),
+          new Padding(padding: const EdgeInsets.only(top: 10.0)),
           new TextField(
             obscureText: true,
-            style: new TextStyle(color: Colors.black, fontSize: 20.0),
+            style: new TextStyle(fontFamily: 'Exo2', color: Colors.black),
             decoration: new InputDecoration(
               labelText: "Password",
-              labelStyle: new TextStyle(color: Colors.blueGrey[700]),
-              hintText: "your password",
+              labelStyle: new TextStyle(fontFamily: 'Exo2',color: Colors.blueGrey[700]),
+              hintText: "Mobile Key",
+              border: OutlineInputBorder()
             ),
           ),
           new Padding(padding: const EdgeInsets.only(top: 40.0)),
           new RaisedButton(
            // onPressed: () {Navigator.of(context).pushNamed("/listView");},
             onPressed: Handler,
-            child: new Text('Login'),
+            child: new Text('Login',textScaleFactor: 1.2, maxLines: 1,
+              style: new TextStyle(fontFamily: 'Exo2')),
             color: Colors.yellow,
             highlightColor: Colors.amber,
+            elevation: 8.0,
+            padding: new EdgeInsets.symmetric(horizontal: 80.0, vertical: 5.0),
+            shape: BeveledRectangleBorder(
+                borderRadius:new BorderRadius.circular(10.0)),
           )
         ],
       ),
