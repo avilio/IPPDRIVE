@@ -6,14 +6,11 @@ class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new LoginPageState();
 }
-class LoginData {
-  String user;
-  String password;
-}
 
 class LoginPageState extends State<LoginPage>{
   final GlobalKey<FormState> formKey = new GlobalKey<FormState>();
-  LoginData data = new LoginData();
+  final _userController = new TextEditingController();
+  final _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,37 +28,36 @@ class LoginPageState extends State<LoginPage>{
                 SizedBox(height: 80.0),
                 new Image.asset(
                   "assets/images/icon.png",
-                  width: 150.0,
-                  height: 150.0,
+                  width: 100.0,
+                  height: 100.0,
                 ),
                 SizedBox(height: 80.0),
                 new TextFormField(
+                  controller: _userController,
                   decoration: new InputDecoration(
                     labelText: "Number of Student",
                     hintText: "your student number",
                     labelStyle: new TextStyle(fontFamily: 'Exo2', color: Colors.blueGrey[700]),
                     border: OutlineInputBorder(),
                   ),
-                  onFieldSubmitted: (String str){ data.user = str; },
                 ),
                 SizedBox(height: 12.0),
                 new TextFormField(
                   obscureText: true,
                   style: new TextStyle(fontFamily: 'Exo2', color: Colors.black),
+                  controller: _passwordController,
                   decoration: new InputDecoration(
                       labelText: "Password",
                       labelStyle: new TextStyle(fontFamily: 'Exo2',color: Colors.blueGrey[700]),
                       hintText: "Mobile Key",
                       border: OutlineInputBorder()
-                  ),
-                  onFieldSubmitted: (String str){ data.password = str; },
+                  )
                 ),
                 SizedBox(height: 20.0),
                 new RaisedButton(
                   // onPressed: () {Navigator.of(context).pushNamed("/listView");},
                   onPressed: (){
-                    //todo get values from input
-                    Handler(this.data);
+                    Handler(_userController.text, _passwordController.text);
                   },
                   child: new Text('Login',textScaleFactor: 1.2, maxLines: 1,
                       style: new TextStyle(fontFamily: 'Exo2')),

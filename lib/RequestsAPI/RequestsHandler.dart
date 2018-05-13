@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:ippdrive/RequestsAPI/ApiPostRequests.dart';
-import 'package:ippdrive/Pages/Login/LoginPage.dart';
 
 
-Future Handler(LoginData data)async {
+Future Handler(String user, String password)async {
 
   var url ='https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
   Map body = { "data": { "apikey": "12345678901234567890" } };
@@ -15,10 +14,12 @@ Future Handler(LoginData data)async {
 
   //jsonReply.forEach((a,b) => print('$a : $b'));
   var jsonResponse = jsonReply['response'];
-
   String bacosess = jsonResponse['BACOSESS'];
+
   print(bacosess);
-  print(data.user);
-  print(data.password);
+  print(user);
+  print(password);
+
+
 
 }
