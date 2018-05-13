@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-
 Future<String> postRequest (String url, Map jsonMap) async {
 
   String reply;

@@ -57,7 +57,7 @@ class LoginPageState extends State<LoginPage>{
                 new RaisedButton(
                   // onPressed: () {Navigator.of(context).pushNamed("/listView");},
                   onPressed: (){
-                    Handler(_userController.text, _passwordController.text);
+                    handler(_userController.text, _passwordController.text);
                   },
                   child: new Text('Login',textScaleFactor: 1.2, maxLines: 1,
                       style: new TextStyle(fontFamily: 'Exo2')),
