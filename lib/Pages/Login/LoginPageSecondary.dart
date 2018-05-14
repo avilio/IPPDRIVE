@@ -54,7 +54,7 @@ class LoginPageSecondary extends StatelessWidget {
                 },
                 child: new Text('Login',textScaleFactor: 1.2, maxLines: 1,
                     style: new TextStyle(fontFamily: 'Exo2')),
-                color: kPrimaryColor,
+                color: kDriveYellow600,
                 highlightColor: Colors.amber,
                 elevation: 8.0,
                 padding: new EdgeInsets.symmetric(horizontal: 80.0, vertical: 5.0),

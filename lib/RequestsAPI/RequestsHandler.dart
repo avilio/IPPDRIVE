@@ -8,8 +8,10 @@ import 'package:ippdrive/RequestsAPI/ApiPostRequests.dart';
 Future handler(String user, String password)async {
 
 
-  wsAuth().then((result)=> wsRLogin(user, password, result)
+  wsAuth()
+      .then((result)=> wsRLogin(user, password, result)
       .then((reply) => print(reply)));
+
 
  /* Outra maneira de fazer e provavelmente a ser usada
   String bacosess= await wsAuth();
@@ -40,17 +42,17 @@ Future<String> wsAuth ()async {
 
   var url ='https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
   Map body = { "data": { "apikey": "12345678901234567890" } };
-  String baco;
+  String key;
 
   String response = await postRequest(url,body);
   Map jsonReply = jsonDecode(response);
 
   jsonReply.forEach((a,b) {
     if(b is Map)
-      baco = b['BACOSESS'];
+      key = b['BACOSESS'];
   });
 
-  return baco;
+  return key;
 }
 
 Future<String> wsRLogin (String user, String password, String bacosess)async {
