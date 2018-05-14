@@ -17,6 +17,7 @@ class LoginPageState extends State<LoginPage>{
   Widget build(BuildContext context) {
     return new Scaffold(
         body: new Form(
+          key: formKey,
             child: new ListView(
               children: <Widget>[
                 new Image.asset(
@@ -31,6 +32,7 @@ class LoginPageState extends State<LoginPage>{
                       hintText: "your student number",
                     ),
                     controller: _userController,
+                    validator: userValidation,
                 ),
                 new Padding(padding: new EdgeInsets.all(5.0)),
                 new TextFormField(
@@ -41,12 +43,14 @@ class LoginPageState extends State<LoginPage>{
                     ),
                   controller: _passwordController,
                   keyboardType: TextInputType.number,
+                  validator: passwordValidation
                 ),
                 new Container(
                   child:  new RaisedButton(
                     // onPressed: () {Navigator.of(context).pushNamed("/listView");},
                     onPressed: (){
-                      validation(_userController.text,_passwordController.text, context);
+                      //validation(_userController.text,_passwordController.text, context);
+                      submit(_userController.text, _passwordController.text, formKey);
                     },
                     child: new Text('Login'),
                     elevation: 8.0,

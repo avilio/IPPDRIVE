@@ -5,26 +5,29 @@ import 'package:http/http.dart' as http;
 import 'package:ippdrive/RequestsAPI/ApiPostRequests.dart';
 
 
-Future handler(String user, String password)async {
+Future<String> handler(String user, String password)async {
 
-
+  String repsonse;
+/*
   wsAuth()
       .then((result)=> wsRLogin(user, password, result)
       .then((reply) => print(reply)));
-
-
- /* Outra maneira de fazer e provavelmente a ser usada
+  */
+  //Outra maneira de fazer e provavelmente a ser usada
   String bacosess= await wsAuth();
-  print(bacosess);
+  //print(bacosess);
 
 
   //jsonReply.forEach((a,b) => print('$a : $b'));
-  print(user);
-  print(password);
+  //print(user);
+  //print(password);
 
   String replyRLogin = await wsRLogin(user, password, bacosess);
-  print(replyRLogin);
-*/
+  //todo ir buscar o campo da exception para retornar
+
+
+
+
 
   /* todo tratar do get das courses units
   http.get('https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list').then((http.Response response) {
@@ -35,6 +38,8 @@ Future handler(String user, String password)async {
 
   });
   */
+  //ira retornar a exception
+  return null;
 
 }
 
