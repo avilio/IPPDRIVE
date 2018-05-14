@@ -7,27 +7,17 @@ import 'package:ippdrive/RequestsAPI/ApiPostRequests.dart';
 
 Future<String> handler(String user, String password)async {
 
-  String repsonse;
 /*
   wsAuth()
       .then((result)=> wsRLogin(user, password, result)
       .then((reply) => print(reply)));
   */
+
   //Outra maneira de fazer e provavelmente a ser usada
   String bacosess= await wsAuth();
-  //print(bacosess);
-
-
-  //jsonReply.forEach((a,b) => print('$a : $b'));
-  //print(user);
-  //print(password);
 
   String replyRLogin = await wsRLogin(user, password, bacosess);
-  //todo ir buscar o campo da exception para retornar
-
-
-
-
+  //print(replyRLogin.split(':')[1].split(',')[0].trim());
 
   /* todo tratar do get das courses units
   http.get('https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list').then((http.Response response) {
@@ -35,14 +25,12 @@ Future<String> handler(String user, String password)async {
     print("Response body: ${response.body}");
     print(response.headers);
     print(response.request);
-
   });
   */
-  //ira retornar a exception
-  return null;
 
+  return replyRLogin;
 }
-
+///First Request to API
 Future<String> wsAuth ()async {
 
   var url ='https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
@@ -59,10 +47,8 @@ Future<String> wsAuth ()async {
 
   return key;
 }
-
+///Second Request to API
 Future<String> wsRLogin (String user, String password, String bacosess)async {
-
-
 
   var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/secure/ws-rlogin-challenge';
   var body = {
@@ -75,6 +61,8 @@ Future<String> wsRLogin (String user, String password, String bacosess)async {
 
   String response = await postRequest(url,body);
   Map jsonReply = jsonDecode(response);
+  if(jsonReply['service'] == 'error')
+    return jsonReply['exception'];
   //jsonReply.forEach((a,b) => print('$a : $b'));
 
   return jsonReply.toString();
