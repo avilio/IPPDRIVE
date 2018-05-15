@@ -6,24 +6,24 @@ ThemeData buildAppTheme(){
   final ThemeData base = ThemeData.light();
 
   return base.copyWith(
-    accentColor: kDriveBlack,
-    primaryColor: kDriveYellow600,
-    buttonColor: kDriveYellow600,
-    scaffoldBackgroundColor: kDriveWhite400,
-    textSelectionColor: kDriveYellow300,
+    accentColor: cAppBlackish,
+    primaryColor: cAppYellowish,
+    buttonColor: cAppYellowish,
+    scaffoldBackgroundColor: cAppYellowishAccent,
+    textSelectionColor: cAppYellowish,
     errorColor: Colors.redAccent,
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder()
     ),
     buttonTheme: ButtonThemeData(
-      textTheme: ButtonTextTheme.accent
+      textTheme: ButtonTextTheme.normal
     ),
     primaryIconTheme: base.iconTheme,
     textTheme: buildAppTextTheme(base.textTheme),
     primaryTextTheme: buildAppTextTheme(base.primaryTextTheme),
     accentTextTheme: buildAppTextTheme(base.accentTextTheme),
-    hintColor: Colors.black,
-
+    hintColor: cAppBlackish,
+    dialogBackgroundColor: cAppYellowishAccent,
   );
 }
 
@@ -41,9 +41,10 @@ TextTheme buildAppTextTheme(TextTheme base) {
     ),
     body2: base.body2.copyWith(
       fontWeight: FontWeight.w500,
-      fontSize: 16.0,
+      fontSize: 11.0,
     ),
   ).apply(
     fontFamily: 'Exo2',
+    bodyColor: cAppBlackish
   );
 }

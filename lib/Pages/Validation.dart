@@ -47,7 +47,7 @@ AlertDialog buildDialog(message, context){
       FlatButton(
         onPressed: () =>Navigator.pop(context),
         child: Text('OK'),
-        color: kDriveYellow600,
+        color: cAppMainColor,
         shape: BeveledRectangleBorder(
             borderRadius:new BorderRadius.circular(3.0)),
       )
