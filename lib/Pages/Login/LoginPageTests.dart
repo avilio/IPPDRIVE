@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Themes/ColorsThemes.dart';
-import 'package:ippdrive/RequestsAPI/RequestsHandler.dart';
+import 'package:ippdrive/RequestsAPI/RequestsPhases.dart';
 
 
 class LoginPageTests extends StatefulWidget {
@@ -48,7 +48,7 @@ class LoginPageTestsState extends State<LoginPageTests> {
         new RaisedButton(
             // onPressed: () {Navigator.of(context).pushNamed("/listView");},
             onPressed: () {
-              handler(_userController.text, _passwordController.text);
+              requestPhases(_userController.text, _passwordController.text);
             },
             child: new Text('Login', maxLines: 1,),
             elevation: 8.0,

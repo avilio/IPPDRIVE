@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Themes/ColorsThemes.dart';
-import 'package:ippdrive/RequestsAPI/RequestsHandler.dart';
+import 'package:ippdrive/RequestsAPI/RequestsPhases.dart';
 
 String valUser = "[a-zA-Z0-9]{1,256}";
 RegExp regUser = new RegExp(valUser);
@@ -10,10 +10,10 @@ RegExp regUser = new RegExp(valUser);
 /// OnPressed Button checker
 Future submit(user,pass,form, context) async {
 
-  final key = form.currentState;
+  final formKey = form.currentState;
 
-  if(key.validate()){
-    String requestResponse = await handler(user, pass);
+  if(formKey.validate()){
+    String requestResponse = await requestPhases(user, pass);
     if(!requestResponse.contains('ok'))
       requestResponseValidation(requestResponse, context);
    // print(requestResponse);

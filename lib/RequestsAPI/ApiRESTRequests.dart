@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 Future<String> postRequest (String url, Map jsonMap) async {
 
@@ -26,6 +27,21 @@ Future<String> getRequest (String url) async {
 
   String reply;
 
+  var response = await http.get(url);
+
+  if ( response.statusCode == 200)
+    reply = response.body;
+  else
+    reply = 'ERROR ON REQUEST ${response.statusCode}';
+  /*
+  reply = await http.get(url)
+  .then((http.Response response) {
+    print("Response status: ${response.statusCode}");
+    print("Response body: ${response.body}");
+    print(response.headers);
+    print(response.request);
+  });*/
+/*
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
   HttpClientResponse response = await request.close();
@@ -35,7 +51,7 @@ Future<String> getRequest (String url) async {
   }else {
     reply = 'ERROR ON REQUEST ${response.statusCode}';
   }
-  httpClient.close();
+  httpClient.close();*/
 
   return reply;
 }
