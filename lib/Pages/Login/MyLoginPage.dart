@@ -51,6 +51,7 @@ class MyLoginPageState extends State<MyLoginPage>{
                   validator: passwordValidation
               ),
               new Container(
+                margin: new EdgeInsets.symmetric(horizontal: 20.0),
                 child:  new RaisedButton(
                   // onPressed: () {Navigator.of(context).pushNamed("/listView");},
                   onPressed: (){
@@ -62,7 +63,6 @@ class MyLoginPageState extends State<MyLoginPage>{
                   shape: BeveledRectangleBorder(
                       borderRadius:new BorderRadius.circular(5.0)),
                 ),
-                margin: new EdgeInsets.only(top: 20.0),
               )
             ],
           )

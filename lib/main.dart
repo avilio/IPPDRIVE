@@ -25,7 +25,7 @@ class IppDriveApp extends StatelessWidget {
 
 void main() => runApp(new MaterialApp(
   title: 'IppDrive',
-  home: LoginPage(),
+  home: MyLoginPage(),
   debugShowCheckedModeBanner: false,
   theme: buildAppTheme(),
 

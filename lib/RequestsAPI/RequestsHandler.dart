@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:ippdrive/RequestsAPI/ApiPostRequests.dart';
+import 'package:ippdrive/RequestsAPI/ApiRESTRequests.dart';
 
 
 Future<String> handler(String user, String password)async {
@@ -17,18 +17,20 @@ Future<String> handler(String user, String password)async {
   String bacosess= await wsAuth();
 
   String replyRLogin = await wsRLogin(user, password, bacosess);
+  String response= await getRequest('https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${replyRLogin}');
   //print(replyRLogin.split(':')[1].split(',')[0].trim());
 
-  /* todo tratar do get das courses units
-  http.get('https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list').then((http.Response response) {
+//  print(replyRLogin);
+/*
+  http.get('https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${replyRLogin}').then((http.Response response) {
     print("Response status: ${response.statusCode}");
     print("Response body: ${response.body}");
     print(response.headers);
     print(response.request);
-  });
-  */
+  });*/
+  print(response);
 
-  return replyRLogin;
+  return response;
 }
 ///First Request to API
 Future<String> wsAuth ()async {
@@ -58,12 +60,18 @@ Future<String> wsRLogin (String user, String password, String bacosess)async {
     },
     "BACOSESS": bacosess
   };
-
+  String session;
   String response = await postRequest(url,body);
   Map jsonReply = jsonDecode(response);
+
   if(jsonReply['service'] == 'error')
     return jsonReply['exception'];
+
+  jsonReply.forEach((a,b){
+    if(b is Map)
+      session = (b['BACOSESS']);
+    });
   //jsonReply.forEach((a,b) => print('$a : $b'));
 
-  return jsonReply.toString();
+  return session;
 }
