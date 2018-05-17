@@ -50,6 +50,7 @@ class MyLoginPageState extends State<MyLoginPage>{
                   keyboardType: TextInputType.number,
                   validator: passwordValidation
               ),
+              new Padding(padding: new EdgeInsets.all(10.0)),
               new Container(
                 margin: new EdgeInsets.symmetric(horizontal: 20.0),
                 child:  new RaisedButton(
