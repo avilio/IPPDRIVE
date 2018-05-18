@@ -3,6 +3,8 @@ import 'dart:convert';
 
 
 import 'package:ippdrive/RequestsAPI/ApiRESTRequests.dart';
+import 'package:ippdrive/RequestsAPI/Json/FolderFieldsRequest.dart';
+import 'package:ippdrive/RequestsAPI/Json/folderModel.dart';
 
 
 Future<String> requestPhases(String user, String password)async {
@@ -28,7 +30,8 @@ Future<String> requestPhases(String user, String password)async {
 Future<String> wsAuth ()async {
 
   var url ='https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
-  Map body = { "data": { "apikey": "12345678901234567890" } };
+ // var url ='/http://localhost:8080/baco/wsjson/api/app/ws-authenticate';
+  Map body = { "data": { "apikey": "1234567890" } };
   String bacoSess;
 
   String response = await postRequest(url,body);
@@ -47,6 +50,7 @@ Future<String> wsAuth ()async {
 Future<String> wsRLogin (String user, String password, String bacosess)async {
 
   var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/secure/ws-rlogin-challenge';
+  //var url = 'http://localhost:8080/baco/wsjson/api/app/secure/ws-rlogin-challenge';
   var body = {
     "data": {
       "chaveAppsMoveis": password,
@@ -73,8 +77,9 @@ Future<String> wsRLogin (String user, String password, String bacosess)async {
 ///UnitsList Request to API
 Future<String> wsCoursesUnitsList (String bacosess)async {
   //meter https noslinks do teste2 e este units listo talves sirva, mas so par encontrar o semestre da cadeira
-  var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
 
+  var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
+  //var url = 'http://localhost:8080/baco/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
 
   String courseUnitListJson;
   String response = await getRequest(url);
@@ -92,6 +97,7 @@ Future<String> wsCoursesUnitsList (String bacosess)async {
 ///Folders Request to API
 Future<String> wsCoursesUnitsFolders (String bacosess)async {
 
+ // var url = 'http://localhost:8080/baco/user/vfs.do';
   var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
   var body = {
     "BACOSESS": bacosess,
@@ -109,8 +115,17 @@ Future<String> wsCoursesUnitsFolders (String bacosess)async {
     return jsonReply['exception'];
   else
     courseUnitFoldersJson = jsonReply.toString();
+  List<FolderModel> c = CourseUnits.fromJson(jsonReply['response']).courseFolders.map((fields) => FolderModel.fromResponse(fields)).toList();
+//todo ja estao guardadas as unidades curriculares so falta mostrar
 
-  print(jsonReply['response']['childs']);
+ // print(CourseUnits.fromJson(jsonReply['response']).courseFolders[0].courseUnitsList[0]);
+  //jsonReply['response']['childs'];
+
+  //print(map);
+  //CourseUnits folders = new CourseUnits(type as List<Fields>);
+ // print(folders);
+
+  //print(jsonReply['response']['childs']);
   //jsonReply.forEach((a,b) => print('$a : $b'));
 
   return courseUnitFoldersJson;

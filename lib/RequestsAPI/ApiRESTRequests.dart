@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 Future<String> postRequest (String url, Map jsonMap) async {
 
   String reply;
-
+  
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient.postUrl(Uri.parse(url));
   request.headers.set('content-type', 'application/json');
@@ -19,6 +19,7 @@ Future<String> postRequest (String url, Map jsonMap) async {
     reply = 'ERROR ON REQUEST ${response.statusCode}';
   }
   httpClient.close();
+  //print(reply);
 
   return reply;
 }
