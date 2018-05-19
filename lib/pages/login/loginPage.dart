@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Themes/ColorsThemes.dart';
+import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 
-import 'package:ippdrive/Pages/Validation.dart';
+import 'package:ippdrive/validation.dart';
 
 class LoginPage extends StatefulWidget {
   @override

@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Themes/ColorsThemes.dart';
-import 'package:ippdrive/RequestsAPI/RequestsPhases.dart';
+import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
+import 'package:ippdrive/RequestsAPI/requestsPhases.dart';
+import 'package:ippdrive/pages/list_folder.dart';
 
 String valUser = "[a-zA-Z0-9]{1,256}";
 RegExp regUser = new RegExp(valUser);
@@ -17,6 +18,9 @@ Future submit(user,pass,form, context) async {
     if(!requestResponse.contains('ok'))
       requestResponseValidation(requestResponse, context);
    // print(requestResponse);
+    else
+      //Navigator.of(context).pushNamed("/listView");
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ListFolder()));
   }
 }
 /// User checker
@@ -56,4 +60,6 @@ AlertDialog buildDialog(message, context){
 
   return dialog;
 }
+
+
 

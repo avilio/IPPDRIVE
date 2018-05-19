@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'FolderFieldsRequest.dart';
+part of 'folderFieldsRequest.dart';
 
 // **************************************************************************
 // Generator: JsonSerializableGenerator

@@ -2,9 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 
-import 'package:ippdrive/RequestsAPI/ApiRESTRequests.dart';
-import 'package:ippdrive/RequestsAPI/Json/FolderFieldsRequest.dart';
-import 'package:ippdrive/RequestsAPI/Json/folderModel.dart';
+import 'package:ippdrive/RequestsAPI/apiRESTRequests.dart';
+import 'package:ippdrive/RequestsAPI/json/folderFieldsRequest.dart';
+import 'package:ippdrive/requestsAPI/model/ucFoldersModel.dart';
+import 'package:ippdrive/pages/list_folder.dart';
 
 
 Future<String> requestPhases(String user, String password)async {
@@ -19,7 +20,7 @@ Future<String> requestPhases(String user, String password)async {
   String bacoSessAuth= await wsAuth();
   String bacoSessRLogin = await wsRLogin(user, password, bacoSessAuth);
  // String courseUnitListJson= await wsCoursesUnitsList(bacoSessRLogin);
-  String courseUnitFoldersJson= await wsCoursesUnitsFolders(bacoSessRLogin);
+  String courseUnitFoldersJson= await wsCoursesUnitsContents(bacoSessRLogin);
   //print(bacoSessRLogin.split(':')[1].split(',')[0].trim());
 
  // print(courseUnitFoldersJson);
@@ -36,6 +37,9 @@ Future<String> wsAuth ()async {
 
   String response = await postRequest(url,body);
   Map jsonReply = jsonDecode(response);
+  if(jsonReply['service'] == 'error')
+    return jsonReply['exception'];
+
   bacoSess = jsonReply['response']['BACOSESS'];
 /*
   jsonReply.forEach((key,value) {
@@ -95,7 +99,7 @@ Future<String> wsCoursesUnitsList (String bacosess)async {
   return courseUnitListJson;
 }
 ///Folders Request to API
-Future<String> wsCoursesUnitsFolders (String bacosess)async {
+Future<String> wsCoursesUnitsContents (String bacosess)async {
 
  // var url = 'http://localhost:8080/baco/user/vfs.do';
   var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
@@ -113,22 +117,13 @@ Future<String> wsCoursesUnitsFolders (String bacosess)async {
 
   if(jsonReply['service'] == 'error')
     return jsonReply['exception'];
-  else
+  else {
     courseUnitFoldersJson = jsonReply.toString();
-  List<FolderModel> c = CourseUnits.fromJson(jsonReply['response']).courseFolders.map((fields) => FolderModel.fromResponse(fields)).toList();
-//todo ja estao guardadas as unidades curriculares so falta mostrar
-
- // print(CourseUnits.fromJson(jsonReply['response']).courseFolders[0].courseUnitsList[0]);
-  //jsonReply['response']['childs'];
-
-  //print(map);
-  //CourseUnits folders = new CourseUnits(type as List<Fields>);
- // print(folders);
-
-  //print(jsonReply['response']['childs']);
-  //jsonReply.forEach((a,b) => print('$a : $b'));
+    courseUnitFields(jsonReply);
+  }
 
   return courseUnitFoldersJson;
 }
+
 
 

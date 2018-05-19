@@ -1,6 +1,6 @@
-import 'FolderFieldsRequest.dart';
+import 'package:ippdrive/RequestsAPI/json/folderFieldsRequest.dart';
 
-class FolderModel{
+class UCModel{
 
   final String vfsWebAddress;
   final int dateSaveDate;
@@ -16,13 +16,13 @@ class FolderModel{
   final int unitIdAuxiliary;
   final Map clearances;
 
-  FolderModel({this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
+  UCModel({this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
       this.courseCodeAuxiliary, this.dateUpdateDate,
       this.directory, this.path, this.courseUnitsListName, this.id,
       this.countChilds, this.unitIdAuxiliary, this.clearances});
 
 
-  FolderModel.fromResponse(Fields fields)
+  UCModel.fromResponse(Fields fields)
       : vfsWebAddress = fields.vfsWebAddress,
         dateSaveDate = fields.dateSaveDate,
   indexInParent = fields.indexInParent,
@@ -38,3 +38,4 @@ class FolderModel{
 
 
 }
+

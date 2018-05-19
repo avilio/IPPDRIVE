@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'FolderFieldsRequest.g.dart';
+part 'folderFieldsRequest.g.dart';
 
 @JsonSerializable()
 class CourseUnits extends Object with _$CourseUnitsSerializerMixin {

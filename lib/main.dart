@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Login/LoginPage.dart';
-import 'package:ippdrive/Pages/Login/MyLoginPage.dart';
-import 'package:ippdrive/Pages/Themes/MainTheme.dart';
+import 'package:ippdrive/Pages/Login/loginPage.dart';
+import 'package:ippdrive/Pages/Login/myLoginPage.dart';
+import 'package:ippdrive/Pages/Themes/mainTheme.dart';
+import 'package:ippdrive/pages/list_folder.dart';
 
 /*void main() => runApp(new IppDriveApp());
 
@@ -28,6 +29,9 @@ void main() => runApp(new MaterialApp(
   home: MyLoginPage(),
   debugShowCheckedModeBanner: false,
   theme: buildAppTheme(),
+    routes: <String, WidgetBuilder>{
+      "/listView": (BuildContext context) => new ListFolder()
+    }
 
 ));
 

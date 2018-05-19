@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Themes/ColorsThemes.dart';
+import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
+import 'package:ippdrive/requestsAPI/model/ucFoldersModel.dart';
+import 'package:ippdrive/requestsAPI/requestsPhases.dart';
 
-import 'package:ippdrive/Pages/Validation.dart';
+
+import 'package:ippdrive/validation.dart';
 
 class MyLoginPage extends StatefulWidget {
   @override
@@ -15,7 +18,7 @@ class MyLoginPageState extends State<MyLoginPage>{
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: cAppWhite,
       body: new Form(
           key: _formKey,
