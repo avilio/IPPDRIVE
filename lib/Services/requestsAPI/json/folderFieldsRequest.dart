@@ -7,7 +7,7 @@ class CourseUnits extends Object with _$CourseUnitsSerializerMixin {
 
 
   @JsonKey(name: 'childs')
-  final List<Fields> courseFolders;
+  final List<ApiSavedFields> courseFolders;
 
   CourseUnits(this.courseFolders);
 
@@ -16,7 +16,7 @@ class CourseUnits extends Object with _$CourseUnitsSerializerMixin {
 }
 
 @JsonSerializable()
-class Fields extends Object with _$FieldsSerializerMixin {
+class ApiSavedFields extends Object with _$ApiSavedFieldsSerializerMixin {
 
   final String vfsWebAddress;
   final int dateSaveDate;
@@ -32,12 +32,12 @@ class Fields extends Object with _$FieldsSerializerMixin {
   final int unitIdAuxiliary;
   final Map clearances;
 
-  Fields(this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
+  ApiSavedFields(this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
       this.aclList, this.courseCodeAuxiliary, this.dateUpdateDate,
       this.directory, this.path, this.courseUnitsList, this.id,
       this.countChilds, this.unitIdAuxiliary, this.clearances);
 
 
 
-  factory Fields.fromJson(Map<String,dynamic> json) => _$FieldsFromJson(json);
+  factory ApiSavedFields.fromJson(Map<String,dynamic> json) => _$ApiSavedFieldsFromJson(json);
 }

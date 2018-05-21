@@ -8,31 +8,33 @@ part of 'folderFieldsRequest.dart';
 
 CourseUnits _$CourseUnitsFromJson(Map<String, dynamic> json) =>
     new CourseUnits((json['childs'] as List)
-        ?.map((e) =>
-            e == null ? null : new Fields.fromJson(e as Map<String, dynamic>))
+        ?.map((e) => e == null
+            ? null
+            : new ApiSavedFields.fromJson(e as Map<String, dynamic>))
         ?.toList());
 
 abstract class _$CourseUnitsSerializerMixin {
-  List<Fields> get courseFolders;
+  List<ApiSavedFields> get courseFolders;
   Map<String, dynamic> toJson() => <String, dynamic>{'childs': courseFolders};
 }
 
-Fields _$FieldsFromJson(Map<String, dynamic> json) => new Fields(
-    json['vfsWebAddress'] as String,
-    json['dateSaveDate'] as int,
-    json['indexInParent'] as int,
-    json['aclList'] as List,
-    json['courseCodeAuxiliary'] as int,
-    json['dateUpdateDate'] as int,
-    json['directory'] as bool,
-    json['path'] as String,
-    json['courseUnitsList'] as List,
-    json['id'] as int,
-    json['countChilds'] as int,
-    json['unitIdAuxiliary'] as int,
-    json['clearances'] as Map<String, dynamic>);
+ApiSavedFields _$ApiSavedFieldsFromJson(Map<String, dynamic> json) =>
+    new ApiSavedFields(
+        json['vfsWebAddress'] as String,
+        json['dateSaveDate'] as int,
+        json['indexInParent'] as int,
+        json['aclList'] as List,
+        json['courseCodeAuxiliary'] as int,
+        json['dateUpdateDate'] as int,
+        json['directory'] as bool,
+        json['path'] as String,
+        json['courseUnitsList'] as List,
+        json['id'] as int,
+        json['countChilds'] as int,
+        json['unitIdAuxiliary'] as int,
+        json['clearances'] as Map<String, dynamic>);
 
-abstract class _$FieldsSerializerMixin {
+abstract class _$ApiSavedFieldsSerializerMixin {
   String get vfsWebAddress;
   int get dateSaveDate;
   int get indexInParent;

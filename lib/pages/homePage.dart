@@ -1,9 +1,7 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
-import 'package:ippdrive/RequestsAPI/json/folderFieldsRequest.dart';
-import 'package:ippdrive/requestsAPI/model/ucFoldersModel.dart';
+import 'package:ippdrive/Services/requestsAPI/json/folderFieldsRequest.dart';
+import 'package:ippdrive/Services/requestsAPI/model/ucFoldersModel.dart';
 
 List<UCModel> uC;
 
@@ -21,14 +19,24 @@ class ListFolderState extends State<ListFolder> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      appBar: new AppBar(
+        title: new Text('Unidades Curriculares', textScaleFactor: 1.5,
+        style: new TextStyle(fontWeight: FontWeight.bold ),),
+        primary: true,
+        automaticallyImplyLeading: true
+      ),
         body: new Container(
       child: new ListView.builder(
           itemCount: sem1.length,
           itemBuilder: (BuildContext context, int index) {
             return new Column(
               children: <Widget>[
+                new Padding(padding: new EdgeInsets.all(10.0)),
                 new Text('${sem1[index]}'),
-                new Divider(height: 50.0,color: cAppBlue,),
+                new Divider(
+                  height: 10.0,
+                  color: cAppBlue,
+                ),
                 //new Text('${sem2[index]}'),
               ],
             );

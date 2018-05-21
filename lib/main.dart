@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Login/loginPage.dart';
 import 'package:ippdrive/Pages/Login/myLoginPage.dart';
 import 'package:ippdrive/Pages/Themes/mainTheme.dart';
-import 'package:ippdrive/pages/list_folder.dart';
+import 'package:ippdrive/pages/homePage.dart';
 
 /*void main() => runApp(new IppDriveApp());
 

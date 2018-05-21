@@ -1,4 +1,4 @@
-import 'package:ippdrive/RequestsAPI/json/folderFieldsRequest.dart';
+import 'package:ippdrive/Services/requestsAPI/json/folderFieldsRequest.dart';
 
 class UCModel{
 
@@ -22,7 +22,7 @@ class UCModel{
       this.countChilds, this.unitIdAuxiliary, this.clearances});
 
 
-  UCModel.fromResponse(Fields fields)
+  UCModel.fromResponse(ApiSavedFields fields)
       : vfsWebAddress = fields.vfsWebAddress,
         dateSaveDate = fields.dateSaveDate,
   indexInParent = fields.indexInParent,
