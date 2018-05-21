@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 
 import 'package:ippdrive/validation.dart';
-
+/*
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new LoginPageState();
@@ -85,3 +85,4 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 }
+*/

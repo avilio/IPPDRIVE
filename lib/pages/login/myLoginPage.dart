@@ -13,12 +13,14 @@ class MyLoginPage extends StatefulWidget {
 
 class MyLoginPageState extends State<MyLoginPage>{
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _userController = new TextEditingController();
   final _passwordController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: cAppWhite,
       body: new Form(
           key: _formKey,
@@ -60,7 +62,7 @@ class MyLoginPageState extends State<MyLoginPage>{
                   // onPressed: () {Navigator.of(context).pushNamed("/listView");},
                   onPressed: (){
                     //validation(_userController.text,_passwordController.text, context);
-                    submit(_userController.text, _passwordController.text, _formKey, context);
+                    submit(_userController.text, _passwordController.text, _formKey, context, _scaffoldKey);
                   },
                   child: new Text('Login'),
                   elevation: 8.0,

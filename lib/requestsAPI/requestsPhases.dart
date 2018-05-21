@@ -19,6 +19,9 @@ Future<String> requestPhases(String user, String password)async {
   //Outra maneira de fazer e provavelmente a ser usada
   String bacoSessAuth= await wsAuth();
   String bacoSessRLogin = await wsRLogin(user, password, bacoSessAuth);
+  if(bacoSessRLogin.length == 19)
+    return bacoSessRLogin;
+ //print(bacoSessRLogin.length);
  // String courseUnitListJson= await wsCoursesUnitsList(bacoSessRLogin);
   String courseUnitFoldersJson= await wsCoursesUnitsContents(bacoSessRLogin);
   //print(bacoSessRLogin.split(':')[1].split(',')[0].trim());

@@ -9,14 +9,14 @@ String valUser = "[a-zA-Z0-9]{1,256}";
 RegExp regUser = new RegExp(valUser);
 
 /// OnPressed Button checker
-Future submit(user,pass,form, context) async {
+Future submit(user,pass,form, context, key) async {
 
   final formKey = form.currentState;
 
   if(formKey.validate()){
     String requestResponse = await requestPhases(user, pass);
     if(!requestResponse.contains('ok'))
-      requestResponseValidation(requestResponse, context);
+      requestResponseValidation(requestResponse, context, key);
    // print(requestResponse);
     else
       //Navigator.of(context).pushNamed("/listView");
@@ -34,8 +34,13 @@ String passwordValidation(String password){
   return password.length<5 ? 'Password too short' : null;
 }
 ///Dialog Box in Case of Error
-void requestResponseValidation(String message, BuildContext context) {
-
+void requestResponseValidation(String message, BuildContext context, key) {
+ /* key.currentState
+      .showSnackBar(
+      new SnackBar(
+        content: new Text('ERROR: '+message, textScaleFactor: 1.5,
+          textAlign: TextAlign.center,),
+        backgroundColor: Colors.redAccent,));*/
     showDialog(context: context,
         child: buildDialog(message, context));
 }
@@ -44,14 +49,14 @@ AlertDialog buildDialog(message, context){
 
   var dialog = AlertDialog(
     title: Text('ERROR',style: TextStyle(fontWeight: FontWeight.bold),),
-    content: Text(message,
+    content: Text(message,textAlign: TextAlign.justify,
     //    style: TextStyle(color: Colors.redAccent)
     ),
     actions: <Widget>[
       FlatButton(
         onPressed: () =>Navigator.pop(context),
         child: Text('OK'),
-        color: cAppMainColor,
+        color: cAppYellowish,
         shape: BeveledRectangleBorder(
             borderRadius:new BorderRadius.circular(3.0)),
       )
