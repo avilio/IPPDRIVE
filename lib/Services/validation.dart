@@ -12,15 +12,17 @@ RegExp regUser = new RegExp(valUser);
 Future submit(user,pass,form, context, key) async {
 
   final formKey = form.currentState;
+  requestsApi req = new requestsApi();
 
   if(formKey.validate()){
-    String requestResponse = await requestPhases(user, pass);
+    String requestResponse = await req.requestPhases(user, pass);
     if(!requestResponse.contains('ok'))
       requestResponseValidation(requestResponse, context, key);
    // print(requestResponse);
     else
       //Navigator.of(context).pushNamed("/listView");
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ListFolder()));
+      //todo acescentar campos nas classes para passar o login talvez nao seja a melhor solucao
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ListFolder(req.bacoSessRLogin)));
   }
 }
 /// User checker

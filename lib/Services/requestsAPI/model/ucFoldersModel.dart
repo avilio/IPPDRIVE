@@ -15,8 +15,9 @@ class UCModel{
   final int countChilds;
   final int unitIdAuxiliary;
   final Map clearances;
+  final String title;
 
-  UCModel({this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
+  UCModel(this.title, {this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
       this.courseCodeAuxiliary, this.dateUpdateDate,
       this.directory, this.path, this.courseUnitsListName, this.id,
       this.countChilds, this.unitIdAuxiliary, this.clearances});
@@ -34,7 +35,23 @@ class UCModel{
   id = fields.id,
   countChilds = fields.countChilds,
   unitIdAuxiliary = fields.unitIdAuxiliary,
-  clearances = fields.clearances;
+  clearances = fields.clearances,
+  title = fields.title;
+//todo nao foi a melhor maneira de resolver o promblema de nao ter lista no courserunitslisname
+  UCModel.fromRecursiveResponse(ApiSavedFields fields)
+      : vfsWebAddress = fields.vfsWebAddress,
+        dateSaveDate = fields.dateSaveDate,
+        indexInParent = fields.indexInParent,
+        courseCodeAuxiliary = fields.courseCodeAuxiliary,
+        dateUpdateDate = fields.dateUpdateDate,
+        directory = fields.directory,
+        path = fields.path,
+        courseUnitsListName = null,
+        id = fields.id,
+        countChilds = fields.countChilds,
+        unitIdAuxiliary = fields.unitIdAuxiliary,
+        clearances = fields.clearances,
+        title = fields.title;
 
 
 }

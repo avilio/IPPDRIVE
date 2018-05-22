@@ -32,7 +32,8 @@ ApiSavedFields _$ApiSavedFieldsFromJson(Map<String, dynamic> json) =>
         json['id'] as int,
         json['countChilds'] as int,
         json['unitIdAuxiliary'] as int,
-        json['clearances'] as Map<String, dynamic>);
+        json['clearances'] as Map<String, dynamic>,
+        json['title'] as String);
 
 abstract class _$ApiSavedFieldsSerializerMixin {
   String get vfsWebAddress;
@@ -48,6 +49,7 @@ abstract class _$ApiSavedFieldsSerializerMixin {
   int get countChilds;
   int get unitIdAuxiliary;
   Map<dynamic, dynamic> get clearances;
+  String get title;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'vfsWebAddress': vfsWebAddress,
         'dateSaveDate': dateSaveDate,
@@ -61,6 +63,7 @@ abstract class _$ApiSavedFieldsSerializerMixin {
         'id': id,
         'countChilds': countChilds,
         'unitIdAuxiliary': unitIdAuxiliary,
-        'clearances': clearances
+        'clearances': clearances,
+        'title': title
       };
 }

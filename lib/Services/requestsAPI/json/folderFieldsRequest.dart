@@ -31,11 +31,12 @@ class ApiSavedFields extends Object with _$ApiSavedFieldsSerializerMixin {
   final int countChilds;
   final int unitIdAuxiliary;
   final Map clearances;
+  final String title;
 
   ApiSavedFields(this.vfsWebAddress, this.dateSaveDate, this.indexInParent,
       this.aclList, this.courseCodeAuxiliary, this.dateUpdateDate,
       this.directory, this.path, this.courseUnitsList, this.id,
-      this.countChilds, this.unitIdAuxiliary, this.clearances);
+      this.countChilds, this.unitIdAuxiliary, this.clearances, this.title);
 
 
 
