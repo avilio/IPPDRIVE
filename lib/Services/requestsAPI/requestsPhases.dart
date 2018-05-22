@@ -6,12 +6,12 @@ import 'package:ippdrive/pages/homePage.dart';
 
 class requestsApi {
 
-  String bacoSessAuth;
-  String bacoSessRLogin;
-  String courseUnitFoldersJson;
+  Map bacoSessAuth;
+  Map bacoSessRLogin;
+  Map courseUnitFoldersJson;
 
 //todo acescentar campos nas classes para passar o login talvez nao seja a melhor solucao
-  Future<String> requestPhases(String user, String password) async {
+  Future<Map> requestPhases(String user, String password) async {
 
 /*
   wsAuth()
@@ -21,12 +21,12 @@ class requestsApi {
 
     //Outra maneira de fazer e provavelmente a ser usada
     bacoSessAuth = await wsAuth();
-    bacoSessRLogin = await wsRLogin(user, password, bacoSessAuth);
+    bacoSessRLogin = await wsRLogin(user, password, bacoSessAuth['response']['BACOSESS']);
     if (bacoSessRLogin.length == 19)
       return bacoSessRLogin;
     //print(bacoSessRLogin.length);
     // String courseUnitListJson= await wsCoursesUnitsList(bacoSessRLogin);
-    courseUnitFoldersJson = await wsCoursesUnitsContents(bacoSessRLogin);
+    courseUnitFoldersJson = await wsCoursesUnitsContents(bacoSessRLogin['response']['BACOSESS']);
     //print(bacoSessRLogin.split(':')[1].split(',')[0].trim());
 
     // print(courseUnitFoldersJson);
@@ -35,7 +35,7 @@ class requestsApi {
   }
 
   ///First Request to API
-  Future<String> wsAuth() async {
+  Future<Map> wsAuth() async {
     var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
     // var url ='/http://localhost:8080/baco/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
@@ -43,11 +43,11 @@ class requestsApi {
 
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
-    if (jsonReply['service'] == 'error')
+   /* if (jsonReply['service'] == 'error')
       return jsonReply['exception'];
 
     bacoSess = jsonReply['response']['BACOSESS'];
-
+*/
     /*
   jsonReply.forEach((key,value) {
     if(value is Map)
@@ -55,11 +55,11 @@ class requestsApi {
   });*/
 
 
-    return bacoSess;
+    return jsonReply;
   }
 
   ///Second Request to API
-  Future<String> wsRLogin(String user, String password, String bacosess) async {
+  Future<Map> wsRLogin(String user, String password, String bacosess) async {
     var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/secure/ws-rlogin-challenge';
     //var url = 'http://localhost:8080/baco/wsjson/api/app/secure/ws-rlogin-challenge';
     var body = {
@@ -73,17 +73,17 @@ class requestsApi {
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
 
-    if (jsonReply['service'] == 'error')
-      return jsonReply['exception'];
+    /*if (jsonReply['service'] == 'error')
+      return jsonReply['exception'];*/
 /*
   jsonReply.forEach((key,value){
     if(value is Map)
       session = (value['BACOSESS']);
     });*/
 
-    session = jsonReply['response']['BACOSESS'];
+    //session = jsonReply['response']['BACOSESS'];
 
-    return session;
+    return jsonReply;
   }
 
   ///UnitsList Request to API
@@ -108,7 +108,7 @@ class requestsApi {
   }
 
   ///Folders Request to API
-  Future<String> wsCoursesUnitsContents(String bacosess) async {
+  Future<Map> wsCoursesUnitsContents(String bacosess) async {
     // var url = 'http://localhost:8080/baco/user/vfs.do';
     var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
     var body = {
@@ -125,12 +125,12 @@ class requestsApi {
 
     if (jsonReply['service'] == 'error')
       return jsonReply['exception'];
-    else {
-      courseUnitFoldersJson = jsonReply.toString();
-      courseUnitFields(jsonReply);
-    }
+    else
+      //courseUnitFoldersJson = jsonReply.toString();
+     // courseUnitFields(jsonReply);
 
-    return courseUnitFoldersJson;
+
+    return jsonReply;
   }
 
   ///Contents inside UCFolders

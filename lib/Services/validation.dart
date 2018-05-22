@@ -15,14 +15,14 @@ Future submit(user,pass,form, context, key) async {
   requestsApi req = new requestsApi();
 
   if(formKey.validate()){
-    String requestResponse = await req.requestPhases(user, pass);
-    if(!requestResponse.contains('ok'))
-      requestResponseValidation(requestResponse, context, key);
+    Map requestResponse = await req.requestPhases(user, pass);
+    if(!requestResponse.containsValue('ok'))
+      requestResponseValidation(requestResponse['exception'], context, key);
    // print(requestResponse);
     else
       //Navigator.of(context).pushNamed("/listView");
       //todo acescentar campos nas classes para passar o login talvez nao seja a melhor solucao
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ListFolder(req.bacoSessRLogin)));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ListFolder(req.bacoSessRLogin['response']['BACOSESS'], requestResponse)));
   }
 }
 /// User checker

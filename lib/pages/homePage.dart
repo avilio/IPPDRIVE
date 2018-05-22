@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 import 'package:ippdrive/Services/requestsAPI/json/folderFieldsRequest.dart';
@@ -8,40 +10,44 @@ List<UCModel> uC;
 
 class ListFolder extends StatefulWidget {
   String session;
-
-  ListFolder(this.session);
+  Map json;
+  ListFolder(this.session, this.json);
 
   @override
-  ListFolderState createState() => new ListFolderState(session);
+  ListFolderState createState() => new ListFolderState(session, json);
 }
 
 class ListFolderState extends State<ListFolder> {
   //final items = new List<String>.generate(uC.length, (i)=> uC[i].courseUnitsListName);
-  final sem1 = _semestreUm();
-  final sem2 = _semestreDois();
+  //final sem1 = _semestreUm();
+ // final sem2 = _semestreDois();
   String session;
+  Map json;
 
-  ListFolderState( this.session);
+  ListFolderState( this.session, this.json);
 
   requestsApi req = new requestsApi();
 
 //todo contruir um layout bem estrutrado
   @override
   Widget build(BuildContext context) {
+
+    print(json['response']['childs']);
+    List list = json['response']['childs'];
+
+
     final unitCourseList = new ListView.builder(
-        itemCount: sem1.length,
+        itemCount: list.length,
         itemBuilder: (BuildContext context, int index) {
           return new Column(
             children: <Widget>[
               new Padding(padding: new EdgeInsets.all(10.0)),
               new InkWell(
-                child: new Text('${sem1[index]}'),
+               child: new Text('${json['response']['childs'][index]['title']}'),
                 onTap: () async {
-                 Map insideFolder = await req.courseUnitsContents(uC[index].id,session);
-                 courseUnitContent(insideFolder);
-                 for (var o in uC) {
-                   print(o.title);
-                 }
+                 Map insideFolder = await req.courseUnitsContents(json['response']['childs'][index]['id'],session);
+                 Expanded(child: new Text('${insideFolder['response']['childs'][index]['title']}'),);
+
                 },
               ),
               new Divider(height: 10.0, color: cAppBlue,),
