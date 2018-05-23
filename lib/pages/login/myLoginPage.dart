@@ -6,9 +6,10 @@ import 'package:ippdrive/user.dart';
 
 const _padding = EdgeInsets.all(25.0);
 
+
 class MyLoginPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new MyLoginPageState();
+
+  State createState() => new MyLoginPageState();
 }
 
 class MyLoginPageState extends State<MyLoginPage> with User{
@@ -16,7 +17,6 @@ class MyLoginPageState extends State<MyLoginPage> with User{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _userController = new TextEditingController();
   final _passwordController = new TextEditingController();
-  //User userSession = new User();
 
   @override
   Widget build(BuildContext context) {
