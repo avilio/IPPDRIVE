@@ -1,26 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
+import 'package:ippdrive/user.dart';
 
 
 class ListFolder extends StatefulWidget {
-  String session;
-  Map json;
-  ListFolder(this.session, this.json);
+ // String session;
+  final Map json;
+  ListFolder( this.json);
 
   @override
-  ListFolderState createState() => new ListFolderState(session, json);
+  ListFolderState createState() => new ListFolderState(json);
 }
 
 
-class ListFolderState extends State<ListFolder> {
+class ListFolderState extends State<ListFolder> with User {
 
-  ListFolderState( this.session, this.json);
-  String session;
+  ListFolderState( this.json);
+  //String session;
   Map json;
-
-  requestsApi req = new requestsApi();
 
 //todo contruir um layout bem estrutrado
   @override
@@ -28,62 +29,89 @@ class ListFolderState extends State<ListFolder> {
 
    // print(json['response']['childs']);
     List list = json['response']['childs'];
-
+    print(getpassword());
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
-          'Unidades Curriculares',
+          'Unidades Curricuares',
           textScaleFactor: 1.5,
           style: new TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: semestres(list, session, req)
+      body: semestres(list,getsession())
             //new Divider(height: 10.0, color: cAppBlue,),
 
     );
   }
 }
 
-Widget semestres(list,session,req) {
+Widget semestres(list,session) {
 
   List sem1 = new List();
   List sem2 = new List();
-  sem1 = semestreUm(list, session, req);
-  sem2 = semestreDois(list, session, req);
+  sem1 = semestreUm(list );
+  sem2 = semestreDois(list);
+
 
   return new ListView.builder(
       itemCount: 1,
       itemBuilder: (BuildContext context, int index) {
         return Column(
           children: <Widget>[
-            new Container(
-              decoration:new BoxDecoration(
-                shape: BoxShape.rectangle,
-                //borderRadius: new BorderRadius.circular(8.0),
-              border: Border.all(style: BorderStyle.solid, color: cAppBlackish)),
-              child: new ExpansionTile(
-                //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
-                title:new Text("Semestre 1",textScaleFactor: 1.5,),
-                children: sem1.map((val) => new ListTile(
-                  title: Container(
-                    child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
-                  ),
-                )).toList(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new Container(
+                decoration:new BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
+                color: cAppBlue),
+                child: new ExpansionTile(
+                  //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
+                  title:new Text("Semestre 1",textScaleFactor: 1.5,),
+                  children: sem1.map((val) => new ListTile(
+                    title: Container(
+                      decoration:new BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: new BorderRadius.circular(50.0),
+                          border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
+                          color: cAppBlueAccent
+                      ),
+                       child: new ExpansionTile(
+                        title:GestureDetector(
+                            child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,),
+                        ),
+                         children: <Widget>[
+
+                         ],
+                         /* children: folders.map((val) => new ListTile(
+                          title: Container(
+                            child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
+                          ),
+                         )).toList(),*/
+                    ),
+                    ),
+                  )).toList(),
+
+                ),
               ),
             ),
-            new Container(
-              decoration:new BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  //borderRadius: new BorderRadius.circular(8.0),
-                  border: Border.all(style: BorderStyle.solid, color: cAppBlackish)),
-              child: new ExpansionTile(
-                //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
-                title:new Text("Semestre 2",textScaleFactor: 1.5,),
-                children: sem2.map((val) => new ListTile(
-                  title: Container(
-                      child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
-                  ),
-                )).toList(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new Container(
+                decoration:new BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: new BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
+                    border: Border.all(style: BorderStyle.solid, color: cAppBlackish)),
+                child: new ExpansionTile(
+                  //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
+                  title:new Text("Semestre 2",textScaleFactor: 1.5,),
+                  children: sem2.map((val) => new ListTile(
+                    title: Container(
+                        child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
+                    ),
+                  )).toList(),
+                ),
               ),
             ),
           ],
@@ -91,7 +119,18 @@ Widget semestres(list,session,req) {
       });
 }
 
-List semestreUm(list,session,req) {
+Future<List> ucFolder(list,session) async {
+
+  List foldersUC = new List();
+  for (var i = 0; i < list.length; ++i) {
+    Map xpto = await courseUnitsContents(list[i]['id'], session);
+    foldersUC = xpto['response']['childs'];
+  }
+
+  return foldersUC.toList();
+}
+
+List semestreUm(list) {
 
   List sem1 = new List();
 
@@ -122,7 +161,7 @@ List semestreUm(list,session,req) {
         //new Text('${sem2[index]}'),
       });*/
 }
-List semestreDois(list,session,req) {
+List semestreDois(list) {
 
   List sem2 = new List();
 

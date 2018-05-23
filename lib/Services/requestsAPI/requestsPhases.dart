@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:ippdrive/Services/requestsAPI/apiRESTRequests.dart';
-import 'package:ippdrive/pages/homePage.dart';
 
-class requestsApi {
 
   Map bacoSessAuth;
   Map bacoSessRLogin;
@@ -22,11 +20,13 @@ class requestsApi {
     //Outra maneira de fazer e provavelmente a ser usada
     bacoSessAuth = await wsAuth();
     bacoSessRLogin = await wsRLogin(user, password, bacoSessAuth['response']['BACOSESS']);
+
     if (bacoSessRLogin.length == 19)
       return bacoSessRLogin;
     //print(bacoSessRLogin.length);
     // String courseUnitListJson= await wsCoursesUnitsList(bacoSessRLogin);
     courseUnitFoldersJson = await wsCoursesUnitsContents(bacoSessRLogin['response']['BACOSESS']);
+
     //print(bacoSessRLogin.split(':')[1].split(',')[0].trim());
 
     // print(courseUnitFoldersJson);
@@ -39,7 +39,7 @@ class requestsApi {
     var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
     // var url ='/http://localhost:8080/baco/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
-    String bacoSess;
+    //String bacoSess;
 
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
@@ -69,7 +69,7 @@ class requestsApi {
       },
       "BACOSESS": bacosess
     };
-    String session;
+   // String session;
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
 
@@ -119,7 +119,7 @@ class requestsApi {
       "serviceJson": "vfsReadMyCourseUnitsContents"
     };
 
-    String courseUnitFoldersJson;
+    //String courseUnitFoldersJson;
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
 
@@ -145,7 +145,7 @@ class requestsApi {
       "data": {"command": "read", "parentId": parentId},
       "serviceJson": "vfscommand"
     };
-    String UnitsContents;
+   // String UnitsContents;
 
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
@@ -155,9 +155,8 @@ class requestsApi {
     else {
       //UnitsContents = jsonReply.toString();
       //courseUnitFields(jsonReply);
-      jsonReply.forEach((a, b) => print('$a : $b'));
+      //jsonReply.forEach((a, b) => print('$a : $b'));
       return jsonReply;
     }
   }
 
-}

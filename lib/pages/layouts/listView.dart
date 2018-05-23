@@ -1,5 +1,5 @@
 
-
+/*
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -21,9 +21,9 @@ class ListFolder extends StatefulWidget {
   ListFolderState createState() => new ListFolderState(session, json);
 }
 
-Future getID(req, json, session, index)async {
+Future getID(json, session, index)async {
 
-  getFields = await req.courseUnitsContents(json['response']['childs'][index]['id'],session);
+  getFields = await courseUnitsContents(json['response']['childs'][index]['id'],session);
 
 }
 
@@ -37,7 +37,6 @@ class ListFolderState extends State<ListFolder> {
 
   ListFolderState( this.session, this.json);
 
-  requestsApi req = new requestsApi();
 
 //todo contruir um layout bem estrutrado
   @override
@@ -57,7 +56,7 @@ class ListFolderState extends State<ListFolder> {
               new InkWell(
                 child: new Text('${json['response']['childs'][index]['title']}'),
                 onTap: () {
-                  getID(req,json,session, index);
+                  getID(json,session, index);
                   // Expanded(child: new Text('${getFields['response']['childs'][index]['title']}'),);
                 },
                 onDoubleTap: null,
@@ -120,4 +119,4 @@ void courseUnitContent(Map json) {
       .courseFolders
       .map((ucFields) => UCModel.fromRecursiveResponse(ucFields))
       .toList();
-}
+}*/

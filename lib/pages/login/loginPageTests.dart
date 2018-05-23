@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
 
 
@@ -13,7 +12,7 @@ class LoginPageTestsState extends State<LoginPageTests> {
   final GlobalKey<FormState> formKey = new GlobalKey<FormState>();
   final _userController = new TextEditingController();
   final _passwordController = new TextEditingController();
-  requestsApi req = new requestsApi();
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,7 @@ class LoginPageTestsState extends State<LoginPageTests> {
         new RaisedButton(
             // onPressed: () {Navigator.of(context).pushNamed("/listView");},
             onPressed: () {
-              req.requestPhases(_userController.text, _passwordController.text);
+              requestPhases(_userController.text, _passwordController.text);
             },
             child: new Text('Login', maxLines: 1,),
             elevation: 8.0,
