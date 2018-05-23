@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 import 'package:ippdrive/Services/validation.dart';
-import 'package:ippdrive/user.dart';
 
 const _padding = EdgeInsets.all(25.0);
 
@@ -12,7 +11,7 @@ class MyLoginPage extends StatefulWidget {
   State createState() => new MyLoginPageState();
 }
 
-class MyLoginPageState extends State<MyLoginPage> with User{
+class MyLoginPageState extends State<MyLoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _userController = new TextEditingController();
@@ -27,9 +26,7 @@ class MyLoginPageState extends State<MyLoginPage> with User{
         child: new RaisedButton(
           // onPressed: () {Navigator.of(context).pushNamed("/listView");},
           onPressed: () {
-            password = _passwordController.text;
-            username = _userController.text;
-            submit(getusername(), getpassword(), _formKey,
+            submit(_userController.text, _passwordController.text, _formKey,
                 context, _scaffoldKey);
           },
           child: new Text('Login'),

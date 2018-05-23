@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
-import 'package:ippdrive/user.dart';
+
 
 
 class ListFolder extends StatefulWidget {
@@ -16,7 +16,7 @@ class ListFolder extends StatefulWidget {
   ListFolderState createState() => new ListFolderState(json,session);
 }
 
-class ListFolderState extends State<ListFolder> with User {
+class ListFolderState extends State<ListFolder> {
 
   ListFolderState( this.json,this.session);
   Map json;
