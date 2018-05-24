@@ -122,7 +122,7 @@ Widget myExpandTile(List list, String session, int index){
   //print(list.runtimeType);
 
   list[0]['pathParent'].contains('Semestre1') ? title='Semestre 1' : title = 'Semestre 2';
-
+//todo expansionPanel
   return new ExpansionTile(
     //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
     title:new Text(title,textScaleFactor: 1.5,),
@@ -138,9 +138,10 @@ Widget myExpandTile(List list, String session, int index){
           title:GestureDetector(
             child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,),
           ),
-        children: <Widget>[
+         children: <Widget>[
           myExpandTileRecursive(list, session, index)
-        ],
+         ],
+
           /* children: folders.map((val) => new ListTile(
                           title: Container(
                             child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
@@ -154,17 +155,19 @@ Widget myExpandTile(List list, String session, int index){
 
 Widget myExpandTileRecursive(List list, String session, int index){
 //todo arranjar de forma a que o tittle seja a lista content
+
+  List content = new List();
+
   return new FutureBuilder(
     future: ucFolder(list, session),
     builder: (context, snapshot) {
       if (!snapshot.hasData)
         return new Text('Loading...');
-      List content = new List();
       for (var o in snapshot.data) {
         content.add(o);
       }
       //print('DATA QUE VEM : ${snapshot.data}\n');
-      return new ExpansionTile(
+     /* return new ExpansionTile(
         //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
         title: new Text(''),
         children:  content.map((val) =>
@@ -191,7 +194,23 @@ Widget myExpandTileRecursive(List list, String session, int index){
             ),
           ),
         )).toList(),
-      );
+      );*/
     }
   );
 }
+/*
+*  myExpandTileRecursive(list, session, index).map((value)=> new ListTile(
+          title: Container(
+            decoration: new BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: new BorderRadius.circular(50.0),
+              border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
+              color: cAppBlueAccent
+          ),
+            child: new ExpansionTile(
+              title:GestureDetector(
+                child: new Text(value['title'].toString().split('-')[0],textScaleFactor: 0.95,),
+              ) ,
+            ),
+          ),
+        )).toList()*/
