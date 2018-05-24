@@ -16,7 +16,10 @@ Future submit(user, pass, form, context, key) async {
 
   if (formKey.validate()) {
     bacoSessAuth = await wsAuth();
-    bacoSessRLogin = await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
+    if(!bacoSessAuth.containsValue('ok'))
+      requestResponseValidation(bacoSessAuth['exception'], context, key);
+    else
+      bacoSessRLogin = await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
     if (bacoSessRLogin['service'] == 'error')
       requestResponseValidation(bacoSessRLogin['exception'], context, key);
     else {
