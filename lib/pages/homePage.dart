@@ -61,8 +61,9 @@ Widget semestres(list,session) {
                   shape: BoxShape.rectangle,
                   borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
                 border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
-                color: cAppBlue),
-                child: myExpandTile(sem1)
+                //color: cAppBlue
+                ),
+                child: myExpandTile(sem1,session,index)
               ),
             ),
             Padding(
@@ -72,7 +73,7 @@ Widget semestres(list,session) {
                     shape: BoxShape.rectangle,
                     borderRadius: new BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
                     border: Border.all(style: BorderStyle.solid, color: cAppBlackish)),
-                child: myExpandTile(sem2)
+                child: myExpandTile(sem2,session, index)
               ),
             ),
           ],
@@ -84,11 +85,11 @@ Future<List> ucFolder(list,session) async {
 
   List foldersUC = new List();
   for (var i = 0; i < list.length; ++i) {
-    Map xpto = await courseUnitsContents(list[i]['id'], session);
+    Map<String,dynamic> xpto = await courseUnitsContents(list[i]['id'], session);
     foldersUC = xpto['response']['childs'];
   }
 
-  return foldersUC.toList();
+  return foldersUC;
 }
 
 List semestreUm(list) {
@@ -115,7 +116,7 @@ List semestreDois(list) {
   return sem2;
 }
 
-Widget myExpandTile(List list){
+Widget myExpandTile(List list, String session, int index){
 
   String title;
   //print(list.runtimeType);
@@ -137,9 +138,9 @@ Widget myExpandTile(List list){
           title:GestureDetector(
             child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,),
           ),
-          children: <Widget>[
-
-          ],
+        children: <Widget>[
+          myExpandTileRecursive(list, session, index)
+        ],
           /* children: folders.map((val) => new ListTile(
                           title: Container(
                             child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
@@ -151,40 +152,46 @@ Widget myExpandTile(List list){
   );
 }
 
-Widget myExpandTileRecursive(List list){
-
-  String title;
-  //print(list.runtimeType);
-
-  list[0]['pathParent'].contains('Semestre1') ? title='Semestre 1' : title = 'Semestre 2';
-
-  return new ExpansionTile(
-    //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
-    title:new Text(title,textScaleFactor: 1.5,),
-    children: list.map((val) => new ListTile(
-      title: Container(
-        decoration:new BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: new BorderRadius.circular(50.0),
-            border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
-            color: cAppBlueAccent
-        ),
-        child: new ExpansionTile(
-          title:GestureDetector(
-            child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,),
+Widget myExpandTileRecursive(List list, String session, int index){
+//todo arranjar de forma a que o tittle seja a lista content
+  return new FutureBuilder(
+    future: ucFolder(list, session),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData)
+        return new Text('Loading...');
+      List content = new List();
+      for (var o in snapshot.data) {
+        content.add(o);
+      }
+      //print('DATA QUE VEM : ${snapshot.data}\n');
+      return new ExpansionTile(
+        //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
+        title: new Text(''),
+        children:  content.map((val) =>
+        new ListTile(
+          title: new Container(
+            decoration: new BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: new BorderRadius.circular(50.0),
+                border: new Border.all(
+                    style: BorderStyle.solid, color: cAppBlackish),
+                color: cAppBlueAccent
+            ),
+            child: new ExpansionTile(
+              title: new GestureDetector(
+                child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,),
+              ),
+              /*  children: <Widget>[
+              ],*/
+              /* children: folders.map((val) => new ListTile(
+                            title: Container(
+                              child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
+                            ),
+                           )).toList(),*/
+            ),
           ),
-          children: <Widget>[
-
-          ],
-          /* children: folders.map((val) => new ListTile(
-                          title: Container(
-                            child: new Text(val['title'].toString().split('-')[0],textScaleFactor: 0.95,)
-                          ),
-                         )).toList(),*/
-        ),
-      ),
-    )).toList(),
+        )).toList(),
+      );
+    }
   );
-
-
 }

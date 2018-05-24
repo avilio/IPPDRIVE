@@ -14,10 +14,9 @@ Future submit(user, pass, form, context, key) async {
   Map bacoSessRLogin = new Map();
   Map courseUnitFoldersJson = new Map();
 
-  bacoSessAuth = await wsAuth();
-  bacoSessRLogin =
-      await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
   if (formKey.validate()) {
+    bacoSessAuth = await wsAuth();
+    bacoSessRLogin = await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
     if (bacoSessRLogin['service'] == 'error')
       requestResponseValidation(bacoSessRLogin['exception'], context, key);
     else {

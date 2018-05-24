@@ -24,7 +24,6 @@ class MyLoginPageState extends State<MyLoginPage> {
       child: new Container(
         //margin: new EdgeInsets.symmetric(horizontal: 20.0),
         child: new RaisedButton(
-          // onPressed: () {Navigator.of(context).pushNamed("/listView");},
           onPressed: () {
             submit(_userController.text, _passwordController.text, _formKey,
                 context, _scaffoldKey);
@@ -33,47 +32,6 @@ class MyLoginPageState extends State<MyLoginPage> {
           elevation: 2.0,
           shape: BeveledRectangleBorder(
               borderRadius: new BorderRadius.circular(5.0)),
-        ),
-      ),
-    );
-
-    final loginBox = new Center(
-     // heightFactor: 1.3,
-      child: new DecoratedBox(
-        decoration: new BoxDecoration(
-            border: new Border.all(style: BorderStyle.solid, color: cAppBlackish),
-            color: cAppYellowishAccent,
-            borderRadius: new BorderRadius.circular(10.0)),
-        child: Container(
-          //color: cAppYellowishAccent,
-          padding: _padding,
-          child: Column(
-            children: <Widget>[
-              new Image.asset("assets/images/icon.png",
-                  width: 150.0, height: 150.0),
-              new TextFormField(
-                decoration: new InputDecoration(
-                  labelText: "Number of Student",
-                  hintText: "Your student number",
-                ),
-                controller: _userController,
-                validator: userValidation,
-              ),
-              new Padding(padding: new EdgeInsets.all(1.5)),
-              new TextFormField(
-                  obscureText: true,
-                  decoration: new InputDecoration(
-                    labelText: "Password",
-                    hintText: "Mobile Key",
-                  ),
-                  controller: _passwordController,
-                  keyboardType: TextInputType.number,
-                  validator: passwordValidation),
-              button,
-              new Padding(padding: new EdgeInsets.all(1.5)),
-
-            ],
-          ),
         ),
       ),
     );
@@ -87,8 +45,8 @@ class MyLoginPageState extends State<MyLoginPage> {
             padding: _padding,
             child: new ListView(
               children: <Widget>[
-                loginBox,
-               // button
+                myLoginBox(button,_userController,_passwordController),
+               // button,
                 new Padding(padding: new EdgeInsets.all(90.5)),
                 new Text('Powered by Aluno', textAlign: TextAlign.center),
               ],
@@ -96,4 +54,48 @@ class MyLoginPageState extends State<MyLoginPage> {
           )),
     );
   }
+}
+
+Widget myLoginBox(button,_userController,_passwordController ){
+
+  return new Center(
+    // heightFactor: 1.3,
+    child: new DecoratedBox(
+      decoration: new BoxDecoration(
+          border: new Border.all(style: BorderStyle.solid, color: cAppBlackish),
+          color: cAppYellowishAccent,
+          borderRadius: new BorderRadius.circular(10.0)),
+      child: Container(
+        //color: cAppYellowishAccent,
+        padding: _padding,
+        child: Column(
+          children: <Widget>[
+            new Image.asset("assets/images/icon.png",
+                width: 150.0, height: 150.0),
+            new TextFormField(
+              decoration: new InputDecoration(
+                labelText: "Number of Student",
+                hintText: "Your student number",
+              ),
+              controller: _userController,
+              validator: userValidation,
+            ),
+            new Padding(padding: new EdgeInsets.all(1.5)),
+            new TextFormField(
+                obscureText: true,
+                decoration: new InputDecoration(
+                  labelText: "Password",
+                  hintText: "Mobile Key",
+                ),
+                controller: _passwordController,
+                keyboardType: TextInputType.number,
+                validator: passwordValidation),
+            button,
+            new Padding(padding: new EdgeInsets.all(1.5)),
+
+          ],
+        ),
+      ),
+    ),
+  );
 }

@@ -13,7 +13,7 @@ Future<String> postRequest (String url, Map jsonMap) async {
   request.add(utf8.encode(json.encode(jsonMap)));
   HttpClientResponse response = await request.close();
   // todo - you should check the response.statusCode
-  if ( response.statusCode == 200) {
+  if ( response.statusCode == HttpStatus.OK) {
     reply = await response.transform(utf8.decoder).join();
   }else {
     reply = 'ERROR ON REQUEST ${response.statusCode}';
@@ -30,7 +30,7 @@ Future<String> getRequest (String url) async {
 
   var response = await http.get(url);
 
-  if ( response.statusCode == 200)
+  if ( response.statusCode == HttpStatus.OK)
     reply = response.body;
   else
     reply = 'ERROR ON REQUEST ${response.statusCode}';

@@ -12,7 +12,7 @@ import 'package:ippdrive/Services/requestsAPI/apiRESTRequests.dart';
     String response = await postRequest(url, body);
     Map jsonReply = jsonDecode(response);
 
-    return jsonReply;
+      return jsonReply;
   }
 
   ///Second Request to API
@@ -77,7 +77,7 @@ import 'package:ippdrive/Services/requestsAPI/apiRESTRequests.dart';
   ///Contents inside UCFolders
   Future<Map> courseUnitsContents(int parentId, String session) async {
 
-    print(session);
+    //print(session);
 
     var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
 
