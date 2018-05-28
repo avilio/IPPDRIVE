@@ -25,21 +25,16 @@ class ListFolderState extends State<ListFolder> {
 
     List list = json['response']['childs'];
 
-    String title = json['response']['childs'][0]['pathParent'].contains('Semestre1') ? 'Semestre 1' : 'Semestre 2';
-
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(
-          'Unidades Curricuares',
-          textScaleFactor: 1.5,
-          style: new TextStyle(fontWeight: FontWeight.bold),
+        appBar: new AppBar(
+          title: new Text(
+            'Unidades Curricuares',
+            textScaleFactor: 1.5,
+            style: new TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: new SizedBox(
-child: semestres(list,session)
-
-      )
-            //new Divider(height: 10.0, color: cAppBlue,),
+        body: semestres(list,session)
+      //new Divider(height: 10.0, color: cAppBlue,),
 
     );
   }
@@ -51,18 +46,7 @@ Widget semestres(list,session) {
   List sem2 = new List();
   sem1 = semestreUm(list);
   sem2 = semestreDois(list);
- int len = list.length+2;
 
-  return new ListView.builder(
-      itemCount: list.length,
-      itemBuilder: (BuildContext context, int index){
-        final Map uc = list[index];
-        return myExpandTile(uc, session, null);
-      }
-  );
-
-
-/*
 
   return new ListView.builder(
       itemCount: 1,
@@ -72,70 +56,36 @@ Widget semestres(list,session) {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: new Container(
-                decoration:new BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
-                border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
-                //color: cAppBlue
-                ),
-                child: myExpandTile(sem1,session,index)
+                  decoration:new BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                    border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
+                    //color: cAppBlue
+                  ),
+                  child: myExpandTile(sem1,session,index)
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: new Container(
-                decoration:new BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: new BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
-                    border: Border.all(style: BorderStyle.solid, color: cAppBlackish)),
-                child: myExpandTile(sem2,session, index)
+                  decoration:new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      borderRadius: new BorderRadius.only(topLeft:Radius.circular(20.0),bottomRight: Radius.circular(20.0)),
+                      border: Border.all(style: BorderStyle.solid, color: cAppBlackish)),
+                  child: myExpandTile(sem2,session, index)
               ),
             ),
           ],
         );
-      });*/
+      });
 }
 
-Widget getItemsUc(Map uc) {
+Future<List> ucFolder(list,session) async {
 
-  return new ListTile(
-    title: Column(
-      children: <Widget>[
-
-        new Text(uc['title'].toString().split('-')[0],textScaleFactor: 0.95),
-      ],
-    ),
-  );
-
-}
-
-Widget myExpandTile(Map list, String session, int index){
-
-  Map uContent = new Map();
-
-  return new ExpansionTile(
-    //leading:
-    title: GestureDetector(
-        child: new Text(list['title'].toString().split('-')[0],textScaleFactor: 0.95),
-        onTap: () async {
-          uContent = await ucFolder(list,session);
-        },
-    ),
-    children: <Widget>[
-      new Text(uContent['title'].toString().split('-')[0],textScaleFactor: 0.95),
-    ],
-  );
-}
-Future<Map> ucFolder(list,session) async {
-
-  //print(list['id']);
-
-  Map foldersUC = new Map();
-  Map xpto = await courseUnitsContents(list['id'], session);
-  List cont = xpto['response']['childs'];
-
-  for (var i = 0; i < cont.length; i++) {
-    foldersUC = cont[i];
+  List foldersUC = new List();
+  for (var i = 0; i < list.length; ++i) {
+    Map<String,dynamic> xpto = await courseUnitsContents(list[i]['id'], session);
+    foldersUC = xpto['response']['childs'];
   }
 
   return foldersUC;
@@ -164,7 +114,7 @@ List semestreDois(list) {
 
   return sem2;
 }
-/*
+
 Widget myExpandTile(List list, String session, int index){
 
   String title;
@@ -191,21 +141,21 @@ Widget myExpandTile(List list, String session, int index){
     )).toList(),
   );
 }
-*/
+
 List myExpandTileRecursive(List list, String session, int index){
 //todo arranjar de forma a que o tittle seja a lista content
 
   List content = new List();
 
   new FutureBuilder(
-    future: ucFolder(list, session),
-    builder: (context, snapshot) {
-      if (!snapshot.hasData)
-        return new Text('Loading...');
-      for (var o in snapshot.data) {
-        content.add(o);
+      future: ucFolder(list, session),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return new Text('Loading...');
+        for (var o in snapshot.data) {
+          content.add(o);
+        }
       }
-    }
   );
 
   return content;

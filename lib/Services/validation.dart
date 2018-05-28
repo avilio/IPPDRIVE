@@ -23,8 +23,7 @@ Future submit(user, pass, form, context, key) async {
     if (bacoSessRLogin['service'] == 'error')
       requestResponseValidation(bacoSessRLogin['exception'], context, key);
     else {
-      courseUnitFoldersJson =
-          await wsCoursesUnitsContents(bacoSessRLogin['response']['BACOSESS']);
+      courseUnitFoldersJson = await wsCoursesUnitsContents(bacoSessRLogin['response']['BACOSESS']);
       if (!courseUnitFoldersJson.containsValue('ok'))
         requestResponseValidation(
             courseUnitFoldersJson['exception'], context, key);
