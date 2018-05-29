@@ -60,11 +60,11 @@ Widget myLoginBox(button,_userController,_passwordController ){
 
   return new Center(
     // heightFactor: 1.3,
-    child: new DecoratedBox(
+    /*child: new DecoratedBox(
       decoration: new BoxDecoration(
           border: new Border.all(style: BorderStyle.solid, color: cAppBlackish),
           color: cAppYellowishAccent,
-          borderRadius: new BorderRadius.circular(10.0)),
+          borderRadius: new BorderRadius.circular(10.0)),*/
       child: Container(
         //color: cAppYellowishAccent,
         padding: _padding,
@@ -95,7 +95,7 @@ Widget myLoginBox(button,_userController,_passwordController ){
 
           ],
         ),
-      ),
+    //  ),
     ),
   );
 }

@@ -8,59 +8,54 @@ import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
 class ListFolder extends StatefulWidget {
   final Map json;
   final String session;
-  ListFolder( this.json,this.session);
+  ListFolder(this.json, this.session);
 
   @override
-  ListFolderState createState() => new ListFolderState(json,session);
+  ListFolderState createState() => new ListFolderState(json, session);
 }
 
 class ListFolderState extends State<ListFolder> {
-
-  ListFolderState( this.json,this.session);
+  ListFolderState(this.json, this.session);
   Map json;
   String session;
 
   @override
   Widget build(BuildContext context) {
-
     List list = json['response']['childs'];
 
-    String title = json['response']['childs'][0]['pathParent'].contains('Semestre1') ? 'Semestre 1' : 'Semestre 2';
+    String title =
+        json['response']['childs'][0]['pathParent'].contains('Semestre1')
+            ? 'Semestre 1'
+            : 'Semestre 2';
 
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(
-          'Unidades Curricuares',
-          textScaleFactor: 1.5,
-          style: new TextStyle(fontWeight: FontWeight.bold),
+        appBar: new AppBar(
+          title: new Text(
+            'Unidades Curricuares',
+            textScaleFactor: 1.5,
+            style: new TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: new SizedBox(
-child: semestres(list,session)
+        body: new SizedBox(child: semestres(list, session))
+        //new Divider(height: 10.0, color: cAppBlue,),
 
-      )
-            //new Divider(height: 10.0, color: cAppBlue,),
-
-    );
+        );
   }
 }
 
-Widget semestres(list,session) {
-
+Widget semestres(list, session) {
   List sem1 = new List();
   List sem2 = new List();
   sem1 = semestreUm(list);
   sem2 = semestreDois(list);
- int len = list.length+2;
+  int len = list.length + 2;
 
   return new ListView.builder(
       itemCount: list.length,
-      itemBuilder: (BuildContext context, int index){
+      itemBuilder: (BuildContext context, int index) {
         final Map uc = list[index];
-        return myExpandTile(uc, session, null);
-      }
-  );
-
+        return myExpandTile(uc, session, 3);
+      });
 
 /*
 
@@ -97,37 +92,67 @@ Widget semestres(list,session) {
 }
 
 Widget getItemsUc(Map uc) {
-
   return new ListTile(
     title: Column(
       children: <Widget>[
-
-        new Text(uc['title'].toString().split('-')[0],textScaleFactor: 0.95),
+        new Text(uc['title'].toString().split('-')[0], textScaleFactor: 0.95),
       ],
     ),
   );
-
 }
 
-Widget myExpandTile(Map list, String session, int index){
-
+Widget myExpandTile(Map list, String session, int index) {
   Map uContent = new Map();
 
   return new ExpansionTile(
     //leading:
-    title: GestureDetector(
-        child: new Text(list['title'].toString().split('-')[0],textScaleFactor: 0.95),
-        onTap: () async {
-          uContent = await ucFolder(list,session);
-        },
-    ),
-    children: <Widget>[
-      new Text(uContent['title'].toString().split('-')[0],textScaleFactor: 0.95),
-    ],
+    title:
+        new Text(list['title'].toString().split('-')[0], textScaleFactor: 0.95),
+    children: folders(list, session),
+    leading: new Icon(Icons.list),
+
   );
 }
-Future<Map> ucFolder(list,session) async {
 
+List<Widget> folders (list, session){
+  List<Widget> reasonList = [];
+
+  new FutureBuilder(
+      future: ucFolder(list, session),
+      builder: (context, response) {
+        if (!response.hasData) {
+
+          return const Center(
+            child: const Text('Loading...'),
+          );
+        } else {
+          if(response.data['directory']) {
+            for (var val in response.data['title']) {
+              reasonList.add(new ListTile(
+                dense: true,
+                title: val,
+              ));
+              print(reasonList);
+            }
+            return new ExpansionTile(
+              title: new Column(
+                  children: reasonList
+              ),
+              children: <Widget>[],
+              leading: new Icon(Icons.list),
+
+            );
+          }else
+            return new Text(
+                response.data['title'].toString().split('-')[0],
+                textScaleFactor: 0.95);
+        }
+      });
+
+  return reasonList;
+}
+
+Future<Map> ucFolder(list, session) async {
   //print(list['id']);
 
   Map foldersUC = new Map();
@@ -137,33 +162,31 @@ Future<Map> ucFolder(list,session) async {
   for (var i = 0; i < cont.length; i++) {
     foldersUC = cont[i];
   }
+  //print(foldersUC);
 
   return foldersUC;
 }
 
 List semestreUm(list) {
-
   List sem1 = new List();
 
   for (var i = 0; i < list.length; ++i) {
-    if(list[i]['pathParent'].contains('Semestre1'))
-      sem1.add(list[i]);
+    if (list[i]['pathParent'].contains('Semestre1')) sem1.add(list[i]);
   }
 
   return sem1;
-
 }
-List semestreDois(list) {
 
+List semestreDois(list) {
   List sem2 = new List();
 
   for (var i = 0; i < list.length; ++i) {
-    if(list[i]['pathParent'].contains('Semestre2'))
-      sem2.add(list[i]);
+    if (list[i]['pathParent'].contains('Semestre2')) sem2.add(list[i]);
   }
 
   return sem2;
 }
+
 /*
 Widget myExpandTile(List list, String session, int index){
 
@@ -192,21 +215,19 @@ Widget myExpandTile(List list, String session, int index){
   );
 }
 */
-List myExpandTileRecursive(List list, String session, int index){
+List myExpandTileRecursive(List list, String session, int index) {
 //todo arranjar de forma a que o tittle seja a lista content
 
   List content = new List();
 
   new FutureBuilder(
-    future: ucFolder(list, session),
-    builder: (context, snapshot) {
-      if (!snapshot.hasData)
-        return new Text('Loading...');
-      for (var o in snapshot.data) {
-        content.add(o);
-      }
-    }
-  );
+      future: ucFolder(list, session),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return new Text('Loading...');
+        for (var o in snapshot.data) {
+          content.add(o);
+        }
+      });
 
   return content;
 
@@ -242,8 +263,6 @@ List myExpandTileRecursive(List list, String session, int index){
       );
     }
   );*/
-
-
 }
 /*
 *  myExpandTileRecursive(list, session, index).map((value)=> new ListTile(
