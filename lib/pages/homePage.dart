@@ -122,7 +122,7 @@ Widget myExpandTile(List list, String session, int index){
   //print(list.runtimeType);
 
   list[0]['pathParent'].contains('Semestre1') ? title='Semestre 1' : title = 'Semestre 2';
-//todo expansionPanel
+//todo alterar a forma dos tiles
   return new ExpansionTile(
     //leading: new CircleAvatar(backgroundColor: cAppBlueAccent,backgroundImage: AssetImage("assets/images/icon.png"),),
     title:new Text(title,textScaleFactor: 1.5,),
