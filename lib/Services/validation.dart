@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
 import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
 import 'package:ippdrive/pages/homePage.dart';
+import 'package:ippdrive/user.dart';
 
 RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
 
@@ -23,14 +24,15 @@ Future submit(user, pass, form, context, key) async {
     if (bacoSessRLogin['service'] == 'error')
       requestResponseValidation(bacoSessRLogin['exception'], context, key);
     else {
-      courseUnitFoldersJson = await wsCoursesUnitsContents(bacoSessRLogin['response']['BACOSESS']);
+      PaeUser paeUser = new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
+      courseUnitFoldersJson = await wsCoursesUnitsContents(paeUser.session);
       if (!courseUnitFoldersJson.containsValue('ok'))
         requestResponseValidation(
             courseUnitFoldersJson['exception'], context, key);
       else
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ListFolder(courseUnitFoldersJson,
-                bacoSessRLogin['response']['BACOSESS'])));
+                paeUser)));
     }
   }
 }

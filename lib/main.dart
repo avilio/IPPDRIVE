@@ -26,11 +26,17 @@ class IppDriveApp extends StatelessWidget {
 
 void main() => runApp(new MaterialApp(
     title: 'IppDrive',
-    home: MyLoginPage(),
+    home: new MyLoginPage(),
     debugShowCheckedModeBanner: false,
     theme: buildAppTheme(),
+   /* onGenerateRoute: (settings){
+      switch (settings.name) {
+        case "/listView": (_) => new ListFolder(null,null);
+      }
+    },*/
     routes: <String, WidgetBuilder>{
-      "/listView": (BuildContext context) => new ListFolder(null,null)
+      "/login" : (_) => new MyLoginPage(),
+      "/listView": (_) => new ListFolder(),
     }
 
 ));

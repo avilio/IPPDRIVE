@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:ippdrive/Services/requestsAPI/apiRESTRequests.dart';
 
 //var host = 'https://pae.ipportalegre.pt/testes2';
-//10.0.2.2 por causa do emulador do android
-var host = 'http://10.0.2.2:8080/baco';
+final String server = defaultTargetPlatform == TargetPlatform.android ? "10.0.2.2" : "localhost";
+
+var host = 'http://$server:8080/baco';
 
   ///First Request to API
   Future<Map> wsAuth() async {
     //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
-    var url ='${host}/wsjson/api/app/ws-authenticate';
+    var url ='$host/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
 
     String response = await postRequest(url, body);

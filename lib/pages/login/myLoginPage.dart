@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
-import 'package:ippdrive/Services/validation.dart';
+import 'package:ippdrive/pages/layouts/components/loginPageComponents.dart';
+
 
 const _padding = EdgeInsets.all(25.0);
-
 
 class MyLoginPage extends StatefulWidget {
 
@@ -19,83 +19,26 @@ class MyLoginPageState extends State<MyLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final button = Padding(
-      padding: _padding,
-      child: new Container(
-        //margin: new EdgeInsets.symmetric(horizontal: 20.0),
-        child: new RaisedButton(
-          onPressed: () {
-            submit(_userController.text, _passwordController.text, _formKey,
-                context, _scaffoldKey);
-          },
-          child: new Text('Login'),
-          elevation: 2.0,
-          shape: BeveledRectangleBorder(
-              borderRadius: new BorderRadius.circular(5.0)),
-        ),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: cAppWhite,
+        body: new Form(
+            key: _formKey,
+            child: new Padding(
+              padding: _padding,
+              child: new ListView(
+                children: <Widget>[
+                  myLoginBox(context,_userController,_passwordController,_formKey,_scaffoldKey,_padding),
+                 // button,
+                  new Padding(padding: new EdgeInsets.all(90.5)),
+                  new Text('Powered by Aluno', textAlign: TextAlign.center),
+                ],
+              ),
+            )),
       ),
-    );
-
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: cAppWhite,
-      body: new Form(
-          key: _formKey,
-          child: new Padding(
-            padding: _padding,
-            child: new ListView(
-              children: <Widget>[
-                myLoginBox(button,_userController,_passwordController),
-               // button,
-                new Padding(padding: new EdgeInsets.all(90.5)),
-                new Text('Powered by Aluno', textAlign: TextAlign.center),
-              ],
-            ),
-          )),
     );
   }
 }
 
-Widget myLoginBox(button,_userController,_passwordController ){
-
-  return new Center(
-    // heightFactor: 1.3,
-    /*child: new DecoratedBox(
-      decoration: new BoxDecoration(
-          border: new Border.all(style: BorderStyle.solid, color: cAppBlackish),
-          color: cAppYellowishAccent,
-          borderRadius: new BorderRadius.circular(10.0)),*/
-      child: Container(
-        //color: cAppYellowishAccent,
-        padding: _padding,
-        child: Column(
-          children: <Widget>[
-            new Image.asset("assets/images/icon.png",
-                width: 150.0, height: 150.0),
-            new TextFormField(
-              decoration: new InputDecoration(
-                labelText: "Number of Student",
-                hintText: "Your student number",
-              ),
-              controller: _userController,
-              validator: userValidation,
-            ),
-            new Padding(padding: new EdgeInsets.all(1.5)),
-            new TextFormField(
-                obscureText: true,
-                decoration: new InputDecoration(
-                  labelText: "Password",
-                  hintText: "Mobile Key",
-                ),
-                controller: _passwordController,
-                keyboardType: TextInputType.number,
-                validator: passwordValidation),
-            button,
-            new Padding(padding: new EdgeInsets.all(1.5)),
-
-          ],
-        ),
-    //  ),
-    ),
-  );
-}
