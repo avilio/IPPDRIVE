@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:ippdrive/pages/layouts/components/homePageComponents.dart';
-import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/user.dart';
 
 class ListFolder extends StatefulWidget {
@@ -35,12 +34,12 @@ class ListFolderState extends State<ListFolder> {
             ),
           ),
           body: semestres(list, paeUser.session)
-          //new Divider(height: 10.0, color: cAppBlue,),
           ),
     );
   }
 }
-
+//todo adicionar a estrelinha para por como favorito usar os servicos 40000 do baco
+//todo no back do telefone fazer com que apenas minimize
 
 
 

@@ -61,7 +61,7 @@ myDrawerHeader(String school, String user, [String course]) {
     ),
   );
 }
-
+//todo corrigir o erro
 Widget myExpandTile(List list, String session) {
 
   String title = list[0]['pathParent'].contains('Semestre1')
@@ -95,23 +95,11 @@ Widget myExpandTile(List list, String session) {
 }
 
 
-Future<List> ucFolder(list, session) async {
-  Map response;
-
-  for (var i = 0; i < list.length; i++) {
-    response = await courseUnitsContents(list[i]['id'], session);
-  }
-
-  List mapCont = response['response']['childs'];
-
-  return mapCont;
-}
-
 
 Widget folders(list, session) {
 
-  var answerWidget = new FutureBuilder(
-      future: ucFolder(list, session),
+  return new FutureBuilder(
+      future: courseUnitsContents(list, session),
       builder: (context, response) {
         switch (response.connectionState) {
           case ConnectionState.none:
@@ -127,27 +115,41 @@ Widget folders(list, session) {
         }
       });
 
-  return answerWidget;
+  //return answerWidget;
 }
 
 Widget createList(BuildContext context, AsyncSnapshot response) {
-  List values = response.data;
+
+  Iterator items =response.data['response']['childs'].iterator;
+  List content = new List();
+
+  while(items.moveNext()) {
+    if(items.current!= null)
+    content.add(items.current);
+  }
 
   return new ListView.builder(
-      itemCount: values.length,
+      itemCount: content.length,
       shrinkWrap: true,
       itemBuilder: (context, i){
-        if(values[i]['directory']) {
+        if(content[i]['directory']) {
           return new ExpansionTile(
               title: new ListTile(
                 dense: true,
-                title: new Text(values[i]['title']),
+                title: new Text(content[i]['title']),
+                leading: new GestureDetector(
+                    child: new Icon(Icons.star_border),
+                  onTap: (){
+                      //todo fazer o post para adicionar aos favoritos
+                      //todo fazer o state para mudar o icon
+                  },
+                ),
               )
           );
         }else
           return new ListTile(
             dense: true,
-            title: new Text(values[i]['title']),
+            title: new Text(content[i]['title']),
           );
       }
   );
@@ -208,7 +210,7 @@ List semestreDois(list) {
 
   return sem2;
 }
-
+/*
 List myExpandTileRecursive(List list, String session, int index) {
 //todo arranjar de forma a que o tittle seja a lista content
 
@@ -226,3 +228,17 @@ List myExpandTileRecursive(List list, String session, int index) {
   return content;
 }
 
+
+Future<List> ucFolder(list, session) async {
+  Map response;
+
+  for (var i = 0; i < list.length; i++) {
+    response = await courseUnitsContents(list[i]['id'], session);
+  }
+
+  List mapCont = response['response']['childs'];
+
+  return mapCont;
+}
+
+*/

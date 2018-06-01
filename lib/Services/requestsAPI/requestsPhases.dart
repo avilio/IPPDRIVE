@@ -72,22 +72,28 @@ var host = 'http://$server:8080/baco';
   }
 
   ///Contents inside UCFolders
-  Future<Map> courseUnitsContents(int parentId, String session) async {
+  Future<Map> courseUnitsContents(List list, String session) async {
+    Iterator i = list.iterator;
+    int parentId;
 
-    //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
-    var url ='${host}/user/vfs.do';
-    var body = {
-      "BACOSESS": session,
-      "data": {"command": "read", "parentId": parentId},
-      "serviceJson": "vfscommand"
-    };
+    while(i.moveNext()) {
+      parentId = i.current['id'];
+    }
+      //print(parentId);
+      //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+      var url = '${host}/user/vfs.do';
+      var body = {
+        "BACOSESS": session,
+        "data": {"command": "read", "parentId": parentId},
+        "serviceJson": "vfscommand"
+      };
 
-    String response = await postRequest(url, body);
+      String response = await postRequest(url, body);
 
-    if (jsonDecode(response)['service'] == 'error')
-      return jsonDecode(response)['exception'];
-    else
-      return jsonDecode(response);
-
+      if (jsonDecode(response)['service'] == 'error')
+        return jsonDecode(response)['exception'];
+      else
+        return jsonDecode(response);
+  //  }
   }
 
