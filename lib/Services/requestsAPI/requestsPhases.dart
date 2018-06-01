@@ -97,3 +97,58 @@ var host = 'http://$server:8080/baco';
   //  }
   }
 
+  Future<Map> addFavorites(int id, String session) async {
+    //print(parentId);
+    //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+    var url = '${host}/user/vfs.do';
+    var body = {
+      "BACOSESS": session,
+      "data": {"id": id},
+      "serviceJson": "vfsAddFavorite"
+    };
+
+    String response = await postRequest(url, body);
+
+    if (jsonDecode(response)['service'] == 'error')
+      return jsonDecode(response)['exception'];
+    else
+      return jsonDecode(response);
+  }
+
+Future<Map> remFavorites(int id, String session) async {
+
+  //print(parentId);
+  //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+  var url = '${host}/user/vfs.do';
+  var body = {
+    "BACOSESS": session,
+    "data": {"id": id},
+    "serviceJson": "vfsRemoveFavorite"
+  };
+
+  String response = await postRequest(url, body);
+
+  if (jsonDecode(response)['service'] == 'error')
+    return jsonDecode(response)['exception'];
+  else
+    return jsonDecode(response);
+}
+
+Future<Map> readFavorites(String session) async {
+
+  //print(parentId);
+  //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+  var url = '${host}/user/vfs.do';
+  var body = {
+    "BACOSESS": session,
+    "data": {},
+    "serviceJson": "vfsReadFavorites"
+  };
+
+  String response = await postRequest(url, body);
+
+  if (jsonDecode(response)['service'] == 'error')
+    return jsonDecode(response)['exception'];
+  else
+    return jsonDecode(response);
+}

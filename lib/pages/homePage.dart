@@ -6,7 +6,7 @@ import 'package:ippdrive/user.dart';
 class ListFolder extends StatefulWidget {
   final Map json;
   final PaeUser paeUser;
-  ListFolder([this.json, this.paeUser]);
+  ListFolder([this.json, this.paeUser,Key key]) : super(key: key);
 
   @override
   ListFolderState createState() => new ListFolderState(json, paeUser);
@@ -20,7 +20,6 @@ class ListFolderState extends State<ListFolder> {
   @override
   Widget build(BuildContext context) {
     List list = json['response']['childs'];
-
 
     return WillPopScope(
       onWillPop: () async => false,

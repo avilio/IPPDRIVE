@@ -27,8 +27,7 @@ Future submit(user, pass, form, context, key) async {
       PaeUser paeUser = new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
       courseUnitFoldersJson = await wsCoursesUnitsContents(paeUser.session);
       if (!courseUnitFoldersJson.containsValue('ok'))
-        requestResponseValidation(
-            courseUnitFoldersJson['exception'], context, key);
+        requestResponseValidation(courseUnitFoldersJson['exception'], context, key);
       else
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ListFolder(courseUnitFoldersJson,
