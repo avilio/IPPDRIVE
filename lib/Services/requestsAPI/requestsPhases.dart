@@ -154,15 +154,17 @@ Future<Map> readFavorites(String session) async {
     return jsonDecode(response);
 }
 
-Future<Map> getFiles(String bacosess, String id) async {
+Future<String> getFiles(String bacosess, String id) async {
 
   //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
   var url = '$host/repositoryStream/$id?BACOSESS=$bacosess';
-
+  print(url);
   String response = await getRequest(url);
-
-  if (jsonDecode(response)['service'] == 'error')
+  print(response);
+  //print(jsonDecode(response));
+/*  if (jsonDecode(response)['service'] == 'error')
     return jsonDecode(response)['exception'];
   else
-    return jsonDecode(response);
+    return jsonDecode(response);*/
+  return response;
 }

@@ -95,10 +95,11 @@ class UcContentState extends State<UcContent> {
                     );
                   } else
                     return new ListTile(
-                      /*onTap: () async {
-                          Map files = await getFiles(session,content[i]['id'].toString());
-                          print(files);
-                        },*/
+                      onTap: () async {
+                       // print(files[i]['repositoryId']);
+                          await getFiles(session,files[i]['repositoryId'].toString());
+                          //print(resp);
+                        },
                       // dense: true,
                       //todo ficha curricular e sumarios arrasa
                       title: new Text(files[i]['title']),
@@ -113,5 +114,6 @@ class UcContentState extends State<UcContent> {
         ),
       ]);
     }
+    return new Container();
   }
 }
