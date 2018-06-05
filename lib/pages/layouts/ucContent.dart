@@ -2,6 +2,7 @@ import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
 import 'package:ippdrive/pages/layouts/components/drawer.dart';
+import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/user.dart';
 
 class UcContent extends StatefulWidget {
@@ -43,7 +44,7 @@ class UcContentState extends State<UcContent> {
             style: new TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: bList);
+        body:  bList);
   }
 
   Widget createList(Map response, session) {
@@ -56,17 +57,20 @@ class UcContentState extends State<UcContent> {
     }
     Iterator i = files.iterator;
     while (i.moveNext()) {
-      return new SingleChildScrollView(
-        child: new Column(children: <Widget>[
-          new GestureDetector(
-            onTap: ()=> Navigator.of(context).pop(),
-            child: new Text(
-              i.current['pathParent'].toString().substring(76),
-
-            ),
+      return new Column(
+          children: <Widget>[
+        new GestureDetector(
+          onTap: ()=> Navigator.of(context).pop(),
+          child: new Text(
+            //todo arranjar maneira de mostrar o path bem
+            i.current['pathParent'].toString().substring(76),
+            style:  new TextStyle(fontWeight: FontWeight.bold,
+                color: cAppBlue),
           ),
-          new Divider(),
-          new ListView.builder(
+        ),
+        new Divider(),
+        new Expanded(
+          child: new ListView.builder(
               itemCount: files.length,
               shrinkWrap: true,
               itemBuilder: (context, i) {
@@ -93,8 +97,8 @@ class UcContentState extends State<UcContent> {
                     leading: new Icon(Icons.description),
                   );
               }),
-        ]),
-      );
+        ),
+      ]);
     }
   }
 }

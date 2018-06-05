@@ -31,16 +31,6 @@ Widget myExpandTile(List list, PaeUser paeUser, BuildContext context, String sch
                       builder: (context) => new UcContent(val, paeUser, school, course))),
                     title: new Text(val['title'].toString().split('-')[0],
                         textScaleFactor: 0.95),
-               /*   children: <Widget>[
-                    //folders(list, session),
-                    new AsyncLoader(
-                      initState: () async => await courseUnitsContents(list, session),
-                      renderLoad: () => new CircularProgressIndicator(),
-                      renderError: ([error]) => new Text('ERROR LOANDING DATA') ,
-                      renderSuccess: ({data}) => createList(data, session),
-                    )
-                    // myExpandTileRecursive(list, session, index)
-                  ],*/
                 ),
               ),
             ))
@@ -96,7 +86,7 @@ Widget semestres(list, PaeUser paeUser, BuildContext context, String school, Str
       new Container(
           decoration: new BoxDecoration(
             shape: BoxShape.rectangle,
-            // borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+           // borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
             border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
             //color: cAppBlue
           ),
@@ -130,35 +120,4 @@ List semestreDois(list) {
 
   return sem2;
 }
-/*
-List myExpandTileRecursive(List list, String session, int index) {
-//todo arranjar de forma a que o tittle seja a lista content
 
-  List content = new List();
-
-  new FutureBuilder(
-      future: ucFolder(list, session),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return new Text('Loading...');
-        for (var o in snapshot.data) {
-          content.add(o);
-        }
-      });
-
-  return content;
-}
-
-
-Future<List> ucFolder(list, session) async {
-  Map response;
-
-  for (var i = 0; i < list.length; i++) {
-    response = await courseUnitsContents(list[i]['id'], session);
-  }
-
-  List mapCont = response['response']['childs'];
-
-  return mapCont;
-}
-
-*/
