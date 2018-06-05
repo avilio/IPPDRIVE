@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ippdrive/pages/layouts/components/drawer.dart';
 
 import 'package:ippdrive/pages/layouts/components/homePageComponents.dart';
 import 'package:ippdrive/user.dart';
@@ -20,11 +21,13 @@ class ListFolderState extends State<ListFolder> {
   @override
   Widget build(BuildContext context) {
     List list = json['response']['childs'];
+    String school = list[0]['path'].split('/')[3];
+    String course = list[0]['path'].split('/')[5];
 
     return WillPopScope(
       onWillPop: () async => false,
       child: new Scaffold(
-        drawer: myDrawer(context, list, paeUser.username),
+        drawer: new MyDrawer(school,course , paeUser.username),
           appBar: new AppBar(
             title: new Text(
               'Unidades Curricuares',
@@ -32,7 +35,7 @@ class ListFolderState extends State<ListFolder> {
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          body: semestres(list, paeUser.session)
+          body: semestres(list, paeUser, context, school, course)
           ),
     );
   }

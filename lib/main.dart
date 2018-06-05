@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ippdrive/Pages/Login/myLoginPage.dart';
 import 'package:ippdrive/Pages/Themes/mainTheme.dart';
 import 'package:ippdrive/pages/homePage.dart';
+import 'package:ippdrive/pages/layouts/ucContent.dart';
 
 /*void main() => runApp(new IppDriveApp());
 
@@ -36,7 +37,8 @@ void main() => runApp(new MaterialApp(
     },*/
     routes: <String, WidgetBuilder>{
       "/login" : (_) => new MyLoginPage(),
-      "/listView": (_) => new ListFolder(),
+    //  "/listView": (_) => new ListFolder(),
+      //"/content": (_) => new UcContent(),
     }
 
 ));

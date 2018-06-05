@@ -11,6 +11,7 @@ dependencies:
   #http package
   http: "^0.11.3+16"
   json_annotation: ^0.2.4
+  async_loader: "^0.1.1"
 
 
 

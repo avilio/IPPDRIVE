@@ -38,7 +38,7 @@ var host = 'http://$server:8080/baco';
   }
 
   ///UnitsList Request to API
-  Future<String> wsCoursesUnitsList(String bacosess) async {
+  Future<Map> wsCoursesUnitsList(String bacosess) async {
 
     //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
     var url = '${host}/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
@@ -72,33 +72,34 @@ var host = 'http://$server:8080/baco';
   }
 
   ///Contents inside UCFolders
-  Future<Map> courseUnitsContents(List list, String session) async {
-    Iterator i = list.iterator;
+  Future<Map> courseUnitsContents(Map list, String session) async {
+  /*  Iterator i = list.iterator;
     int parentId;
 
     while(i.moveNext()) {
       parentId = i.current['id'];
-    }
+    }*/
       //print(parentId);
       //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
       var url = '${host}/user/vfs.do';
       var body = {
         "BACOSESS": session,
-        "data": {"command": "read", "parentId": parentId},
+        "data": {"command": "read", "parentId": list['id']},
         "serviceJson": "vfscommand"
       };
 
       String response = await postRequest(url, body);
-
+      print(jsonDecode(response));
       if (jsonDecode(response)['service'] == 'error')
         return jsonDecode(response)['exception'];
       else
         return jsonDecode(response);
+
   //  }
   }
 
   Future<Map> addFavorites(int id, String session) async {
-    //print(parentId);
+   // print(id);
     //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
     var url = '${host}/user/vfs.do';
     var body = {
@@ -146,6 +147,19 @@ Future<Map> readFavorites(String session) async {
   };
 
   String response = await postRequest(url, body);
+
+  if (jsonDecode(response)['service'] == 'error')
+    return jsonDecode(response)['exception'];
+  else
+    return jsonDecode(response);
+}
+
+Future<Map> getFiles(String bacosess, String id) async {
+
+  //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
+  var url = '$host/repositoryStream/$id?BACOSESS=$bacosess';
+
+  String response = await getRequest(url);
 
   if (jsonDecode(response)['service'] == 'error')
     return jsonDecode(response)['exception'];

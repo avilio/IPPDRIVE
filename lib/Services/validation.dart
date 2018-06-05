@@ -16,7 +16,7 @@ Future submit(user, pass, form, context, key) async {
   Map courseUnitFoldersJson = new Map();
 
   if (formKey.validate()) {
-    bacoSessAuth = await wsAuth();
+      bacoSessAuth = await wsAuth();
     if(!bacoSessAuth.containsValue('ok'))
       requestResponseValidation(bacoSessAuth['exception'], context, key);
     else
@@ -33,6 +33,30 @@ Future submit(user, pass, form, context, key) async {
             builder: (context) => ListFolder(courseUnitFoldersJson,
                 paeUser)));
     }
+    /* forma de fazer sem retornar Future
+
+    wsAuth().then((bacoSessAuth){
+      if(!bacoSessAuth.containsValue('ok'))
+        requestResponseValidation(bacoSessAuth['exception'], context, key);
+      else
+        wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']).then((bacoSessRLogin){;
+        if (bacoSessRLogin['service'] == 'error')
+          requestResponseValidation(bacoSessRLogin['exception'], context, key);
+        else {
+          PaeUser paeUser = new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
+          wsCoursesUnitsContents(paeUser.session).then((courseUnitFoldersJson) {
+            if (!courseUnitFoldersJson.containsValue('ok'))
+              requestResponseValidation(
+                  courseUnitFoldersJson['exception'], context, key);
+            else
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      ListFolder(courseUnitFoldersJson,
+                          paeUser)));
+          });
+        }
+        });
+    });*/
   }
 }
 

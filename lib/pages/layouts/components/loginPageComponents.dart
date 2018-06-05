@@ -35,7 +35,7 @@ Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffold
               controller: _passwordController,
               keyboardType: TextInputType.number,
               validator: passwordValidation),
-          button(_userController,_passwordController, _formKey, context, _scaffoldKey, _padding),
+          submitButton(_userController,_passwordController, _formKey, context, _scaffoldKey, _padding),
           new Padding(padding: new EdgeInsets.all(1.5)),
 
         ],
@@ -45,7 +45,7 @@ Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffold
   );
 }
 
-Widget button (_userController,_passwordController, _formKey, context, _scaffoldKey, _padding) {
+Widget submitButton (_userController,_passwordController, _formKey, context, _scaffoldKey, _padding) {
 
   return new Padding(
     padding: _padding,
