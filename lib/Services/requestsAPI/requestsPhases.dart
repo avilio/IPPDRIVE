@@ -1,22 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:ippdrive/Services/requestsAPI/apiRESTRequests.dart';
 
 //var host = 'https://pae.ipportalegre.pt/testes2';
-//10.0.2.2 por causa do emulador do android
-var host = 'http://10.0.2.2:8080/baco';
+final String server = defaultTargetPlatform == TargetPlatform.android ? "10.0.2.2" : "localhost";
+
+var host = 'http://$server:8080/baco';
 
   ///First Request to API
   Future<Map> wsAuth() async {
     //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/app/ws-authenticate';
-    var url ='${host}/wsjson/api/app/ws-authenticate';
+    var url ='$host/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
 
     String response = await postRequest(url, body);
-    Map jsonReply = jsonDecode(response);
 
-    return jsonReply;
+    return jsonDecode(response);
   }
 
   ///Second Request to API
@@ -32,29 +33,22 @@ var host = 'http://10.0.2.2:8080/baco';
     };
 
     String response = await postRequest(url, body);
-    Map jsonReply = jsonDecode(response);
-    //print(s._session);
-    return jsonReply;
+
+    return jsonDecode(response);
   }
 
   ///UnitsList Request to API
-  Future<String> wsCoursesUnitsList(String bacosess) async {
+  Future<Map> wsCoursesUnitsList(String bacosess) async {
 
     //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
     var url = '${host}/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
 
-    String courseUnitListJson;
     String response = await getRequest(url);
-    Map jsonReply = jsonDecode(response);
 
-    if (jsonReply['service'] == 'error')
-      return jsonReply['exception'];
+    if (jsonDecode(response)['service'] == 'error')
+      return jsonDecode(response)['exception'];
     else
-      courseUnitListJson = jsonReply.toString();
-
-    //jsonReply.forEach((a,b) => print('$a : $b'));
-
-    return courseUnitListJson;
+      return jsonDecode(response);
   }
 
   ///Folders Request to API
@@ -70,32 +64,105 @@ var host = 'http://10.0.2.2:8080/baco';
     };
 
     String response = await postRequest(url, body);
-    Map jsonReply = jsonDecode(response);
 
-    if (jsonReply['service'] == 'error')
-      return jsonReply['exception'];
+    if (jsonDecode(response)['service'] == 'error')
+      return jsonDecode(response)['exception'];
     else
-      return jsonReply;
+      return jsonDecode(response);
   }
 
   ///Contents inside UCFolders
-  Future<Map> courseUnitsContents(int parentId, String session) async {
+  Future<Map> courseUnitsContents(Map list, String session) async {
+  /*  Iterator i = list.iterator;
+    int parentId;
 
+    while(i.moveNext()) {
+      parentId = i.current['id'];
+    }*/
+      //print(parentId);
+      //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+      var url = '${host}/user/vfs.do';
+      var body = {
+        "BACOSESS": session,
+        "data": {"command": "read", "parentId": list['id']},
+        "serviceJson": "vfscommand"
+      };
+
+      String response = await postRequest(url, body);
+      print(jsonDecode(response));
+      if (jsonDecode(response)['service'] == 'error')
+        return jsonDecode(response)['exception'];
+      else
+        return jsonDecode(response);
+
+  //  }
+  }
+
+  Future<Map> addFavorites(int id, String session) async {
+   // print(id);
     //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
-    var url ='${host}/user/vfs.do';
+    var url = '${host}/user/vfs.do';
     var body = {
       "BACOSESS": session,
-      "data": {"command": "read", "parentId": parentId},
-      "serviceJson": "vfscommand"
+      "data": {"id": id},
+      "serviceJson": "vfsAddFavorite"
     };
 
     String response = await postRequest(url, body);
-    Map jsonReply = jsonDecode(response);
 
-    if (jsonReply['service'] == 'error')
-      return jsonReply['exception'];
+    if (jsonDecode(response)['service'] == 'error')
+      return jsonDecode(response)['exception'];
     else
-      return jsonReply;
-
+      return jsonDecode(response);
   }
 
+Future<Map> remFavorites(int id, String session) async {
+
+  //print(parentId);
+  //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+  var url = '${host}/user/vfs.do';
+  var body = {
+    "BACOSESS": session,
+    "data": {"id": id},
+    "serviceJson": "vfsRemoveFavorite"
+  };
+
+  String response = await postRequest(url, body);
+
+  if (jsonDecode(response)['service'] == 'error')
+    return jsonDecode(response)['exception'];
+  else
+    return jsonDecode(response);
+}
+
+Future<Map> readFavorites(String session) async {
+
+  //print(parentId);
+  //var url = 'https://pae.ipportalegre.pt/testes2/user/vfs.do';
+  var url = '${host}/user/vfs.do';
+  var body = {
+    "BACOSESS": session,
+    "data": {},
+    "serviceJson": "vfsReadFavorites"
+  };
+
+  String response = await postRequest(url, body);
+
+  if (jsonDecode(response)['service'] == 'error')
+    return jsonDecode(response)['exception'];
+  else
+    return jsonDecode(response);
+}
+
+Future<Map> getFiles(String bacosess, String id) async {
+
+  //var url = 'https://pae.ipportalegre.pt/testes2/wsjson/api/user/ws-courses-units-my-list?BACOSESS=${bacosess}';
+  var url = '$host/repositoryStream/$id?BACOSESS=$bacosess';
+
+  String response = await getRequest(url);
+
+  if (jsonDecode(response)['service'] == 'error')
+    return jsonDecode(response)['exception'];
+  else
+    return jsonDecode(response);
+}

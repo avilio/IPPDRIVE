@@ -12,7 +12,6 @@ Future<String> postRequest (String url, Map jsonMap) async {
   request.headers.set('content-type', 'application/json');
   request.add(utf8.encode(json.encode(jsonMap)));
   HttpClientResponse response = await request.close();
-  // todo - you should check the response.statusCode
   if ( response.statusCode == HttpStatus.OK) {
     reply = await response.transform(utf8.decoder).join();
   }else {
@@ -46,7 +45,6 @@ Future<String> getRequest (String url) async {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
   HttpClientResponse response = await request.close();
-  // todo - you should check the response.statusCode
   if ( response.statusCode == 200) {
     reply = await response.transform(utf8.decoder).join();
   }else {
