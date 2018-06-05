@@ -32,7 +32,14 @@ class UcContentState extends State<UcContent> {
         renderLoad: () => new CircularProgressIndicator(),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {
+          List a =data['response']['childs'];
+          print(data['response']['childs']);
+          if(a.isNotEmpty)
             return createList(data, paeUser.session);
+          else
+            return new ListTile(
+              title: new Text('Data is Empty'),
+            ); //todo incluir na funçao de construçao da path
         });
 
     return new Scaffold(
@@ -62,7 +69,7 @@ class UcContentState extends State<UcContent> {
         new GestureDetector(
           onTap: ()=> Navigator.of(context).pop(),
           child: new Text(
-            //todo arranjar maneira de mostrar o path bem
+            //todo arranjar maneira de mostrar o path bem, funçao para tratar disto
             i.current['pathParent'].toString().substring(76),
             style:  new TextStyle(fontWeight: FontWeight.bold,
                 color: cAppBlue),
@@ -74,27 +81,33 @@ class UcContentState extends State<UcContent> {
               itemCount: files.length,
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                if (files[i]['directory']) {
+                if (files[i]['title'] != null) {
+                  if (files[i]['directory']) {
+                    return new ListTile(
+                      dense: true,
+                      title: new Text(files[i]['title']),
+                      leading: new Icon(Icons.folder_open),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                new UcContent(files[i] ,paeUser, school, course)));
+                      },
+                    );
+                  } else
+                    return new ListTile(
+                      /*onTap: () async {
+                          Map files = await getFiles(session,content[i]['id'].toString());
+                          print(files);
+                        },*/
+                      // dense: true,
+                      //todo ficha curricular e sumarios arrasa
+                      title: new Text(files[i]['title']),
+                      leading: new Icon(Icons.description),
+                    );
+                }
+                else
                   return new ListTile(
-                    dense: true,
-                    title: new Text(files[i]['title']),
-                    leading: new Icon(Icons.folder_open),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              new UcContent(files[i] ,paeUser, school, course)));
-                    },
-                  );
-                } else
-                  return new ListTile(
-                    /*onTap: () async {
-                        Map files = await getFiles(session,content[i]['id'].toString());
-                        print(files);
-                      },*/
-                    // dense: true,
-                    //todo ficha curricular e sumarios arrasa
-                    title: new Text(files[i]['title']),
-                    leading: new Icon(Icons.description),
+                    title:  new Text('No title found' ),
                   );
               }),
         ),

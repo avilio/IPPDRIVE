@@ -70,8 +70,6 @@ Widget folders(list, session) {
   return asyncLoader;
 }
 
-
-
 Widget semestres(list, PaeUser paeUser, BuildContext context, String school, String course) {
   List sem1 = new List();
   List sem2 = new List();
