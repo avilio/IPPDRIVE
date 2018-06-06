@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
+import 'package:ippdrive/security/verifications/display.dart';
+
 
 
 class MyDrawer extends StatelessWidget{
@@ -16,6 +19,8 @@ class MyDrawer extends StatelessWidget{
 
  Widget myDrawerHeader(String school, String user, [String course]) {
    //todo arranjar forma de fazer display so do nome do curso
+
+
 
    var imgSchool;
    switch (school) {
@@ -42,7 +47,7 @@ class MyDrawer extends StatelessWidget{
        style: new TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
      ),
      accountEmail: new Text(
-       course,
+       stringSplitter(course,'.'),
        style: new TextStyle(fontWeight: FontWeight.bold),
      ),
      currentAccountPicture: new CircleAvatar(
@@ -79,7 +84,8 @@ class MyDrawer extends StatelessWidget{
               textScaleFactor: 1.5,
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
-            onTap: () => Navigator.of(context).pushReplacementNamed("/login"),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => new LoginPage())),
             trailing: new Icon(Icons.exit_to_app),
           )
         ],

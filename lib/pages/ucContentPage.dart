@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
 
+import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 import 'package:ippdrive/pages/layouts/components/drawer.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
@@ -40,9 +41,7 @@ class UcContentState extends State<UcContent> {
           if (a.isNotEmpty)
             return createList(data, paeUser.session);
           else
-            return new ListTile(
-              title: new Text('Data is Empty'),
-            ); //todo incluir na funçao de construçao da path
+            return buildDialog('Data is Empty', context);
         });
 
     return new Scaffold(
@@ -67,13 +66,23 @@ class UcContentState extends State<UcContent> {
 
     Iterator i = files.iterator;
 
+    String pathBuilder(String parent){
+
+      List fields = parent.split('/');
+      String path = '';
+      for (var j = 0; j < fields.length; j++) {
+        if(j>6)
+          path+=stringSplitter(fields[j], '.')+' / ';
+      }
+      return path;
+    }
+
     while (i.moveNext()) {
       return new Column(children: <Widget>[
         new GestureDetector(
           onTap: () => Navigator.of(context).pop(),
           child: new Text(
-            //todo arranjar maneira de mostrar o path bem, funçao para tratar disto
-            i.current['pathParent'].toString().substring(76),
+            pathBuilder(i.current['pathParent']),
             style: new TextStyle(fontWeight: FontWeight.bold, color: cAppBlue),
           ),
         ),

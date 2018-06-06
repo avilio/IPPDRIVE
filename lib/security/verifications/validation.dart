@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ippdrive/pages/themes/colorsThemes.dart';
+import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 import 'package:ippdrive/pages/homePage.dart';
 import 'package:ippdrive/user.dart';
@@ -95,31 +95,4 @@ void requestResponseValidation(String message, BuildContext context, key) {
           textAlign: TextAlign.center,),
         backgroundColor: Colors.redAccent,));*/
   showDialog(context: context, child: buildDialog(message, context));
-}
-
-/**
- * Dialog Box Builder
- */
-AlertDialog buildDialog(message, context) {
-  var dialog = AlertDialog(
-    title: Text(
-      'ERROR',
-      style: TextStyle(fontWeight: FontWeight.bold),
-    ),
-    content: Text(
-      message, textAlign: TextAlign.justify,
-      //    style: TextStyle(color: Colors.redAccent)
-    ),
-    actions: <Widget>[
-      FlatButton(
-        onPressed: () => Navigator.pop(context),
-        child: Text('OK'),
-        color: cAppYellowish,
-        shape: BeveledRectangleBorder(
-            borderRadius: new BorderRadius.circular(3.0)),
-      )
-    ],
-  );
-
-  return dialog;
 }

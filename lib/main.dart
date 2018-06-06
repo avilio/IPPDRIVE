@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/Pages/Themes/mainTheme.dart';
-import 'package:ippdrive/pages/homePage.dart';
-import 'package:ippdrive/pages/ucContentPage.dart';
 
 /*void main() => runApp(new IppDriveApp());
 
@@ -35,11 +33,11 @@ void main() => runApp(new MaterialApp(
         case "/listView": (_) => new ListFolder(null,null);
       }
     },*/
-    routes: <String, WidgetBuilder>{
-      "/login" : (_) => new LoginPage(),
+   /* routes: <String, WidgetBuilder>{
+    //  "/login" : (_) => new LoginPage(),
     //  "/listView": (_) => new ListFolder(),
       //"/content": (_) => new UcContent(),
-    }
+    }*/
 
 ));
 
