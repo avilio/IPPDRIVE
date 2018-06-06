@@ -45,7 +45,7 @@ class UcContentState extends State<UcContent> {
         });
 
     return new Scaffold(
-        drawer: new MyDrawer(school, course, paeUser.username),
+        drawer: new MyDrawer(school, course, paeUser),
         appBar: new AppBar(
           title: new Text(
             content['title'].toString().split('-')[0],

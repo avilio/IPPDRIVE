@@ -1,21 +1,21 @@
+
 import 'package:flutter/material.dart';
+
 import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/security/verifications/display.dart';
 
+import 'package:ippdrive/user.dart';
 
 
 class MyDrawer extends StatelessWidget{
 
-
-// final BuildContext context;
-
- final String user;
+ final PaeUser paeUser;
  final String school;
  final String course;
 
 
- MyDrawer(this.school,this.course, this.user,);
+ MyDrawer(this.school,this.course, this.paeUser,);
 
  Widget myDrawerHeader(String school, String user, [String course]) {
    //todo arranjar forma de fazer display so do nome do curso
@@ -66,8 +66,6 @@ class MyDrawer extends StatelessWidget{
    );
  }
 
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -77,16 +75,17 @@ class MyDrawer extends StatelessWidget{
     return new Drawer(
       child: new ListView(
         children: <Widget>[
-          myDrawerHeader(school, user, course),
+          myDrawerHeader(school, paeUser.username, course),
           new ListTile(
             title: new Text(
               "Logout",
               textScaleFactor: 1.5,
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => new LoginPage())),
+            onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => new LoginPage())),
             trailing: new Icon(Icons.exit_to_app),
+            //todo ele continua a fazer pedidos por tras, perguntar ao prof como fazer o logout propriamente
           )
         ],
       ),

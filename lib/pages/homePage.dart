@@ -27,7 +27,7 @@ class HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () async => false,
       child: new Scaffold(
-        drawer: new MyDrawer(school,course , paeUser.username),
+        drawer: new MyDrawer(school,course , paeUser),
           appBar: new AppBar(
             title: new Text(
               'Unidades Curricuares',

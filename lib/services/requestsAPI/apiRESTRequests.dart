@@ -23,6 +23,7 @@ Future<String> postRequest (String url, Map jsonMap) async {
     reply = 'ERROR ON REQUEST ${response.statusCode}';
   }
   httpClient.close();
+  request.close();
   //print(reply);
 
   return reply;
