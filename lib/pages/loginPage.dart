@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
+
 import 'package:ippdrive/pages/layouts/components/loginPageComponents.dart';
+import 'package:ippdrive/pages/themes/colorsThemes.dart';
 
 
 const _padding = EdgeInsets.all(25.0);
 
-class MyLoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
 
-  State createState() => new MyLoginPageState();
+  State createState() => new LoginPageState();
 }
 
-class MyLoginPageState extends State<MyLoginPage> {
+class LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _userController = new TextEditingController();

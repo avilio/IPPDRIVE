@@ -10,8 +10,8 @@ dependencies:
   cupertino_icons: ^0.1.0
   #http package
   http: "^0.11.3+16"
-  json_annotation: ^0.2.4
   async_loader: "^0.1.1"
+  path_provider: "^0.4.1"
 
 
 
@@ -19,8 +19,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
     #your dev dependencies
-  json_serializable: ^0.5.2
-  build_runner: ^0.8.9
 
 
 # For information on the generic Dart part of this file, see the

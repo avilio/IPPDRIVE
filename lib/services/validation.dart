@@ -1,14 +1,22 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
-import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
+import 'package:ippdrive/pages/themes/colorsThemes.dart';
+import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 import 'package:ippdrive/pages/homePage.dart';
 import 'package:ippdrive/user.dart';
 
+/**
+ * Regular expression to make sure the username contains only letters and/or numbers
+ */
 RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
 
-/// OnPressed Button checker
+/**
+ * On pressed a button given [user],[pass],[form],[context] and [key] it will validate
+ * the fields from the form, await from all the 'login'stages requests to the api and
+ * finally if everything goes well navigates to the new route, else will display any error
+ * occurred.
+ */
 Future submit(user, pass, form, context, key) async {
   final formKey = form.currentState;
   Map bacoSessAuth = new Map();
@@ -16,22 +24,24 @@ Future submit(user, pass, form, context, key) async {
   Map courseUnitFoldersJson = new Map();
 
   if (formKey.validate()) {
-      bacoSessAuth = await wsAuth();
-    if(!bacoSessAuth.containsValue('ok'))
+    bacoSessAuth = await wsAuth();
+    if (!bacoSessAuth.containsValue('ok'))
       requestResponseValidation(bacoSessAuth['exception'], context, key);
     else
-      bacoSessRLogin = await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
+      bacoSessRLogin =
+          await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
     if (bacoSessRLogin['service'] == 'error')
       requestResponseValidation(bacoSessRLogin['exception'], context, key);
     else {
-      PaeUser paeUser = new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
+      PaeUser paeUser =
+          new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
       courseUnitFoldersJson = await wsCoursesUnitsContents(paeUser.session);
       if (!courseUnitFoldersJson.containsValue('ok'))
-        requestResponseValidation(courseUnitFoldersJson['exception'], context, key);
+        requestResponseValidation(
+            courseUnitFoldersJson['exception'], context, key);
       else
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ListFolder(courseUnitFoldersJson,
-                paeUser)));
+            builder: (context) => HomePage(courseUnitFoldersJson, paeUser)));
     }
     /* forma de fazer sem retornar Future
 
@@ -60,17 +70,23 @@ Future submit(user, pass, form, context, key) async {
   }
 }
 
-/// User checker
+/**
+ * User validation
+ */
 String userValidation(String user) {
   return _regUser.hasMatch(user) ? null : 'User is not valid';
 }
 
-/// Password checker
+/**
+ * Password validation
+ */
 String passwordValidation(String password) {
   return password.length < 5 ? 'Password too short' : null;
 }
 
-///Dialog Box in Case of Error
+/**
+ * Error display
+ */
 void requestResponseValidation(String message, BuildContext context, key) {
   /* key.currentState
       .showSnackBar(
@@ -81,7 +97,9 @@ void requestResponseValidation(String message, BuildContext context, key) {
   showDialog(context: context, child: buildDialog(message, context));
 }
 
-///Dialog Box Builder
+/**
+ * Dialog Box Builder
+ */
 AlertDialog buildDialog(message, context) {
   var dialog = AlertDialog(
     title: Text(

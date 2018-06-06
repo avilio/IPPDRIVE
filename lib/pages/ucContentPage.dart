@@ -1,6 +1,8 @@
-import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
+
+import 'package:async_loader/async_loader.dart';
+
+import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 import 'package:ippdrive/pages/layouts/components/drawer.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/user.dart';
@@ -10,11 +12,11 @@ class UcContent extends StatefulWidget {
   final PaeUser paeUser;
   final String school;
   final String course;
-  UcContent([this.content, this.paeUser,this.school,this.course]);
+  UcContent([this.content, this.paeUser, this.school, this.course]);
 
   @override
   State<StatefulWidget> createState() =>
-      new UcContentState(content, paeUser,school,course);
+      new UcContentState(content, paeUser, school, course);
 }
 
 class UcContentState extends State<UcContent> {
@@ -23,18 +25,19 @@ class UcContentState extends State<UcContent> {
   String school;
   String course;
 
-  UcContentState([this.content, this.paeUser,this.school,this.course]);
+  UcContentState([this.content, this.paeUser, this.school, this.course]);
 
   @override
   Widget build(BuildContext context) {
-    var bList = new AsyncLoader(
-        initState: () async => await courseUnitsContents(content, paeUser.session),
+    var bodyList = new AsyncLoader(
+        initState: () async =>
+            await courseUnitsContents(content, paeUser.session),
         renderLoad: () => new CircularProgressIndicator(),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {
-          List a =data['response']['childs'];
+          List a = data['response']['childs'];
           print(data['response']['childs']);
-          if(a.isNotEmpty)
+          if (a.isNotEmpty)
             return createList(data, paeUser.session);
           else
             return new ListTile(
@@ -51,7 +54,7 @@ class UcContentState extends State<UcContent> {
             style: new TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body:  bList);
+        body: bodyList);
   }
 
   Widget createList(Map response, session) {
@@ -59,20 +62,19 @@ class UcContentState extends State<UcContent> {
     List files = new List();
 
     while (items.moveNext()) {
-      // print(items.current);
       if (items.current != null) files.add(items.current);
     }
+
     Iterator i = files.iterator;
+
     while (i.moveNext()) {
-      return new Column(
-          children: <Widget>[
+      return new Column(children: <Widget>[
         new GestureDetector(
-          onTap: ()=> Navigator.of(context).pop(),
+          onTap: () => Navigator.of(context).pop(),
           child: new Text(
             //todo arranjar maneira de mostrar o path bem, funçao para tratar disto
             i.current['pathParent'].toString().substring(76),
-            style:  new TextStyle(fontWeight: FontWeight.bold,
-                color: cAppBlue),
+            style: new TextStyle(fontWeight: FontWeight.bold, color: cAppBlue),
           ),
         ),
         new Divider(),
@@ -89,26 +91,23 @@ class UcContentState extends State<UcContent> {
                       leading: new Icon(Icons.folder_open),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                new UcContent(files[i] ,paeUser, school, course)));
+                            builder: (context) => new UcContent(
+                                files[i], paeUser, school, course)));
                       },
                     );
                   } else
                     return new ListTile(
                       onTap: () async {
-                       // print(files[i]['repositoryId']);
-                          await getFiles(session,files[i]['repositoryId'].toString());
-                          //print(resp);
-                        },
+                        await getFiles(
+                            session, files[i]['repositoryId'].toString());
+                      },
                       // dense: true,
-                      //todo ficha curricular e sumarios arrasa
                       title: new Text(files[i]['title']),
                       leading: new Icon(Icons.description),
                     );
-                }
-                else
+                } else
                   return new ListTile(
-                    title:  new Text('No title found' ),
+                    title: new Text('No title found'),
                   );
               }),
         ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Login/myLoginPage.dart';
+import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/Pages/Themes/mainTheme.dart';
 import 'package:ippdrive/pages/homePage.dart';
-import 'package:ippdrive/pages/layouts/ucContent.dart';
+import 'package:ippdrive/pages/ucContentPage.dart';
 
 /*void main() => runApp(new IppDriveApp());
 
@@ -27,7 +27,7 @@ class IppDriveApp extends StatelessWidget {
 
 void main() => runApp(new MaterialApp(
     title: 'IppDrive',
-    home: new MyLoginPage(),
+    home: new LoginPage(),
     debugShowCheckedModeBanner: false,
     theme: buildAppTheme(),
    /* onGenerateRoute: (settings){
@@ -36,7 +36,7 @@ void main() => runApp(new MaterialApp(
       }
     },*/
     routes: <String, WidgetBuilder>{
-      "/login" : (_) => new MyLoginPage(),
+      "/login" : (_) => new LoginPage(),
     //  "/listView": (_) => new ListFolder(),
       //"/content": (_) => new UcContent(),
     }

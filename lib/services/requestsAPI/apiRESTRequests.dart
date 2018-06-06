@@ -3,6 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
+
+/**
+ * Sends a POST request to a given [url] with the [jsonMap] as a payload
+ * and returns a json as a string [reply]
+ */
 Future<String> postRequest (String url, Map jsonMap) async {
 
   String reply;
@@ -23,14 +28,14 @@ Future<String> postRequest (String url, Map jsonMap) async {
   return reply;
 }
 
-Future<String> getRequest (String url) async {
+Future<dynamic> getRequest (String url) async {
 
-  String reply;
+  var reply;
 
   var response = await http.get(url);
 
   if ( response.statusCode == HttpStatus.OK)
-    reply = response.body;
+    reply = response;
   else
     reply = 'ERROR ON REQUEST ${response.statusCode}';
   /*
@@ -51,7 +56,6 @@ Future<String> getRequest (String url) async {
     reply = 'ERROR ON REQUEST ${response.statusCode}';
   }
   httpClient.close();*/
-
   return reply;
 }
 

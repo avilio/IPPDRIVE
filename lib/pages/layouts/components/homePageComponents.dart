@@ -1,9 +1,7 @@
-import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
-import 'package:ippdrive/Pages/Themes/colorsThemes.dart';
-import 'package:ippdrive/Services/requestsAPI/requestsPhases.dart';
-import 'package:ippdrive/pages/layouts/components/favorites.dart';
-import 'package:ippdrive/pages/layouts/ucContent.dart';
+
+import 'package:ippdrive/pages/ucContentPage.dart';
+import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/user.dart';
 
 
@@ -36,38 +34,6 @@ Widget myExpandTile(List list, PaeUser paeUser, BuildContext context, String sch
             ))
         .toList(),
   );
-}
-
-Widget folders(list, session) {
-
-  var asyncLoader = new AsyncLoader(
-    initState: () async => await courseUnitsContents(list, session),
-    renderLoad: () => new CircularProgressIndicator(),
-    renderError: ([error]) => new Text('ERROR LOANDING DATA') ,
-    renderSuccess: ({data}) => UcContent(data, session),
-    //renderSuccess: ({data}) => createList(data, session),
-
-  );
-
-/*
-  return new FutureBuilder(
-      future: courseUnitsContents(list, session),
-      builder: (context, response) {
-        switch (response.connectionState) {
-          case ConnectionState.none:
-            return new Text('Press button to start');
-          case ConnectionState.waiting:
-            return new Text('Awaiting result...');
-          default:
-            if (response.hasError)
-              return new Text('Error: ${response.error}');
-            else
-              // return createList(context, response);
-              return createList(response.data, session);
-        }
-      });*/
-
-  return asyncLoader;
 }
 
 Widget semestres(list, PaeUser paeUser, BuildContext context, String school, String course) {

@@ -31,6 +31,8 @@ class MyDrawer extends StatelessWidget{
      case 'esae':
        imgSchool = AssetImage("assets/images/esae.png");
        break;
+     default: imgSchool = AssetImage("assets/images/ipp.png");
+       break;
    }
 
    return new UserAccountsDrawerHeader(
