@@ -10,7 +10,7 @@ class Favorite extends StatefulWidget {
   final session;
   final id;
 
-  Favorite(this.id, this.session, {Key key}) : super(key: key);
+  Favorite(this.id, this.session,{Key key}) : super(key: key);
 
   @override
   _FavoriteState createState() => new _FavoriteState();
@@ -19,9 +19,8 @@ class Favorite extends StatefulWidget {
 class _FavoriteState extends State<Favorite> {
   var _favRem = new Icon(Icons.star_border);
   var _favAdd = new Icon(Icons.star, color: Colors.yellow,);
-  List favoritos = new List();
-  bool isFav = false;
 
+  bool isFav = false;
 
   void _handleTap() async {
 
@@ -30,11 +29,13 @@ class _FavoriteState extends State<Favorite> {
 //todo later , on readFavorites esta sempre a devolver todos os conteudos
 
     Map fav = await readFavorites(widget.session);
+   // widget.list = fav['response']['favorites'];
+    //print('FAVORITOS  $widget.list\n');
 
     if(fav.isNotEmpty) {
       if (isFav) {
         var rem = await remFavorites(widget.id, widget.session);
-        favoritos.remove(rem);
+        //favoritos.remove(rem);
         print(rem);
         setState(() {
           isFav = false;
@@ -42,14 +43,23 @@ class _FavoriteState extends State<Favorite> {
         await readFavorites(widget.session);
       } else {
         var add = await addFavorites(widget.id, widget.session);
-        favoritos.add(add);
-        print(add);
+        //favoritos.add(add);
+        /*add.forEach((k,v){
+          if(v is Map){
+            Map f = v;
+
+            f.forEach((a,b){
+              print('$a  $b');
+            });
+          }
+
+        });*/
         setState(() {
           isFav = true;
         });
         await readFavorites(widget.session);
         if (add['response']['fail'] == 'alreadyExist') {
-          remFavorites(widget.id, widget.session);
+          await remFavorites(widget.id, widget.session);
           print('adicionei e removi');
         }
       }

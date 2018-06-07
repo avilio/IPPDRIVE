@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:ippdrive/pages/homePage.dart';
 
 import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
+import 'package:ippdrive/pages/ucContentPage.dart';
 import 'package:ippdrive/security/verifications/display.dart';
+import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 
 import 'package:ippdrive/user.dart';
 
@@ -13,9 +16,10 @@ class MyDrawer extends StatelessWidget{
  final PaeUser paeUser;
  final String school;
  final String course;
+ final List fav;
 
 
- MyDrawer(this.school,this.course, this.paeUser,);
+ MyDrawer(this.school,this.course, this.paeUser, [this.fav]);
 
  Widget myDrawerHeader(String school, String user, [String course]) {
    //todo arranjar forma de fazer display so do nome do curso
@@ -68,22 +72,59 @@ class MyDrawer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-
-   /* String school = list[0]['path'].split('/')[3];
-    String course = list[0]['path'].split('/')[5];*/
-
+//todo se o aluno nao estiver no inscrito no ano sleccionado
+   bool isSelect = false;
     return new Drawer(
       child: new ListView(
         children: <Widget>[
           myDrawerHeader(school, paeUser.username, course),
+          new ExpansionTile(title: new Text(' Ano Lectivo',
+            style: new TextStyle(fontWeight: FontWeight.bold),
+          ),
+           children: <Widget>[
+             new ListTile(title: new Text('2017-18',
+               style: new TextStyle(fontWeight: FontWeight.bold),),
+               onTap: () async {
+                 Map units = await wsCoursesUnitsContents(paeUser.session);
+                 isSelect = true;
+                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                     builder: (context) => new HomePage(units,paeUser)), (Route<dynamic> route) => false);
+               },
+               selected: isSelect,
+             ),
+             new ListTile(title: new Text('2016-17',
+               style: new TextStyle(fontWeight: FontWeight.bold),),
+               onTap: () async {
+                 Map units = await wsCoursesUnitsContents(paeUser.session,201617);
+                 isSelect = true;
+                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                     builder: (context) => new HomePage(units,paeUser)), (Route<dynamic> route) => false);
+               },
+               selected: isSelect,
+             ),
+             new ListTile(title: new Text('2015-16',
+               style: new TextStyle(fontWeight: FontWeight.bold),),
+               onTap: () async {
+                 Map units = await wsCoursesUnitsContents(paeUser.session,201516);
+                 isSelect = true;
+                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                     builder: (context) => new HomePage(units,paeUser)), (Route<dynamic> route) => false);
+               },
+               selected: isSelect,
+             ),
+           ], 
+          ),
+          new ExpansionTile(title: new Text('Favorites',
+            style: new TextStyle(fontWeight: FontWeight.bold),),
+          ),
           new ListTile(
             title: new Text(
               "Logout",
               textScaleFactor: 1.5,
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
-            onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => new LoginPage())),
+            onTap: ()=> Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => new LoginPage()), (Route<dynamic> route) => false),
             trailing: new Icon(Icons.exit_to_app),
             //todo ele continua a fazer pedidos por tras, perguntar ao prof como fazer o logout propriamente
           )
@@ -92,6 +133,5 @@ class MyDrawer extends StatelessWidget{
     );
 
   }
-
 
 }

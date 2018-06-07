@@ -14,13 +14,13 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
+//todo por a lista para ler os favoritos
   @override
   Widget build(BuildContext context) {
     List list = widget.json['response']['childs'];
     String school = list[0]['path'].split('/')[3];
     String course = list[0]['path'].split('/')[5];
-
+//todo por o ano no titulo ou por baixo do titulo
     return WillPopScope(
       onWillPop: () async => false,
       child: new Scaffold(

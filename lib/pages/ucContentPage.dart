@@ -16,12 +16,12 @@ class UcContent extends StatefulWidget {
   UcContent([this.content, this.paeUser, this.school, this.course]);
 
   @override
-  State<StatefulWidget> createState() =>
-      new UcContentState();
+  State<StatefulWidget> createState() => new UcContentState();
 }
 
 class UcContentState extends State<UcContent> {
 
+  List favorites = new List();
 
   @override
   Widget build(BuildContext context) {
