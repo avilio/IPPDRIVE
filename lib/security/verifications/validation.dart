@@ -87,7 +87,7 @@ String passwordValidation(String password) {
 /**
  * Error display
  */
-void requestResponseValidation(String message, BuildContext context, key) {
+void requestResponseValidation(String message, BuildContext context, [key]) {
   /* key.currentState
       .showSnackBar(
       new SnackBar(

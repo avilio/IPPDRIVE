@@ -6,6 +6,7 @@ import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/pages/ucContentPage.dart';
 import 'package:ippdrive/security/verifications/display.dart';
+import 'package:ippdrive/security/verifications/validation.dart';
 import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 
 import 'package:ippdrive/user.dart';
@@ -72,7 +73,6 @@ class MyDrawer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-//todo se o aluno nao estiver no inscrito no ano sleccionado
    bool isSelect = false;
     return new Drawer(
       child: new ListView(
@@ -86,29 +86,44 @@ class MyDrawer extends StatelessWidget{
                style: new TextStyle(fontWeight: FontWeight.bold),),
                onTap: () async {
                  Map units = await wsCoursesUnitsContents(paeUser.session);
-                 isSelect = true;
-                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                     builder: (context) => new HomePage(units,paeUser)), (Route<dynamic> route) => false);
+                 List l =units['response']['childs'];
+                 if (l.isNotEmpty) {
+                   isSelect = true;
+                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                       builder: (context) => new HomePage(units, paeUser)), (
+                       Route<dynamic> route) => false);
+                 } else
+                   requestResponseValidation('No Data to Display',context);
                },
                selected: isSelect,
              ),
              new ListTile(title: new Text('2016-17',
                style: new TextStyle(fontWeight: FontWeight.bold),),
                onTap: () async {
-                 Map units = await wsCoursesUnitsContents(paeUser.session,201617);
-                 isSelect = true;
-                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                     builder: (context) => new HomePage(units,paeUser)), (Route<dynamic> route) => false);
+                 Map units = await wsCoursesUnitsContents(paeUser.session, 201617);
+                 List l =units['response']['childs'];
+                 if (l.isNotEmpty) {
+                   isSelect = true;
+                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                       builder: (context) => new HomePage(units, paeUser)), (
+                       Route<dynamic> route) => false);
+                 }else
+                   requestResponseValidation('No Data to Display',context);
                },
                selected: isSelect,
              ),
              new ListTile(title: new Text('2015-16',
                style: new TextStyle(fontWeight: FontWeight.bold),),
                onTap: () async {
-                 Map units = await wsCoursesUnitsContents(paeUser.session,201516);
-                 isSelect = true;
-                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                     builder: (context) => new HomePage(units,paeUser)), (Route<dynamic> route) => false);
+                 Map units = await wsCoursesUnitsContents(paeUser.session, 201516);
+                 List l =units['response']['childs'];
+                 if (l.isNotEmpty) {
+                   isSelect = true;
+                   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                       builder: (context) => new HomePage(units, paeUser)), (
+                       Route<dynamic> route) => false);
+                 }else
+                   requestResponseValidation('No Data to Display',context);
                },
                selected: isSelect,
              ),
