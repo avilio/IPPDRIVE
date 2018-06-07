@@ -14,7 +14,6 @@ Widget createList(response, paeUser, school, course,context) {
   List files = new List();
 
 
-
   while (items.moveNext()) {
     if (items.current != null) files.add(items.current);
   }

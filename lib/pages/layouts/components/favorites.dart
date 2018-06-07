@@ -24,10 +24,6 @@ class _FavoriteState extends State<Favorite> {
 
   void _handleTap() async {
 
- //todo adicionar e ler favoritos de seguida
-
-//todo later , on readFavorites esta sempre a devolver todos os conteudos
-
     Map fav = await readFavorites(widget.session);
    // widget.list = fav['response']['favorites'];
     //print('FAVORITOS  $widget.list\n');

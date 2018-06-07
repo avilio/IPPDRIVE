@@ -20,6 +20,8 @@ class HomePageState extends State<HomePage> {
     List list = widget.json['response']['childs'];
     String school = list[0]['path'].split('/')[3];
     String course = list[0]['path'].split('/')[5];
+   // String year = list[0]['path'].split('/')[6].toString().split('.')[0] +' '+list[0]['path'].split('/')[6].toString().split('.')[1];
+   // print(year);
 //todo por o ano no titulo ou por baixo do titulo
     return WillPopScope(
       onWillPop: () async => false,
@@ -27,8 +29,8 @@ class HomePageState extends State<HomePage> {
         drawer: new MyDrawer(school,course , widget.paeUser),
           appBar: new AppBar(
             title: new Text(
-              'Unidades Curricuares',
-              textScaleFactor: 1.5,
+              'Unidades Curricuares ${list[0]['path'].split('/')[6].toString().split('.')[1]}',
+              //textScaleFactor: 1.5,
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
