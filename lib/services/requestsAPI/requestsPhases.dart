@@ -116,6 +116,7 @@ Future<Map> wsCoursesUnitsContents(String bacosess) async {
 
     String response = await postRequest(url, body);
 
+   // print(response);
     if (jsonDecode(response)['service'] == 'error')
       return jsonDecode(response)['exception'];
     else
@@ -139,6 +140,7 @@ Future<Map> remFavorites(int id, String session) async {
 
   String response = await postRequest(url, body);
 
+ // print(response);
   if (jsonDecode(response)['service'] == 'error')
     return jsonDecode(response)['exception'];
   else

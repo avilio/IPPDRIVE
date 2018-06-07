@@ -10,24 +10,21 @@ class HomePage extends StatefulWidget {
   HomePage([this.json, this.paeUser,Key key]) : super(key: key);
 
   @override
-  HomePageState createState() => new HomePageState(json, paeUser);
+  HomePageState createState() => new HomePageState();
 }
 
 class HomePageState extends State<HomePage> {
-  HomePageState(this.json, this.paeUser);
-  Map json;
-  PaeUser paeUser;
 
   @override
   Widget build(BuildContext context) {
-    List list = json['response']['childs'];
+    List list = widget.json['response']['childs'];
     String school = list[0]['path'].split('/')[3];
     String course = list[0]['path'].split('/')[5];
 
     return WillPopScope(
       onWillPop: () async => false,
       child: new Scaffold(
-        drawer: new MyDrawer(school,course , paeUser),
+        drawer: new MyDrawer(school,course , widget.paeUser),
           appBar: new AppBar(
             title: new Text(
               'Unidades Curricuares',
@@ -35,7 +32,7 @@ class HomePageState extends State<HomePage> {
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          body: semestres(list, paeUser, context, school, course)
+          body: semestres(list, widget.paeUser, context, school, course)
           ),
     );
   }
