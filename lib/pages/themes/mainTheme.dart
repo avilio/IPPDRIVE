@@ -12,9 +12,9 @@ ThemeData buildAppTheme(){
     scaffoldBackgroundColor: cAppYellowishAccent,
     textSelectionColor: cAppYellowish,
     errorColor: Colors.redAccent,
-    inputDecorationTheme: InputDecorationTheme(
+/*    inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder()
-    ),
+    ),*/
     buttonTheme: ButtonThemeData(
       textTheme: ButtonTextTheme.normal
     ),

@@ -10,7 +10,9 @@ dependencies:
   cupertino_icons: ^0.1.0
   #http package
   http: "^0.11.3+16"
-  json_annotation: ^0.2.4
+  async_loader: "^0.1.1"
+  path_provider: "^0.4.1"
+  flutter_redux: "^0.5.1"
 
 
 
@@ -18,8 +20,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
     #your dev dependencies
-  json_serializable: ^0.5.2
-  build_runner: ^0.8.9
 
 
 # For information on the generic Dart part of this file, see the
@@ -37,6 +37,11 @@ flutter:
   assets:
    - assets/images/background.jpg
    - assets/images/icon.png
+   - assets/images/ipp.png
+   - assets/images/esae.png
+   - assets/images/estg.png
+   - assets/images/ess.png
+   - assets/images/esecs.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
