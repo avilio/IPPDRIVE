@@ -9,6 +9,11 @@ class API {
   API.internal();
   factory API() => _instance;
 
+
+  /**
+   * Sends a POST request to a given [url] with the [jsonMap] as a payload
+   * and returns a json as a string [reply]
+   */
   Future<dynamic> post(String url, Map jsonMap) async {
     var result;
     HttpClient httpClient = new HttpClient();

@@ -52,10 +52,10 @@ Widget createList(response, paeUser, school, course,context) {
                   );
                 } else
                   return new ListTile(
-                    onTap: () async {
+                    /*onTap: () async {
                       await getFiles(
                           paeUser.session, files[i]['repositoryId'].toString());
-                    },
+                    },*/
                     // dense: true,
                     title: new Text(files[i]['title']),
                     leading: new Icon(Icons.description),

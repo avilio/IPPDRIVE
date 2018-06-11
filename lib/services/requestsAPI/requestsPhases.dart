@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:ippdrive/api.dart';
 import 'package:ippdrive/services/requestsAPI/apiRESTRequests.dart';
 
 /**
@@ -15,6 +16,7 @@ final String server = defaultTargetPlatform == TargetPlatform.android ? "10.0.2.
 var host = 'http://$server:8080/baco';
 //var host = 'https://pae.ipportalegre.pt/testes2';
 
+final api =API();
 
 /**
  * Create a body JSON to send a post request to the api and returns a [Map] obtained as response,
@@ -27,9 +29,7 @@ var host = 'http://$server:8080/baco';
     var url ='$host/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
 
-    String response = await postRequest(url, body);
-
-    return jsonDecode(response);
+    return  await api.post(url, body);
   }
 
 /**
@@ -48,9 +48,7 @@ Future<Map> wsRLogin(String user, String password, String bacoSess) async {
       "BACOSESS": bacoSess
     };
 
-    String response = await postRequest(url, body);
-
-    return jsonDecode(response);
+    return  await api.post(url, body);
   }
 
 /**
@@ -74,12 +72,7 @@ Future<Map> wsCoursesUnitsContents(String bacoSess, [year]) async {
       "serviceJson": "vfsReadMyCourseUnitsContents"
     };
 
-    String response = await postRequest(url, body);
-
-    if (jsonDecode(response)['service'] == 'error')
-      return jsonDecode(response)['exception'];
-    else
-      return jsonDecode(response);
+    return  await api.post(url, body);
   }
 
 /**
@@ -95,12 +88,7 @@ Future<Map> wsCoursesUnitsContents(String bacoSess, [year]) async {
         "serviceJson": "vfscommand"
       };
 
-      String response = await postRequest(url, body);
-      print(jsonDecode(response));
-      if (jsonDecode(response)['service'] == 'error')
-        return jsonDecode(response)['exception'];
-      else
-        return jsonDecode(response);
+      return  await api.post(url, body);
 
   }
 
@@ -117,13 +105,7 @@ Future<Map> wsCoursesUnitsContents(String bacoSess, [year]) async {
       "serviceJson": "vfsAddFavorite"
     };
 
-    String response = await postRequest(url, body);
-
-   // print(response);
-    if (jsonDecode(response)['service'] == 'error')
-      return jsonDecode(response)['exception'];
-    else
-      return jsonDecode(response);
+    return  await api.post(url, body);
   }
 
 /**
@@ -139,13 +121,7 @@ Future<Map> remFavorites(int id, String session) async {
     "serviceJson": "vfsRemoveFavorite"
   };
 
-  String response = await postRequest(url, body);
-
- // print(response);
-  if (jsonDecode(response)['service'] == 'error')
-    return jsonDecode(response)['exception'];
-  else
-    return jsonDecode(response);
+  return  await api.post(url, body);
 }
 
 /**
@@ -161,18 +137,14 @@ Future<Map> readFavorites(String session) async {
     "serviceJson": "vfsReadFavorites"
   };
 
-  String response = await postRequest(url, body);
-
-  if (jsonDecode(response)['service'] == 'error')
-    return jsonDecode(response)['exception'];
-  else
-    return jsonDecode(response);
+  return  await api.post(url, body);
 }
 
 /**
  * Create a [url] with given [id] and [bacosession] to send a get request to the api
  * and returns a Map with the folder added to favorites as [response].
  */
+/*
 Future<dynamic> getFiles(String bacoSess, String id) async {
 //todo devolver bytes ou ver como faço download
 
@@ -188,4 +160,4 @@ Future<dynamic> getFiles(String bacoSess, String id) async {
   else
     return jsonDecode(response);*/
   return response;
-}
+}*/
