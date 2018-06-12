@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class API {
 
   ///creates a singleton
   static final API _instance = new API.internal();
+
   API.internal();
+
   factory API() => _instance;
 
 
@@ -26,7 +29,8 @@ class API {
     if (response.statusCode == HttpStatus.OK) {
       result = jsonDecode(await response.transform(utf8.decoder).join());
     } else
-      result = new Exception('Erro ${response.statusCode}');//to string se nao funcionar
+      result =
+      new Exception('Erro ${response.statusCode}'); //to string se nao funcionar
 
     httpClient.close();
     request.close();
@@ -37,4 +41,8 @@ class API {
 
   //todo get para ficheiro
 
+  Future<dynamic> getRequest(String url) async {
+
+    return await http.get(url);
+  }
 }

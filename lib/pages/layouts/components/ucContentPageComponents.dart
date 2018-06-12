@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:ippdrive/fileStorage.dart';
 import 'package:ippdrive/pages/layouts/components/favorites.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/pages/ucContentPage.dart';
@@ -12,7 +13,8 @@ import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 Widget createList(response, paeUser, school, course,context) {
   Iterator items = response['response']['childs'].iterator;
   List files = new List();
-
+  Requests req = Requests();
+  FileStorage storage = FileStorage();
 
   while (items.moveNext()) {
     if (items.current != null) files.add(items.current);
@@ -52,10 +54,13 @@ Widget createList(response, paeUser, school, course,context) {
                   );
                 } else
                   return new ListTile(
-                    /*onTap: () async {
-                      await getFiles(
+                    onTap: () async {
+                      var file = await req.getFiles(
                           paeUser.session, files[i]['repositoryId'].toString());
-                    },*/
+
+                      storage.writeFile(file);
+                      storage.readFile();
+                    },
                     // dense: true,
                     title: new Text(files[i]['title']),
                     leading: new Icon(Icons.description),

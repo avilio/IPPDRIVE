@@ -137,13 +137,13 @@ class Requests {
  * Create a [url] with given [id] and [bacosession] to send a get request to the api
  * and returns a Map with the folder added to favorites as [response].
  */
-/*
+
 Future<dynamic> getFiles(String bacoSess, String id) async {
 //todo devolver bytes ou ver como faço download
 
   var url = '$host/repositoryStream/$id?BACOSESS=$bacoSess';
   print(url);
-  var response = await getRequest(url);
+  var response = await api.getRequest(url);
   print(response.headers['content-type']);
   print(response.bodyBytes);
   //f.readAsBytesSync();
@@ -152,6 +152,6 @@ Future<dynamic> getFiles(String bacoSess, String id) async {
     return jsonDecode(response)['exception'];
   else
     return jsonDecode(response);*/
-  return response;
-}*/
+  return response.bodyBytes;
+  }
 }
