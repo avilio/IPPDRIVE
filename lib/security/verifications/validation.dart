@@ -17,33 +17,39 @@ RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
  * finally if everything goes well navigates to the new route, else will display any error
  * occurred.
  */
-Future submit(user, pass, form, context, key) async {
-  final formKey = form.currentState;
-  Map bacoSessAuth = new Map();
-  Map bacoSessRLogin = new Map();
-  Map courseUnitFoldersJson = new Map();
+class Validations {
+  Requests request = Requests();
 
-  if (formKey.validate()) {
-    bacoSessAuth = await wsAuth();
-    if (!bacoSessAuth.containsValue('ok'))
-      requestResponseValidation(bacoSessAuth['exception'], context, key);
-    else
-      bacoSessRLogin =
-          await wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']);
-    if (bacoSessRLogin['service'] == 'error')
-      requestResponseValidation(bacoSessRLogin['exception'], context, key);
-    else {
-      PaeUser paeUser =
-          new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
-      courseUnitFoldersJson = await wsCoursesUnitsContents(paeUser.session);
-      if (!courseUnitFoldersJson.containsValue('ok'))
-        requestResponseValidation(
-            courseUnitFoldersJson['exception'], context, key);
+
+  Future submit(user, pass, form, context, key) async {
+    final formKey = form.currentState;
+    Map bacoSessAuth = new Map();
+    Map bacoSessRLogin = new Map();
+    Map courseUnitFoldersJson = new Map();
+
+    if (formKey.validate()) {
+      bacoSessAuth = await request.wsAuth();
+      if (!bacoSessAuth.containsValue('ok'))
+        requestResponseValidation(bacoSessAuth['exception'], context, key);
       else
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => HomePage(courseUnitFoldersJson, paeUser)));
-    }
-    /* forma de fazer sem retornar Future
+        bacoSessRLogin =
+        await request.wsRLogin(
+            user, pass, bacoSessAuth['response']['BACOSESS']);
+      if (bacoSessRLogin['service'] == 'error')
+        requestResponseValidation(bacoSessRLogin['exception'], context, key);
+      else {
+        PaeUser paeUser =
+        new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
+        courseUnitFoldersJson =
+        await request.wsCoursesUnitsContents(paeUser.session);
+        if (!courseUnitFoldersJson.containsValue('ok'))
+          requestResponseValidation(
+              courseUnitFoldersJson['exception'], context, key);
+        else
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => HomePage(courseUnitFoldersJson, paeUser)));
+      }
+      /* forma de fazer sem retornar Future
 
     wsAuth().then((bacoSessAuth){
       if(!bacoSessAuth.containsValue('ok'))
@@ -67,32 +73,33 @@ Future submit(user, pass, form, context, key) async {
         }
         });
     });*/
+    }
   }
-}
 
-/**
- * User validation
- */
-String userValidation(String user) {
-  return _regUser.hasMatch(user) ? null : 'User is not valid';
-}
+  /**
+   * User validation
+   */
+  String userValidation(String user) {
+    return _regUser.hasMatch(user) ? null : 'User is not valid';
+  }
 
-/**
- * Password validation
- */
-String passwordValidation(String password) {
-  return password.length < 5 ? 'Password too short' : null;
-}
+  /**
+   * Password validation
+   */
+  String passwordValidation(String password) {
+    return password.length < 5 ? 'Password too short' : null;
+  }
 
-/**
- * Error display
- */
-void requestResponseValidation(String message, BuildContext context, [key]) {
-  /* key.currentState
+  /**
+   * Error display
+   */
+  void requestResponseValidation(String message, BuildContext context, [key]) {
+    /* key.currentState
       .showSnackBar(
       new SnackBar(
         content: new Text('ERROR: '+message, textScaleFactor: 1.5,
           textAlign: TextAlign.center,),
         backgroundColor: Colors.redAccent,));*/
-  showDialog(context: context, child: buildDialog(message, context));
+    showDialog(context: context, child: buildDialog(message, context));
+  }
 }

@@ -22,13 +22,14 @@ class UcContent extends StatefulWidget {
 class UcContentState extends State<UcContent> {
 
   List favorites = new List();
+  Requests request = Requests();
 
   @override
   Widget build(BuildContext context) {
 
     var bodyList = new AsyncLoader(
         initState: () async =>
-        await courseUnitsContents(widget.content, widget.paeUser.session),
+        await request.courseUnitsContents(widget.content, widget.paeUser.session),
         renderLoad: () => new CircularProgressIndicator(),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {

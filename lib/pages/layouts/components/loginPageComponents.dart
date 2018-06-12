@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:ippdrive/security/verifications/validation.dart';
 
+Validations validations = Validations();
+
 Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffoldKey,_padding ){
 
   return new Center(
@@ -24,7 +26,7 @@ Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffold
               hintText: "Your student number",
             ),
             controller: _userController,
-            validator: userValidation,
+            validator: validations.userValidation,
           ),
           new Padding(padding: new EdgeInsets.all(1.5)),
           new TextFormField(
@@ -35,7 +37,7 @@ Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffold
               ),
               controller: _passwordController,
               keyboardType: TextInputType.number,
-              validator: passwordValidation),
+              validator: validations.passwordValidation),
           submitButton(_userController,_passwordController, _formKey, context, _scaffoldKey, _padding),
           new Padding(padding: new EdgeInsets.all(1.5)),
 
@@ -54,7 +56,7 @@ Widget submitButton (_userController,_passwordController, _formKey, context, _sc
       //margin: new EdgeInsets.symmetric(horizontal: 20.0),
       child: new RaisedButton(
         onPressed: () {
-          submit(_userController.text, _passwordController.text, _formKey,
+          validations.submit(_userController.text, _passwordController.text, _formKey,
               context, _scaffoldKey);
         },
         child: new Text('Login'),

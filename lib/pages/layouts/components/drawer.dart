@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ippdrive/pages/homePage.dart';
+import 'package:ippdrive/pages/layouts/components/loginPageComponents.dart';
 
 import 'package:ippdrive/pages/loginPage.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
@@ -67,7 +68,8 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSelect = false;
-    List fav = new List();
+    Requests request = Requests();
+    Validations validations = Validations();
 
     return new Drawer(
       child: new ListView(
@@ -85,7 +87,7 @@ class MyDrawer extends StatelessWidget {
                   style: new TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () async {
-                  Map units = await wsCoursesUnitsContents(paeUser.session);
+                  Map units = await request.wsCoursesUnitsContents(paeUser.session);
                   if (units['response']['childs'].isNotEmpty) {
                     isSelect = true;
                     Navigator.of(context).pushAndRemoveUntil(
@@ -93,7 +95,7 @@ class MyDrawer extends StatelessWidget {
                             builder: (context) => new HomePage(units, paeUser)),
                         (Route<dynamic> route) => false);
                   } else
-                    requestResponseValidation('No Data to Display', context);
+                    validations.requestResponseValidation('No Data to Display', context);
                 },
                 selected: isSelect,
               ),
@@ -104,7 +106,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 onTap: () async {
                   Map units =
-                      await wsCoursesUnitsContents(paeUser.session, 201617);
+                      await request.wsCoursesUnitsContents(paeUser.session, 201617);
                   if (units['response']['childs'].isNotEmpty) {
                     isSelect = true;
                     Navigator.of(context).pushAndRemoveUntil(
@@ -112,7 +114,7 @@ class MyDrawer extends StatelessWidget {
                             builder: (context) => new HomePage(units, paeUser)),
                         (Route<dynamic> route) => false);
                   } else
-                    requestResponseValidation('No Data to Display', context);
+                    validations.requestResponseValidation('No Data to Display', context);
                 },
                 selected: isSelect,
               ),
@@ -123,7 +125,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 onTap: () async {
                   Map units =
-                      await wsCoursesUnitsContents(paeUser.session, 201516);
+                      await request.wsCoursesUnitsContents(paeUser.session, 201516);
                   if (units['response']['childs'].isNotEmpty) {
                     isSelect = true;
                     Navigator.of(context).pushAndRemoveUntil(
@@ -131,7 +133,7 @@ class MyDrawer extends StatelessWidget {
                             builder: (context) => new HomePage(units, paeUser)),
                         (Route<dynamic> route) => false);
                   } else
-                    requestResponseValidation('No Data to Display', context);
+                    validations.requestResponseValidation('No Data to Display', context);
                 },
                 selected: isSelect,
               ),
