@@ -1,11 +1,11 @@
 
 import 'dart:async' show Future;
-import 'dart:io' show File;
+import 'dart:io' show Directory, File;
 
 import 'package:path_provider/path_provider.dart';
 
 class FileStorage {
-  Future<String> get _localPath async {
+ /* Future<String> get _localPath async {
     final directory = await getExternalStorageDirectory();
     //getApplicationDocumentsDirectory();
 
@@ -16,29 +16,31 @@ class FileStorage {
     final path = await _localPath;
     print('PATH -> $path');
     return new File('$path');
+  }*/
+
+
+  void createFile(List<int> file) async{
+    print('Create FILE');
+    Directory dir = await getApplicationDocumentsDirectory();
+    File newFile = new File(dir.resolveSymbolicLinksSync());
+    newFile.createSync();
+    newFile.writeAsBytesSync(file);
+
+
+
   }
 
+  void writeFile(File file) async {
+  print("WRITTING TO FILE");
 
-  Future<File> writeFile(List<int> byte) async {
+    if(file.existsSync()){
+      file.writeAsBytesSync(file.readAsBytesSync());
+    }else
+      createFile(file.readAsBytesSync());
 
-    final file = await _localFile;
+    print('BYTES ---> ${file.readAsBytesSync()}');
 
-    print('BYTES ---> $byte');
-
-    return file.writeAsBytes(byte);
   }
 
-  Future<List<int>> readFile() async {
-    try {
-      final file = await _localFile;
-
-      // Read the file
-      List<int> contents = await file.readAsBytes();
-
-      return contents;
-    } catch (e) {
-      // If we encounter an error, return 0
-      return [];
-    }
-  }
+  //Future<List<int>> readFile() async {}
 }

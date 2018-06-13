@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:ippdrive/fileStorage.dart';
 import 'package:ippdrive/pages/layouts/components/favorites.dart';
@@ -7,6 +9,7 @@ import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/pages/ucContentPage.dart';
 import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 
@@ -55,11 +58,14 @@ Widget createList(response, paeUser, school, course,context) {
                 } else
                   return new ListTile(
                     onTap: () async {
-                      var file = await req.getFiles(
+                      var resp = await req.getFiles(
                           paeUser.session, files[i]['repositoryId'].toString());
-
+                      print(files[i]['title']);
+                      print(files[i]['path']);
+                      File file = new File.fromRawPath(resp);
+                      print("FILE ------------"+ file.path);
                       storage.writeFile(file);
-                      storage.readFile();
+                      
                     },
                     // dense: true,
                     title: new Text(files[i]['title']),

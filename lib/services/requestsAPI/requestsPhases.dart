@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 import 'package:ippdrive/api.dart';
 
 
@@ -142,10 +143,11 @@ Future<dynamic> getFiles(String bacoSess, String id) async {
 //todo devolver bytes ou ver como faço download
 
   var url = '$host/repositoryStream/$id?BACOSESS=$bacoSess';
-  print(url);
-  var response = await api.getRequest(url);
-  print(response.headers['content-type']);
-  print(response.bodyBytes);
+  //print(url);
+  Response response = await api.getRequest(url);
+  //print(response.headers['content-type']);
+  //print(response.bodyBytes);
+ // print('BODY ->>>'+response.body);
   //f.readAsBytesSync();
   //print(jsonDecode(response));
 /*  if (jsonDecode(response)['service'] == 'error')
