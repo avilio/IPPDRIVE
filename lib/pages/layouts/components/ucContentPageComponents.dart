@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ippdrive/fileStorage.dart';
 import 'package:ippdrive/pages/layouts/components/favorites.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
@@ -10,14 +11,16 @@ import 'package:ippdrive/pages/ucContentPage.dart';
 import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 
-
+const platform = const MethodChannel('it.versionestabile.flutterapp000001/pdfViewer');
 
 Widget createList(response, paeUser, school, course,context) {
   Iterator items = response['response']['childs'].iterator;
   List files = new List();
   Requests req = Requests();
   FileStorage storage = FileStorage();
+
 
   while (items.moveNext()) {
     if (items.current != null) files.add(items.current);
@@ -58,14 +61,20 @@ Widget createList(response, paeUser, school, course,context) {
                 } else
                   return new ListTile(
                     onTap: () async {
-                      var resp = await req.getFiles(
-                          paeUser.session, files[i]['repositoryId'].toString());
-                      print(files[i]['title']);
-                      print(files[i]['path']);
-                      File file = new File.fromRawPath(resp);
-                      print("FILE ------------"+ file.path);
-                      storage.writeFile(file);
-                      
+                    /*  var resp = await req.getFiles(
+                          paeUser.session, files[i]['repositoryId'].toString());*/
+                      var url = 'http://10.0.2.2:8080/baco/repositoryStream/${files[i]['repositoryId'].toString()}?BACOSESS=${paeUser.session}';
+                     // print(files[i]['title']);
+                     // print(files[i]['path']);
+                     // File file = new File.fromRawPath(resp);
+                      //print("FILE ------------"+ file.path);
+                      //storage.writeFile(file);
+                      File file = await storage.downloadFile(url,files[i]['title']);
+                     // print(file.path);
+                     // final RenderBox box = context.findRenderObject();
+                     // Share.share(file.readAsStringSync().toString());
+                      var args = {'url': file.path};
+                      platform.invokeMethod('viewPdf', args);
                     },
                     // dense: true,
                     title: new Text(files[i]['title']),

@@ -13,6 +13,7 @@ dependencies:
   async_loader: "^0.1.1"
   path_provider: "^0.4.1"
   flutter_redux: "^0.5.1"
+  share: "^0.5.2"
 
 
 
