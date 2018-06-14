@@ -63,18 +63,19 @@ Widget createList(response, paeUser, school, course,context) {
                     onTap: () async {
                     /*  var resp = await req.getFiles(
                           paeUser.session, files[i]['repositoryId'].toString());*/
-                      var url = 'http://10.0.2.2:8080/baco/repositoryStream/${files[i]['repositoryId'].toString()}?BACOSESS=${paeUser.session}';
-                     // print(files[i]['title']);
+                     // var url = 'http://10.0.2.2:8080/baco/repositoryStream/${files[i]['repositoryId'].toString()}?BACOSESS=${paeUser.session}';
+                      req.launchInBrowser( paeUser.session, files[i]['repositoryId'].toString());
+                      // print(files[i]['title']);
                      // print(files[i]['path']);
                      // File file = new File.fromRawPath(resp);
                       //print("FILE ------------"+ file.path);
                       //storage.writeFile(file);
-                      File file = await storage.downloadFile(url,files[i]['title']);
+                      //File file = await storage.downloadFile(url,files[i]['title']);
                      // print(file.path);
                      // final RenderBox box = context.findRenderObject();
                      // Share.share(file.readAsStringSync().toString());
-                      var args = {'url': file.path};
-                      platform.invokeMethod('viewPdf', args);
+                     // var args = {'url': file.path};
+                    //  platform.invokeMethod('viewPdf', args);
                     },
                     // dense: true,
                     title: new Text(files[i]['title']),

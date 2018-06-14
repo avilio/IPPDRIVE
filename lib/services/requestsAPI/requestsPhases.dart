@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:ippdrive/api.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 /**
@@ -138,6 +139,16 @@ class Requests {
  * Create a [url] with given [id] and [bacosession] to send a get request to the api
  * and returns a Map with the folder added to favorites as [response].
  */
+
+  Future<Null> launchInBrowser(String bacoSess, String id) async {
+
+    var url = '$host/repositoryStream/$id?BACOSESS=$bacoSess';
+    if (await canLaunch(url)) {
+      await launch(url, forceSafariVC: false, forceWebView: false);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
 Future<dynamic> getFiles(String bacoSess, String id) async {
 //todo devolver bytes ou ver como faço download
