@@ -41,7 +41,7 @@ Widget semestres(list, PaeUser paeUser, BuildContext context, String school, Str
   List sem2 = new List();
   sem1 = semestreUm(list);
   sem2 = semestreDois(list);
-  String year = list[0]['path'].split('/')[6].toString().split('.')[0] +' '+list[0]['path'].split('/')[6].toString().split('.')[1];
+  //String year = list[0]['path'].split('/')[6].toString().split('.')[0] +' '+list[0]['path'].split('/')[6].toString().split('.')[1];
   
   return new SingleChildScrollView(
       child: new Wrap(

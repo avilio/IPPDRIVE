@@ -34,7 +34,7 @@ class LoginPageState extends State<LoginPage> {
                   myLoginBox(context,_userController,_passwordController,_formKey,_scaffoldKey,_padding),
                  // button,
                   new Padding(padding: new EdgeInsets.all(90.5)),
-                  new Text('Powered by Aluno', textAlign: TextAlign.center),
+                  new Text('Powered by IPP-ESTG_EI', textAlign: TextAlign.center),
                 ],
               ),
             )),

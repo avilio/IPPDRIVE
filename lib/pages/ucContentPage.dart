@@ -4,8 +4,8 @@ import 'package:async_loader/async_loader.dart';
 import 'package:ippdrive/pages/layouts/components/ucContentPageComponents.dart';
 
 import 'package:ippdrive/security/verifications/display.dart';
-import 'package:ippdrive/services/requestsAPI/requestsPhases.dart';
-import 'package:ippdrive/pages/layouts/components/drawer.dart';
+import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
+import 'package:ippdrive/drawer.dart';
 import 'package:ippdrive/user.dart';
 
 class UcContent extends StatefulWidget {
@@ -21,24 +21,29 @@ class UcContent extends StatefulWidget {
 
 class UcContentState extends State<UcContent> {
 
-  List favorites = new List();
   Requests request = Requests();
 
   @override
   Widget build(BuildContext context) {
 
+
+   // print('DATA UC PAGE >>>>>>>>>>> ${widget.content['response'] ['childs']}');
+
+
+
     var bodyList = new AsyncLoader(
         initState: () async =>
-        await request.courseUnitsContents(widget.content, widget.paeUser.session),
+        await request.courseUnitsFoldersContents(widget.content, widget.paeUser.session),
         renderLoad: () => new CircularProgressIndicator(),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {
+         // print(data);
+          //print('DATA UC PAGE >>>>>>>>>>> ${data['response']['childs']}');
           List a = data['response']['childs'];
-          print(data['response']['childs']);
           if (a.isNotEmpty)
             return createList(data, widget.paeUser,widget.school,widget.course,context);
           else
-            return buildDialog('Data is Empty', context);
+           return buildDialog('Data is Empty', context);
         });
 
     return new Scaffold(

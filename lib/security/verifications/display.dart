@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
 
-/**
- * Dialog Box Builder
- */
+/// Dialog Box Builder
 AlertDialog buildDialog(message, context) {
   var dialog = AlertDialog(
     title: Text(
@@ -29,9 +27,7 @@ AlertDialog buildDialog(message, context) {
   return dialog;
 }
 
-/**
- * Check if a string is numeric
- */
+/// Check if a string is numeric
 bool isNumeric(String s) {
   if (s == null) {
     return false;
@@ -39,9 +35,7 @@ bool isNumeric(String s) {
   return double.parse(s, (e) => null) != null;
 }
 
-/**
- * Splits a long string and return a new one without the fields with numbers
- */
+/// Splits a long string and return a new one without the fields with numbers
 String stringSplitter( String s, [var splitter]) {
 
   List splitList = s.split(splitter);

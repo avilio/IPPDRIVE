@@ -2,7 +2,7 @@
 import 'dart:async' show Future;
 import 'dart:io' show Directory, File, FileSystemEntity, HttpClient;
 
-import 'package:flutter/foundation.dart';
+//
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,9 +34,9 @@ class FileStorage {
 
  Future<FileSystemEntity> downloadFile(String url, String filename) async {
 
-   var request = await httpClient.getUrl(Uri.parse(url));
-   var response = await request.close();
-   var bytes = await consolidateHttpClientResponseBytes(response);
+ //  var request = await httpClient.getUrl(Uri.parse(url));
+  // var response = await request.close();
+  // var bytes = await consolidateHttpClientResponseBytes(response);
    String dir = (await getApplicationDocumentsDirectory()).path;
   // File file = new File('$dir/$filename');
   // await file.writeAsBytes(bytes);
