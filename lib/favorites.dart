@@ -1,4 +1,6 @@
+import 'dart:async';
 
+import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
 import 'package:ippdrive/user.dart';
@@ -7,7 +9,7 @@ class Favorites extends StatefulWidget {
   final PaeUser paeUser;
   final id;
 
-  Favorites(this.id, this.paeUser,{Key key}) : super(key: key);
+  Favorites(this.id, this.paeUser, {Key key}) : super(key: key);
 
   @override
   _FavoriteState createState() => new _FavoriteState();
@@ -15,61 +17,79 @@ class Favorites extends StatefulWidget {
 
 class _FavoriteState extends State<Favorites> {
   var _favRem = new Icon(Icons.star_border);
-  var _favAdd = new Icon(Icons.star, color: Colors.yellow,);
+  var _favAdd = new Icon(
+    Icons.star,
+    color: Colors.yellow,
+  );
   Requests request = Requests();
-
+  Iterator favorites;
+  List myfavorites;
+  //bool haveChanges = true;
   bool isFav = false;
 
+//todo REBENTA SE ENTRAR E SAIR MUITAS VEZES DE UMA PASTA QUE ESTEJA A CHAMAR OS READFAVORITES
 
-  @override
-  void initState() {
-    super.initState();
-
-
-    request.readFavorites(widget.paeUser.session).then((fav){
-      if (fav.isNotEmpty) {
-        Iterator favorito = fav['response']['favorites'].iterator;
-
-        while (favorito.moveNext()) {
-          if (favorito.current['pageContentId'] == widget.id) {
-            setState(() {
-              isFav = true;
-            });
-            break;
-          }
-        }
-      }
-    });
-  }
-
-  void _handleTap() async {
-
+  void _handleTap() {
     if (isFav) {
-      var rem = await request.remFavorites(widget.id, widget.paeUser.session);
-      print(rem);
-      setState(() {
-        isFav = false;
-      });
+      request
+          .remFavorites(widget.id, widget.paeUser.session)
+          .then((_) => setState(() {
+                isFav = false;
+              }));
+      //print(rem);
 
     } else {
-      var add = await request.addFavorites(widget.id, widget.paeUser.session);
-      print(add);
-      setState(() {
-        isFav = true;
+      request.addFavorites(widget.id, widget.paeUser.session).then((map) {
+        setState(() {
+          isFav = true;
+        });
+        if (map['response']['fail'] == 'alreadyExist') {
+          request.remFavorites(widget.id, widget.paeUser.session);
+          print('adicionei e removi');
+        }
       });
-      if (add['response']['fail'] == 'alreadyExist') {
-        await request.remFavorites(widget.id, widget.paeUser.session);
-        print('adicionei e removi');
+      //print(add);
+    }
+   // haveChanges = true;
+  }
+
+  Future<bool> getFavorites() async {
+
+   /// if(haveChanges) {
+      var fav = await request.readFavorites(widget.paeUser.session);
+
+      myfavorites = fav['response']['favorites'];
+     // print('tenho mudanças');
+   //
+
+    favorites = myfavorites.iterator;
+    var flag = false;
+    while (favorites.moveNext()) {
+    //  print(favorites.current);
+      if (favorites.current['pageContentId'] == widget.id) {
+        flag = true;
+        //break;
       }
     }
+
+   // haveChanges = false;
+
+    return flag;
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return new IconButton(
-        icon: !isFav ? _favRem: _favAdd,
-        onPressed: _handleTap
+    return StreamBuilder(
+      stream: getFavorites().asStream(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? new IconButton(
+                icon: !snapshot.data ? _favRem : _favAdd, onPressed: _handleTap)
+            : new CircularProgressIndicator();
+      },
     );
   }
+
+
 }

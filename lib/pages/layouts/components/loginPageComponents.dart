@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:ippdrive/security/verifications/validation.dart';
 
 Validations validations = Validations();
-
-Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffoldKey,_padding ){
-
+RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
+Widget myLoginBox(context, _userController, _passwordController, _formKey,
+    _scaffoldKey, _padding) {
   return new Center(
     // heightFactor: 1.3,
     /*child: new DecoratedBox(
@@ -15,32 +16,43 @@ Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffold
           borderRadius: new BorderRadius.circular(10.0)),*/
     child: Container(
       //color: cAppYellowishAccent,
+//      RichText(text: new TextSpan(text: '@ipportalegre.pt',
+//          style: Theme.of(context).textTheme.caption)).text.text
+//      new TextSpan(text: '@ipportalegre.pt').text,
       padding: _padding,
       child: Column(
         children: <Widget>[
           new Image.asset("assets/images/icon.png",
               width: 150.0, height: 150.0),
           new TextFormField(
+            maxLines: 1,
             decoration: new InputDecoration(
-              labelText: "Number of Student",
-              hintText: "Your student number",
+              labelText: "Number of Student/Teacher",
+              suffixText: new TextSpan(text: '@ipportalegre.pt').text,
+              hintText: "Your student number ",
             ),
             controller: _userController,
+            inputFormatters: [WhitelistingTextInputFormatter(_regUser)],
             validator: validations.userValidation,
           ),
           new Padding(padding: new EdgeInsets.all(1.5)),
           new TextFormField(
               obscureText: true,
               decoration: new InputDecoration(
-                labelText: "Password",
+                labelText: "Mobile App Key",
                 hintText: "Mobile Key",
               ),
+              inputFormatters: [
+                WhitelistingTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(5),
+                BlacklistingTextInputFormatter.singleLineFormatter
+              ],
               controller: _passwordController,
               keyboardType: TextInputType.number,
               validator: validations.passwordValidation),
-          submitButton(_userController,_passwordController, _formKey, context, _scaffoldKey, _padding),
+          submitButton(_userController, _passwordController, _formKey, context,
+              _scaffoldKey, _padding),
           new Padding(padding: new EdgeInsets.all(1.5)),
-
         ],
       ),
       //  ),
@@ -48,16 +60,16 @@ Widget myLoginBox(context,_userController,_passwordController,_formKey,_scaffold
   );
 }
 
-Widget submitButton (_userController,_passwordController, _formKey, context, _scaffoldKey, _padding) {
-
+Widget submitButton(_userController, _passwordController, _formKey, context,
+    _scaffoldKey, _padding) {
   return new Padding(
     padding: _padding,
     child: new Container(
       //margin: new EdgeInsets.symmetric(horizontal: 20.0),
       child: new RaisedButton(
         onPressed: () {
-          validations.submit(_userController.text, _passwordController.text, _formKey,
-              context, _scaffoldKey);
+          validations.submit(_userController.text, _passwordController.text,
+              _formKey, context, _scaffoldKey);
         },
         child: new Text('Login'),
         elevation: 2.0,

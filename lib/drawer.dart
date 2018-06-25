@@ -149,6 +149,7 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
+
   Widget favorites(Requests request, Validations validations) {
     return new AsyncLoader(
       initState: () async => await request.readFavorites(paeUser.session),
@@ -174,11 +175,10 @@ class MyDrawer extends StatelessWidget {
               ),
               onTap: () {
                 if (list.isNotEmpty) {
-                  Navigator.of(context).pushAndRemoveUntil(
+                  Navigator.of(context).push(
                       MaterialPageRoute(
                           builder: (context) =>
-                          new UcContent(list[index], paeUser, school, course)),
-                          (Route<dynamic> route) => false);
+                          new UcContent(list[index], paeUser, school, course)));
                 } else
                   validations.requestResponseValidation(
                       'No Data to Display', context);
