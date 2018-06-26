@@ -39,7 +39,9 @@ class _FavoriteState extends State<Favorites> {
       //print(rem);
 
     } else {
+
       request.addFavorites(widget.id, widget.paeUser.session).then((map) {
+        //print(map);
         setState(() {
           isFav = true;
         });

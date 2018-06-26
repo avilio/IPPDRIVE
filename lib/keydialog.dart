@@ -103,7 +103,7 @@ class DialogKey extends StatelessWidget {
           RaisedButton(
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: key));
-              Fluttertoast.showToast(msg: "copied to clipboard",toastLength: Toast.LENGTH_SHORT);
+              Fluttertoast.showToast(msg: "Key copied to clipboard",toastLength: Toast.LENGTH_SHORT);
 
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => new LoginPage()),

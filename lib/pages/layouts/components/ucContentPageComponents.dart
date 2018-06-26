@@ -38,6 +38,12 @@ Widget createList(response, paeUser, school, course, context) {
             itemCount: files.length,
             shrinkWrap: true,
             itemBuilder: (context, i) {
+              //print(files[i]['title']);
+              files[i].forEach(
+                  (a,b){
+                    print("$a : $b ");
+                  }
+              );
               if (files[i]['directory']) {
                 return new ListTile(
                   dense: true,

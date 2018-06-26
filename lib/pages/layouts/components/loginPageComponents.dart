@@ -16,10 +16,6 @@ Widget myLoginBox(context, _userController, _passwordController, _formKey,
           color: cAppYellowishAccent,
           borderRadius: new BorderRadius.circular(10.0)),*/
     child: Container(
-      //color: cAppYellowishAccent,
-//      RichText(text: new TextSpan(text: '@ipportalegre.pt',
-//          style: Theme.of(context).textTheme.caption)).text.text
-//      new TextSpan(text: '@ipportalegre.pt').text,
       padding: _padding,
       child: Column(
         children: <Widget>[
@@ -28,7 +24,7 @@ Widget myLoginBox(context, _userController, _passwordController, _formKey,
           new TextFormField(
             maxLines: 1,
             decoration: new InputDecoration(
-              labelText: "Number of Student/Teacher",
+              labelText: "Username",
               suffixText: new TextSpan(text: '@ipportalegre.pt').text,
               hintText: "Your student number ",
             ),
