@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ippdrive/keydialog.dart';
 
 
 import 'package:ippdrive/pages/layouts/components/loginPageComponents.dart';
@@ -41,12 +42,14 @@ class LoginPageState extends State<LoginPage> {
                   style: Theme.of(context).textTheme.caption),
                   textAlign: TextAlign.center,),
                   new FloatingActionButton(
-                    onPressed: ()async {
-                      if (await canLaunch('https://pae.ipportalegre.pt/startGenerateChaveApps.do')) {
+                    onPressed: () {
+                    /*  if (await canLaunch('https://pae.ipportalegre.pt/startGenerateChaveApps.do')) {
                       await launch('https://pae.ipportalegre.pt/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
                       } else {
                       throw 'Could not launch https://pae.ipportalegre.pt/startGenerateChaveApps.do';
-                      }
+                      }*/
+                      showDialog(context: context,
+                      child: DialogKey());
                     },
                     child: Icon(Icons.vpn_key),
                     mini: true,

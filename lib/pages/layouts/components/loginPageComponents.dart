@@ -5,6 +5,7 @@ import 'package:ippdrive/security/verifications/validation.dart';
 
 Validations validations = Validations();
 RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
+
 Widget myLoginBox(context, _userController, _passwordController, _formKey,
     _scaffoldKey, _padding) {
   return new Center(

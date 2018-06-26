@@ -26,5 +26,13 @@ class REST {
   Future<dynamic> get(String url) async =>
       http.get(url).then((response)=> jsonDecode(response.body));
 
+//  authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps
+  Future<dynamic> postAppKey(String url, bodyApp) async =>
+      http.post(url,
+          headers: {
+       // "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"},
+          body: bodyApp
+      ).then((response) => jsonDecode(response.body));
 
 }
