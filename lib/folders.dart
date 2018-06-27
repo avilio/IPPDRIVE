@@ -2,10 +2,10 @@ class Folders {
 
 int id;
 String title, pathParent, path;
-bool directory;
+bool directory, isFav;
 Map<String,bool> clearances;
 
-Folders(this.id, this.title, this.pathParent, this.path, this.directory,
+Folders(this.id, this.title, this.pathParent, this.path, this.directory,this.isFav,
     this.clearances);
 
 Folders.fromJson(Map json)
@@ -14,6 +14,7 @@ Folders.fromJson(Map json)
       pathParent = json['pathParent'],
       path = json['path'],
       directory = json['directory'],
+      isFav = json['favorite'],
       clearances = json['clearances'];
 
 

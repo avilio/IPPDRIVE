@@ -1,22 +1,20 @@
 import 'dart:async';
 
 import 'package:ippdrive/newFavorties.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FavoritesBloc {
+
   final tapController = StreamController<MyFavorites>();
 
   Sink<MyFavorites> get tap => tapController.sink;
 
-  final iconController = StreamController<bool>();
+  final iconController = BehaviorSubject<bool>();
 
   Stream<bool> get isFav => iconController.stream;
 
-  FavoritesBloc() {
-    tapController.stream.listen(onTap);
-  }
-
-  void onTap(MyFavorites favorite) {
-    //todo arranjar forma de passar os paramtros id e session para aqui
+  FavoritesBloc(Map favorite) {
+    tapController.stream.map((fav)=> fav.favorites.contains(favorite)).listen((isFav) => iconController.add(isFav));
   }
 
   void dispose() {

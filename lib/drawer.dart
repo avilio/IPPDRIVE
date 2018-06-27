@@ -15,8 +15,9 @@ class MyDrawer extends StatelessWidget {
   final PaeUser paeUser;
   final String school;
   final String course;
+  final Map json;
 
-  MyDrawer(this.school, this.course, this.paeUser);
+  MyDrawer(this.school, this.course, this.paeUser, [this.json]);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class MyDrawer extends StatelessWidget {
               'Favoritos',
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
-            children: <Widget>[favorites(request, validations)],
+            children: <Widget>[favorites(request, validations, json)],
           ),
           new ListTile(
             title: new Text(
@@ -150,7 +151,8 @@ class MyDrawer extends StatelessWidget {
   }
 
 
-  Widget favorites(Requests request, Validations validations) {
+  Widget favorites(Requests request, Validations validations, Map json) {
+
     return new AsyncLoader(
       initState: () async => await request.readFavorites(paeUser.session),
       renderLoad: () => new CircularProgressIndicator(),

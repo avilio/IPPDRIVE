@@ -26,7 +26,7 @@ class HomePageState extends State<HomePage> {
     return WillPopScope(
       onWillPop: () async => false,
       child: new Scaffold(
-        drawer: new MyDrawer(school,course , widget.paeUser),
+        drawer: new MyDrawer(school,course , widget.paeUser, widget.json['response']),
           appBar: new AppBar(
             title: new Text(
               'Unidades Curricuares ${list[0]['path'].split('/')[6].toString().split('.')[1]}',

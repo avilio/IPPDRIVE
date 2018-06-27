@@ -1,27 +1,36 @@
 import 'dart:async';
-
+import 'dart:collection';
 import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
+import 'package:ippdrive/user.dart';
 
 class MyFavorites {
-  List<Map> favorites;
+  List<Map> _favorites;
   var request =Requests();
+  PaeUser paeUser;
+  int id;
+  UnmodifiableListView<Map> get favorites => UnmodifiableListView(_favorites);
 
+  @override
+  String toString() =>"$favorites";
 
-  Future<Null> readFavorites(String session)async {
-   var response = await request.readFavorites(session);
+  Future<Null> readFavorites()async {
+   var response = await request.readFavorites(paeUser.session);
 
-   favorites = response['response']['favorites'];
+   _favorites = response['response']['favorites'];
   }
 
-  Future<Null> addFavorites(int id, String session)async {
-    var response = await request.remFavorites(id, session);
+  Future<Null> addFavorites()async {
+    var response = await request.remFavorites(id, paeUser.session);
 
-    favorites.add(response['response']);
+    _favorites.add(response['response']);
   }
 
-  Future<Null> delFavorites(int id, String session)async {
-    var response = await request.addFavorites(id, session);
+  Future<Null> delFavorites()async {
+    var response = await request.addFavorites(id, paeUser.session);
 
-    favorites.remove(response['response']);
+    _favorites.remove(response['response']);
   }
+
+
+
 }

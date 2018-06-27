@@ -29,8 +29,6 @@ class UcContentState extends State<UcContent> {
 
    // print('DATA UC PAGE >>>>>>>>>>> ${widget.content['response'] ['childs']}');
 
-
-
     var bodyList = new AsyncLoader(
         initState: () async =>
         await request.courseUnitsFoldersContents(widget.content, widget.paeUser.session),
@@ -47,7 +45,7 @@ class UcContentState extends State<UcContent> {
         });
 
     return new Scaffold(
-        drawer: new MyDrawer(widget.school, widget.course,widget. paeUser),
+        drawer: new MyDrawer(widget.school, widget.course,widget.paeUser),
         appBar: new AppBar(
           title: new Text(
             widget.content['title'].toString().split('-')[0],

@@ -39,17 +39,17 @@ Widget createList(response, paeUser, school, course, context) {
             shrinkWrap: true,
             itemBuilder: (context, i) {
               //print(files[i]['title']);
-              files[i].forEach(
-                  (a,b){
-                    print("$a : $b ");
-                  }
-              );
+//              files[i].forEach(
+//                  (a,b){
+//                    print("$a : $b ");
+//                  }
+//              );
               if (files[i]['directory']) {
                 return new ListTile(
                   dense: true,
                   title: new Text(files[i]['title']),
                   leading: new Icon(Icons.folder_open),
-                  trailing: new Favorites(files[i]['id'], paeUser),
+                  trailing: new Favorites(files[i], paeUser),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>

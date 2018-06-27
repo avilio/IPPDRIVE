@@ -7,9 +7,9 @@ import 'package:ippdrive/user.dart';
 
 class Favorites extends StatefulWidget {
   final PaeUser paeUser;
-  final id;
+  final Map json;
 
-  Favorites(this.id, this.paeUser, {Key key}) : super(key: key);
+  Favorites(this.json, this.paeUser, {Key key}) : super(key: key);
 
   @override
   _FavoriteState createState() => new _FavoriteState();
@@ -22,76 +22,50 @@ class _FavoriteState extends State<Favorites> {
     color: Colors.yellow,
   );
   Requests request = Requests();
-  Iterator favorites;
-  List myfavorites;
-  //bool haveChanges = true;
   bool isFav = false;
-
-//todo REBENTA SE ENTRAR E SAIR MUITAS VEZES DE UMA PASTA QUE ESTEJA A CHAMAR OS READFAVORITES
-
-  void _handleTap() {
-    if (isFav) {
-      request
-          .remFavorites(widget.id, widget.paeUser.session)
-          .then((_) => setState(() {
-                isFav = false;
-              }));
-      //print(rem);
-
-    } else {
-
-      request.addFavorites(widget.id, widget.paeUser.session).then((map) {
-        //print(map);
-        setState(() {
-          isFav = true;
-        });
-        if (map['response']['fail'] == 'alreadyExist') {
-          request.remFavorites(widget.id, widget.paeUser.session);
-          print('adicionei e removi');
-        }
-      });
-      //print(add);
-    }
-   // haveChanges = true;
-  }
-
-  Future<bool> getFavorites() async {
-
-   /// if(haveChanges) {
-      var fav = await request.readFavorites(widget.paeUser.session);
-
-      myfavorites = fav['response']['favorites'];
-     // print('tenho mudanças');
-   //
-
-    favorites = myfavorites.iterator;
-    var flag = false;
-    while (favorites.moveNext()) {
-    //  print(favorites.current);
-      if (favorites.current['pageContentId'] == widget.id) {
-        flag = true;
-        //break;
-      }
-    }
-
-   // haveChanges = false;
-
-    return flag;
-  }
 
 
   @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: getFavorites().asStream(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return snapshot.hasData
-            ? new IconButton(
-                icon: !snapshot.data ? _favRem : _favAdd, onPressed: _handleTap)
-            : new CircularProgressIndicator();
-      },
-    );
+  void initState() {
+    super.initState();
+    print('${widget.json['title']} : ${widget.json['favorite']}');
+
+    isFav = widget.json['favorite'];
   }
 
+  void _handleTap() {
 
+    if (isFav) {
+      request.remFavorites(widget.json['id'], widget.paeUser.session);
+      print("Favorito: '${widget.json['title']}' Removido");
+      setState(() {
+        isFav = false;
+      });
+
+    } else {
+      request.addFavorites(widget.json['id'], widget.paeUser.session)
+          .then((map) {
+        print("Favorito: '${widget.json['title']}' Adicionado");
+
+        ///Caso esta situaçao se verifique..muito raro acontecer
+        if (map['response']['fail'] == 'alreadyExist') {
+          request.remFavorites(widget.json['id'], widget.paeUser.session);
+          print('adicionei e removi');
+          setState(() {
+            isFav = false;
+          });
+        }
+      });
+      setState(() {
+        isFav = true;
+      });
+      //print(add);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new IconButton(
+        icon: !isFav ? _favRem : _favAdd, onPressed: _handleTap);
+  }
 }

@@ -34,7 +34,6 @@ class Validations {
       if (bacoSessRLogin['service'] == 'error')
         requestResponseValidation(bacoSessRLogin['exception'], context, key);
       else {
-
         PaeUser paeUser =
         new PaeUser(user, bacoSessRLogin['response']['BACOSESS'],bacoSessRLogin['response']['name']);
         courseUnitFoldersJson =
