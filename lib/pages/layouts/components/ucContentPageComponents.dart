@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 //import 'package:ippdrive/fileStorage.dart';
 import 'package:ippdrive/favorites.dart';
+import 'package:ippdrive/folders.dart';
 import 'package:ippdrive/pages/themes/colorsThemes.dart';
 import 'package:ippdrive/pages/ucContentPage.dart';
 import 'package:ippdrive/security/verifications/display.dart';
@@ -13,7 +14,8 @@ Widget createList(response, paeUser, school, course, context) {
   Iterator items = response['response']['childs'].iterator;
   List files = new List();
   Requests req = Requests();
- // FileStorage storage = FileStorage();
+  Folders folder;
+  // FileStorage storage = FileStorage();
 
   while (items.moveNext()) {
     if (items.current != null) files.add(items.current);
@@ -45,11 +47,13 @@ Widget createList(response, paeUser, school, course, context) {
 //                  }
 //              );
               if (files[i]['directory']) {
+
+                folder = Folders.fromJson(files[i]);
                 return new ListTile(
                   dense: true,
                   title: new Text(files[i]['title']),
                   leading: new Icon(Icons.folder_open),
-                  trailing: new Favorites(files[i], paeUser),
+                  trailing: new Favorites(folder, paeUser),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>

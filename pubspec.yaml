@@ -17,6 +17,7 @@ dependencies:
   simple_permissions: "^0.1.5"
   url_launcher: "^3.0.2"
   fluttertoast: "^2.0.3"
+  connectivity: "^0.3.1"
 
 
 

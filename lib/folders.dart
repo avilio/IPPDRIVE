@@ -1,12 +1,14 @@
 class Folders {
 
-int id;
+int id,repositoryId;
 String title, pathParent, path;
 bool directory, isFav;
-Map<String,bool> clearances;
+Map<String,dynamic> clearances, repositoryFile4JsonView;
 
 Folders(this.id, this.title, this.pathParent, this.path, this.directory,this.isFav,
-    this.clearances);
+    this.clearances,int repositoryId ,Map repositoryFile4JsonView)
+    : repositoryFile4JsonView = repositoryFile4JsonView ?? Map(),
+      repositoryId = repositoryId ?? -1;
 
 Folders.fromJson(Map json)
     : id = json['id'],
@@ -16,6 +18,4 @@ Folders.fromJson(Map json)
       directory = json['directory'],
       isFav = json['favorite'],
       clearances = json['clearances'];
-
-
 }

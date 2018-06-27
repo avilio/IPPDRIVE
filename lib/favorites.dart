@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:ippdrive/folders.dart';
 import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
 import 'package:ippdrive/user.dart';
 
 class Favorites extends StatefulWidget {
   final PaeUser paeUser;
-  final Map json;
+  final Folders json;
 
   Favorites(this.json, this.paeUser, {Key key}) : super(key: key);
 
@@ -28,29 +29,29 @@ class _FavoriteState extends State<Favorites> {
   @override
   void initState() {
     super.initState();
-    print('${widget.json['title']} : ${widget.json['favorite']}');
+    print('${widget.json.title} : ${widget.json.isFav}');
 
-    isFav = widget.json['favorite'];
+    isFav = widget.json.isFav;
   }
 
   void _handleTap() {
 
     if (isFav) {
-      request.remFavorites(widget.json['id'], widget.paeUser.session);
-      print("Favorito: '${widget.json['title']}' Removido");
+      request.remFavorites(widget.json.id, widget.paeUser.session);
+      print("Favorito: '${widget.json.title}' --> Removido");
       setState(() {
         isFav = false;
       });
 
     } else {
-      request.addFavorites(widget.json['id'], widget.paeUser.session)
+      request.addFavorites(widget.json.id, widget.paeUser.session)
           .then((map) {
-        print("Favorito: '${widget.json['title']}' Adicionado");
+        print("Favorito: '${widget.json.title}' --> Adicionado");
 
         ///Caso esta situaçao se verifique..muito raro acontecer
         if (map['response']['fail'] == 'alreadyExist') {
-          request.remFavorites(widget.json['id'], widget.paeUser.session);
-          print('adicionei e removi');
+          request.remFavorites(widget.json.id, widget.paeUser.session);
+          print("Favorito: '${widget.json.title}' adicionado e removido");
           setState(() {
             isFav = false;
           });
@@ -59,7 +60,6 @@ class _FavoriteState extends State<Favorites> {
       setState(() {
         isFav = true;
       });
-      //print(add);
     }
   }
 
