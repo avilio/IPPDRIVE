@@ -92,7 +92,7 @@ Widget createList(response, paeUser, school, course, context) {
                   dense: true,
                   title: new Text(files[i]['title']),
                   leading: new Icon(Icons.folder_open),
-                  trailing: trailing(folder, paeUser, files[i]['title']['clearances']['addFiles']),
+                  trailing: trailing(folder, paeUser, files[i]['clearances']['addFiles'],context),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
@@ -133,13 +133,16 @@ Widget createList(response, paeUser, school, course, context) {
   return bodyList;
 }
 //files[i]['title']['clearances']['addFiles']
-Widget trailing(Folders folder, PaeUser paeUser,bool canAdd){
+Widget trailing(Folders folder, PaeUser paeUser,bool canAdd, BuildContext context){
 
   if(canAdd){
-    return new Row(children: <Widget>[new Icon(Icons.add),new Favorites(folder, paeUser) ]);
+    return new Row(mainAxisSize: MainAxisSize.min,children: <Widget>[new IconButton(onPressed: (){
+      print("ADD FILE");
+      showDialog(context: context,child: buildDialog('TESTE ADD FILE BUTTON',context));
+    } ,icon: Icon(Icons.add),),new Favorites(folder, paeUser) ]);
   }
   else
-    return new Icon(Icons.folder_open);
+    return new Favorites(folder, paeUser);
 
 
 }
