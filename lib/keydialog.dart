@@ -55,7 +55,7 @@ class DialogKey extends StatelessWidget {
 //                };
 //                var url = "https://pae.ipportalegre.pt/authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps";
 //                var response = await res.postAppKey(url, map);
-                var response = await req.getAppKey(_userController.text,_passwordController.text);
+                var response = await req.getAppKey(_userController.text.trim(),_passwordController.text.trim());
                 print(response);
                 if (response['service'] == 'ok') {
                   showDialog(
