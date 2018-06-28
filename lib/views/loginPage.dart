@@ -187,7 +187,7 @@ class LoginPageState extends State<LoginPage> {
         child: new RaisedButton(
           onPressed: () {
             if (!_connectionStatus.contains('none')) {
-              validations.submit(_userController.text, _passwordController.text,
+              validations.submit(_userController.text.trim(), _passwordController.text.trim(),
                   _formKey, context, _scaffoldKey);
             } else
               showDialog(

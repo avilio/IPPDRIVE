@@ -86,20 +86,13 @@ Widget createList(response, paeUser, school, course, context) {
             itemCount: files.length,
             shrinkWrap: true,
             itemBuilder: (context, i) {
-              //print(files[i]['title']);
-//              files[i].forEach(
-//                  (a,b){
-//                    print("$a : $b ");
-//                  }
-//              );
               if (files[i]['directory']) {
-
                 folder = Folders.fromJson(files[i]);
                 return new ListTile(
                   dense: true,
                   title: new Text(files[i]['title']),
                   leading: new Icon(Icons.folder_open),
-                  trailing: new Favorites(folder, paeUser),
+                  trailing: trailing(folder, paeUser, files[i]['title']['clearances']['addFiles']),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
@@ -138,6 +131,17 @@ Widget createList(response, paeUser, school, course, context) {
   }
 
   return bodyList;
+}
+//files[i]['title']['clearances']['addFiles']
+Widget trailing(Folders folder, PaeUser paeUser,bool canAdd){
+
+  if(canAdd){
+    return new Row(children: <Widget>[new Icon(Icons.add),new Favorites(folder, paeUser) ]);
+  }
+  else
+    return new Icon(Icons.folder_open);
+
+
 }
 
 String pathBuilder(String parent) {
