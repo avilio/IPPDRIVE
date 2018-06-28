@@ -18,11 +18,14 @@ class REST {
       http.post(url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(jsonMap)
-    ).then((response) => jsonDecode(response.body));
-  
+    ).then((response) {
+        if(response.statusCode == 200)
+         return jsonDecode(response.body);
+        else
+          throw (response.statusCode);
+      });
 
-  
-//return await http.get(url);
+
   Future<dynamic> get(String url) async =>
       http.get(url).then((response)=> jsonDecode(response.body));
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
-import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
+import 'package:ippdrive/services/apiRequests.dart';
 import 'package:ippdrive/user.dart';
 
 class MyFavorites {

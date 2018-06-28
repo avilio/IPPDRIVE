@@ -1,14 +1,60 @@
 import 'package:flutter/material.dart';
 
-//import 'package:ippdrive/fileStorage.dart';
+import 'package:async_loader/async_loader.dart';
 import 'package:ippdrive/favorites.dart';
 import 'package:ippdrive/folders.dart';
-import 'package:ippdrive/pages/themes/colorsThemes.dart';
-import 'package:ippdrive/pages/ucContentPage.dart';
-import 'package:ippdrive/security/verifications/display.dart';
-import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
+import 'package:ippdrive/views/themes/colorsThemes.dart';
 
-//const platform = const MethodChannel('com.example.ippdrive/pdfViewer');
+import 'package:ippdrive/security/verifications/display.dart';
+import 'package:ippdrive/services/apiRequests.dart';
+import 'package:ippdrive/drawer.dart';
+import 'package:ippdrive/user.dart';
+
+class UcContent extends StatefulWidget {
+  final Map content;
+  final PaeUser paeUser;
+  final String school;
+  final String course;
+  UcContent([this.content, this.paeUser, this.school, this.course]);
+
+  @override
+  State<StatefulWidget> createState() => new UcContentState();
+}
+
+class UcContentState extends State<UcContent> {
+
+  Requests request = Requests();
+
+  @override
+  Widget build(BuildContext context) {
+
+   // print('DATA UC PAGE >>>>>>>>>>> ${widget.content['response'] ['childs']}');
+    var bodyList = new AsyncLoader(
+        initState: () async =>
+        await request.courseUnitsFoldersContents(widget.content, widget.paeUser.session),
+        renderLoad: () => new CircularProgressIndicator(),
+        renderError: ([error]) => new Text('ERROR LOANDING DATA'),
+        renderSuccess: ({data}) {
+          List checker = data['response']['childs'];
+          if (checker.isNotEmpty)
+            return createList(data, widget.paeUser,widget.school,widget.course,context);
+          else
+           return buildDialog('Data is Empty', context);
+        });
+//todo arranjar maneira de nao voltar atras caso a rota anterior seja login page
+    return new Scaffold(
+        drawer: new MyDrawer(widget.school, widget.course,widget.paeUser),
+        appBar: new AppBar(
+          title: new Text(
+            widget.content['title'].toString().split('-')[0],
+            //textScaleFactor: 0.7,
+            style: new TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: bodyList);
+  }
+
+}
 
 Widget createList(response, paeUser, school, course, context) {
   Iterator items = response['response']['childs'].iterator;
@@ -57,7 +103,7 @@ Widget createList(response, paeUser, school, course, context) {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            new UcContent(files[i], paeUser, school, course)));
+                        new UcContent(files[i], paeUser, school, course)));
                   },
                 );
               } else
@@ -95,10 +141,26 @@ Widget createList(response, paeUser, school, course, context) {
 }
 
 String pathBuilder(String parent) {
-  List fields = parent.split('/');
-  String path = '';
-  for (var j = 0; j < fields.length; j++) {
-    if (j > 6) path += stringSplitter(fields[j], '.') + ' / ';
+  print(parent);
+  if (parent != null) {
+
+    if (parent.split('/').length > 7) {
+      List fields = parent.split('/');
+      String path = '';
+      for (var j = 0; j < fields.length; j++) {
+        if (j > 6) path += stringSplitter(fields[j], '.') + ' / ';
+      }
+      return path;
+    }else{
+      List fields = parent.split('/');
+      String path = '';
+      for (var j = 0; j < fields.length; j++) {
+       path += stringSplitter(fields[j], '.') + ' / ';
+      }
+      print(path);
+      return path;
+    }
   }
-  return path;
+  return "";
 }
+

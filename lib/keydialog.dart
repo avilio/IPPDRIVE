@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ippdrive/pages/loginPage.dart';
-import 'package:ippdrive/pages/themes/colorsThemes.dart';
-import 'package:ippdrive/services/REST.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ippdrive/services/apiRequests.dart';
+import 'package:ippdrive/views/loginPage.dart';
+import 'package:ippdrive/views/themes/colorsThemes.dart';
 
 class DialogKey extends StatelessWidget {
-  final REST res = REST();
+  final Requests req = Requests();
   final RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
   final _userController = new TextEditingController();
   final _passwordController = new TextEditingController();
@@ -26,9 +27,9 @@ class DialogKey extends StatelessWidget {
             new TextFormField(
               maxLines: 1,
               decoration: new InputDecoration(
-                labelText: "Number of Student/Teacher",
+                labelText: "Username",
                 suffixText: new TextSpan(text: '@ipportalegre.pt').text,
-                hintText: "Your student number ",
+                hintText: "O seu username ",
               ),
               controller: _userController,
               inputFormatters: [WhitelistingTextInputFormatter(_regUser)],
@@ -38,7 +39,7 @@ class DialogKey extends StatelessWidget {
               obscureText: true,
               decoration: new InputDecoration(
                 labelText: "Password",
-                hintText: "Password",
+                hintText: "A sua password",
               ),
               inputFormatters: [
                 BlacklistingTextInputFormatter.singleLineFormatter
@@ -48,13 +49,13 @@ class DialogKey extends StatelessWidget {
             new Padding(padding: new EdgeInsets.all(5.0)),
             new RaisedButton(
               onPressed: () async {
-                var map = {
-                  "username": _userController.text,
-                  "password": _passwordController.text
-                };
-                var url =
-                    "https://pae.ipportalegre.pt/authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps";
-                var response = await res.postAppKey(url, map);
+//                var map = {
+//                  "username": _userController.text,
+//                  "password": _passwordController.text
+//                };
+//                var url = "https://pae.ipportalegre.pt/authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps";
+//                var response = await res.postAppKey(url, map);
+                var response = await req.getAppKey(_userController.text,_passwordController.text);
                 print(response);
                 if (response['service'] == 'ok') {
                   showDialog(
@@ -94,7 +95,7 @@ class DialogKey extends StatelessWidget {
           Text(message),
           new GestureDetector(
               child: new Tooltip(
-                  preferBelow: false, message: "Copy",
+                  preferBelow: false, message: "Copiar",
                   child: new Text(key,style: TextStyle(color: cAppBlue,fontWeight: FontWeight.bold,fontSize: 20.0),)),
               onTap: () {
                 Clipboard.setData(new ClipboardData(text: key));
@@ -103,7 +104,7 @@ class DialogKey extends StatelessWidget {
           RaisedButton(
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: key));
-              Fluttertoast.showToast(msg: "Key copied to clipboard",toastLength: Toast.LENGTH_SHORT);
+              Fluttertoast.showToast(msg: "Chave copiada para a area de Transferencias",toastLength: Toast.LENGTH_SHORT);
 
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => new LoginPage()),

@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ippdrive/security/verifications/display.dart';
-import 'package:ippdrive/services/requestsAPI/apiRequests.dart';
-import 'package:ippdrive/pages/homePage.dart';
+import 'package:ippdrive/services/apiRequests.dart';
+import 'package:ippdrive/views/homePage.dart';
 import 'package:ippdrive/user.dart';
+import 'package:ippdrive/views/ucContentPage.dart';
 
 /// Regular expression to make sure the username contains only letters and/or numbers
 RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
@@ -15,7 +16,7 @@ RegExp _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
 /// occurred.
 class Validations {
   Requests request = Requests();
-
+  PaeUser paeUser;
 
   Future submit(user, pass, form, context, key) async {
     final formKey = form.currentState;
@@ -28,58 +29,45 @@ class Validations {
       if (!bacoSessAuth.containsValue('ok'))
         requestResponseValidation(bacoSessAuth['exception'], context, key);
       else
-        bacoSessRLogin =
-        await request.wsRLogin(
+        bacoSessRLogin = await request.wsRLogin(
             user, pass, bacoSessAuth['response']['BACOSESS']);
       if (bacoSessRLogin['service'] == 'error')
         requestResponseValidation(bacoSessRLogin['exception'], context, key);
       else {
-        PaeUser paeUser =
-        new PaeUser(user, bacoSessRLogin['response']['BACOSESS'],bacoSessRLogin['response']['name']);
+         paeUser = new PaeUser(
+            user,
+            bacoSessRLogin['response']['BACOSESS'],
+            bacoSessRLogin['response']['name']);
         courseUnitFoldersJson =
-        await request.wsYearsCoursesUnitsFolders(paeUser.session);
+            await request.wsYearsCoursesUnitsFolders(paeUser.session);
         if (!courseUnitFoldersJson.containsValue('ok'))
           requestResponseValidation(
               courseUnitFoldersJson['exception'], context, key);
-        else
+        else{
+          ///PROVISORIO
+          if(courseUnitFoldersJson['response']['childs'].isEmpty) {
+            var courseUnitFoldersJson = await request.courseUnitsFoldersContents({"id" : 0}, paeUser.session);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => UcContent(courseUnitFoldersJson['response']['childs'][0], paeUser)));
+          }else
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomePage(courseUnitFoldersJson, paeUser)));
-      }
-      /* forma de fazer sem retornar Future
-
-    wsAuth().then((bacoSessAuth){
-      if(!bacoSessAuth.containsValue('ok'))
-        requestResponseValidation(bacoSessAuth['exception'], context, key);
-      else
-        wsRLogin(user, pass, bacoSessAuth['response']['BACOSESS']).then((bacoSessRLogin){;
-        if (bacoSessRLogin['service'] == 'error')
-          requestResponseValidation(bacoSessRLogin['exception'], context, key);
-        else {
-          PaeUser paeUser = new PaeUser(user, bacoSessRLogin['response']['BACOSESS']);
-          wsCoursesUnitsContents(paeUser.session).then((courseUnitFoldersJson) {
-            if (!courseUnitFoldersJson.containsValue('ok'))
-              requestResponseValidation(
-                  courseUnitFoldersJson['exception'], context, key);
-            else
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      ListFolder(courseUnitFoldersJson,
-                          paeUser)));
-          });
         }
-        });
-    });*/
+      }
     }
   }
 
   /// User validation
-  String userValidation(String user) => _regUser.hasMatch(user) ? null : 'User is not valid';
+  String userValidation(String user) =>
+      _regUser.hasMatch(user) ? null : 'User is not valid';
 
   /// Password validation
-  String passwordValidation(String password) => password.length < 5 ? 'Password too short' : null;
+  String passwordValidation(String password) =>
+      password.length < 5 ? 'Password too short' : null;
 
   /// Error display
-  void requestResponseValidation(String message, BuildContext context, [key]) => showDialog(context: context, child: buildDialog(message, context));
+  void requestResponseValidation(String message, BuildContext context, [key]) =>
+      showDialog(context: context, child: buildDialog(message, context));
 }
 
 /* void requestResponseValidation(String message, BuildContext context, [key]) {

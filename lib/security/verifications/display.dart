@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:ippdrive/pages/themes/colorsThemes.dart';
+import 'package:ippdrive/views//themes/colorsThemes.dart';
 
 /// Dialog Box Builder
 AlertDialog buildDialog(message, context) {
@@ -37,15 +37,18 @@ bool isNumeric(String s) {
 
 /// Splits a long string and return a new one without the fields with numbers
 String stringSplitter( String s, [var splitter]) {
+  if (s != null) {
+    List splitList = s.split(splitter);
 
-  List splitList = s.split(splitter);
+    String resultString = '';
 
-  String resultString = '';
+    splitList.forEach((item){
+      if(!isNumeric(item))
+        resultString+=item + ' ';
+    });
 
-  splitList.forEach((item){
-    if(!isNumeric(item))
-      resultString+=item + ' ';
-  });
+    return resultString;
+  }else
+    return "Funcionario/a";
 
-  return resultString;
 }
