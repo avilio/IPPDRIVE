@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
+import 'package:ippdrive/common/list_item_builder.dart';
 import 'package:ippdrive/favorites.dart';
 import 'package:ippdrive/folders.dart';
 import 'package:ippdrive/views/themes/colorsThemes.dart';
@@ -43,7 +44,7 @@ class UcContentState extends State<UcContent> {
         });
 //todo arranjar maneira de nao voltar atras caso a rota anterior seja login page
     return new Scaffold(
-        drawer: new MyDrawer(widget.school, widget.course,widget.paeUser),
+        drawer: new MyDrawer(widget.paeUser,school: widget.school, course: widget.course,),
         appBar: new AppBar(
           title: new Text(
             widget.content['title'].toString().split('-')[0],
@@ -82,7 +83,51 @@ Widget createList(response, paeUser, school, course, context) {
       ),
       new Divider(),
       new Expanded(
-        child: new ListView.builder(
+        child: ListItemsBuilder<dynamic>(
+          items: files,
+          itemBuilder: (context, items){
+            if (items['directory']) {
+              folder = Folders.fromJson(items);
+              return new ListTile(
+                dense: true,
+                title: new Text(items['title']),
+                leading: new Icon(Icons.folder_open),
+                trailing: trailing(folder, paeUser, items['clearances']['addFiles'],context),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                      new UcContent(items, paeUser, school, course)));
+                },
+              );
+            } else
+              return new ListTile(
+                onTap: () async {
+                  // var resp = await req.getFiles(
+                  //    paeUser.session, files[i]['repositoryId'].toString());
+                  //  print('RESP _>>>  $resp');
+                  //var url = 'http://10.0.2.2:8080/baco/repositoryStream/${files[i]['repositoryId'].toString()}?BACOSESS=${paeUser.session}';
+                  req.launchInBrowser(
+                      paeUser.session, items['repositoryId'].toString());
+                  // print(files[i]['title']);
+                  // print(files[i]['path']);
+                  // File file = new File.fromRawPath(resp);
+                  //print("FILE ------------"+ file.path);
+                  //storage.writeFile(file);
+                  //File file = await storage.downloadFile(url,files[i]['title']);
+                  // print(file.path);
+                  // final RenderBox box = context.findRenderObject();
+                  // Share.share(file.readAsStringSync().toString());
+                  //var args = {'url': file.path};
+                  //await platform.invokeMethod('viewPdf', args);
+                },
+                // dense: true,
+                title: new Text(items['title'] ??
+                    items['repositoryFile4JsonView']['name']),
+                leading: new Icon(Icons.description),
+              );
+          },
+        ),
+        /*child: new ListView.builder(
             itemCount: files.length,
             shrinkWrap: true,
             itemBuilder: (context, i) {
@@ -125,7 +170,7 @@ Widget createList(response, paeUser, school, course, context) {
                       files[i]['repositoryFile4JsonView']['name']),
                   leading: new Icon(Icons.description),
                 );
-            }),
+            }),*/
       ),
     ]);
   }

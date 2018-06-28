@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:ippdrive/common/list_item_builder.dart';
+import 'package:ippdrive/common/semesters_item_builder.dart';
+import 'package:ippdrive/folders.dart';
 import 'package:ippdrive/drawer.dart';
 
 import 'package:ippdrive/views/themes/colorsThemes.dart';
@@ -14,16 +16,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List list = json['response']['childs'];
-    String school = list[0]['path'].split('/')[3];
-    String course = list[0]['path'].split('/')[5];
-    // String year = list[0]['path'].split('/')[6].toString().split('.')[0] +' '+list[0]['path'].split('/')[6].toString().split('.')[1];
-    // print(year);
-    print(list[0]['courseUnitsList']);
+
+    var semestres = SemestersBuilder.fromList2List(list);
+    //semestres.fromResponse2Lists();
 
     return WillPopScope(
-      onWillPop: () async => false,
-      child: new Scaffold(
-          drawer: new MyDrawer(school, course, paeUser, json['response']),
+        onWillPop: () async => false,
+        child: new Scaffold(
+          drawer: new MyDrawer(paeUser, json: json['response'],),
           appBar: new AppBar(
             title: new Text(
               'Unidades Curricuares ${list[0]['path'].split('/')[6].toString().split('.')[1]}',
@@ -31,15 +31,48 @@ class HomePage extends StatelessWidget {
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          body: semestres(list, context, school, course)),
-    );
+          body: SingleChildScrollView(
+            child: Wrap(
+              runSpacing: 8.0,
+              children: <Widget>[
+                new Padding(padding: EdgeInsets.all(1.0)),
+                new Container(
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                    //  borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                      border: Border.all(
+                          style: BorderStyle.solid, color: cAppBlackish),
+                    //  color: cAppBlue
+                    ),
+                    child: myExpandTile(
+                        semestres.semester1, context)),
+               // new Padding(padding: EdgeInsets.all(1.0)),
+                new Container(
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      // borderRadius: new BorderRadius.only(topRight:Radius.circular(20.0),bottomLeft: Radius.circular(20.0)),
+                      border: Border.all(
+                          style: BorderStyle.solid, color: cAppBlackish),
+                    ),
+                    child: myExpandTile(
+                        semestres.semester2, context))
+              ],
+            ),
+          ),
+        )
+       // body: semestres(list, context, school, course)),
+        );
   }
 
   ///
-  Widget myExpandTile(List list, BuildContext context, String school, String course) {
-    String title = list[0]['pathParent'].contains('Semestre1')
+  Widget myExpandTile(List list, BuildContext context,) {
+   // print("LISTA >>>> $list");
+
+    String title = list[0]['courseUnitsList'][0]['semestre'] == "S1"
         ? 'Semestre 1'
         : 'Semestre 2';
+    String school = list[0]['courseUnitsList'][0]['course']['schoolInitials'];
+    String course = list[0]['courseUnitsList'][0]['course']['name'];
 
     return new ExpansionTile(
       // leading: new Icon(Icons.list),
@@ -47,29 +80,31 @@ class HomePage extends StatelessWidget {
         title,
         textScaleFactor: 1.5,
       ),
-      children: list
-          .map((val) => new ListTile(
-                title: Container(
-                  decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      //  borderRadius: new BorderRadius.circular(50.0),
-                      border: Border.all(
-                          style: BorderStyle.solid, color: cAppBlackish),
-                      color: cAppBlueAccent),
-                  child: new ListTile(
-                    // leading: new Favorite(val['id'], session),
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                            new UcContent(val, paeUser, school, course))),
-                    title: new Text(val['title'].toString().split('-')[0],
-                        textScaleFactor: 0.95),
-                  ),
-                ),
-              ))
-          .toList(),
+      children: list.map((val) {
+        Folders folder = Folders.fromJson(val);
+        return new ListTile(
+          title: Container(
+            decoration: new BoxDecoration(
+                shape: BoxShape.rectangle,
+                //  borderRadius: new BorderRadius.circular(50.0),
+                border:
+                    Border.all(style: BorderStyle.solid, color: cAppBlackish),
+                color: cAppBlueAccent),
+            child: new ListTile(
+              trailing: trailing(
+                  folder, paeUser, val['clearances']['addFiles'], context),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      new UcContent(val, paeUser, school, course))),
+              title: new Text(val['title'].toString().split('-')[0],
+                  textScaleFactor: 0.95),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
-
+/*
   ///
   Widget semestres(list, BuildContext context, String school, String course) {
     List sem1 = new List();
@@ -82,9 +117,9 @@ class HomePage extends StatelessWidget {
         child: new Wrap(
       runSpacing: 8.0,
       children: <Widget>[
-        /*  new Text(year,
+        *//*  new Text(year,
       textAlign: TextAlign.center,
-      textScaleFactor: 1.2,),*/
+      textScaleFactor: 1.2,),*//*
         new Padding(padding: EdgeInsets.all(1.0)),
         new Container(
             decoration: new BoxDecoration(
@@ -124,5 +159,5 @@ class HomePage extends StatelessWidget {
     }
 
     return sem2;
-  }
+  }*/
 }

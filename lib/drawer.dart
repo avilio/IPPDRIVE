@@ -17,7 +17,9 @@ class MyDrawer extends StatelessWidget {
   final String course;
   final Map json;
 
-  MyDrawer(this.school, this.course, this.paeUser, [this.json]);
+  MyDrawer(this.paeUser, {this.json,String school, String course})
+      : school = school ?? json['childs'][0]['courseUnitsList'][0]['course']['schoolInitials'],
+        course = course ?? json['childs'][0]['courseUnitsList'][0]['course']['name'];
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +72,7 @@ class MyDrawer extends StatelessWidget {
 
   Widget myDrawerHeader(String school, String user, [String course]) {
     var imgSchool;
-    switch (school) {
+    switch (school.toLowerCase()) {
       case 'estg':
         imgSchool = AssetImage("assets/images/estg.png");
         break;
