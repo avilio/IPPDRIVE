@@ -18,6 +18,7 @@ class HomePage extends StatelessWidget {
     String course = list[0]['path'].split('/')[5];
     // String year = list[0]['path'].split('/')[6].toString().split('.')[0] +' '+list[0]['path'].split('/')[6].toString().split('.')[1];
     // print(year);
+    print(list[0]['courseUnitsList']);
 
     return WillPopScope(
       onWillPop: () async => false,
