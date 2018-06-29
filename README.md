@@ -1,4 +1,4 @@
-# ippdrive
+# IppDrive
 
 A Flutter final degree project.
 

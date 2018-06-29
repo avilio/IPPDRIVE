@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
@@ -10,6 +12,8 @@ import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/apiRequests.dart';
 import 'package:ippdrive/drawer.dart';
 import 'package:ippdrive/user.dart';
+import 'package:share/share.dart';
+import 'package:android_intent/android_intent.dart';
 
 class UcContent extends StatefulWidget {
   final Map content;
@@ -102,21 +106,24 @@ Widget createList(response, paeUser, school, course, context) {
             } else
               return new ListTile(
                 onTap: () async {
-                  // var resp = await req.getFiles(
-                  //    paeUser.session, files[i]['repositoryId'].toString());
-                  //  print('RESP _>>>  $resp');
-                  //var url = 'http://10.0.2.2:8080/baco/repositoryStream/${files[i]['repositoryId'].toString()}?BACOSESS=${paeUser.session}';
+
+                  /*File file = await req.getFiles(paeUser.session, items);
+                  print(file);*/
                   req.launchInBrowser(
                       paeUser.session, items['repositoryId'].toString());
-                  // print(files[i]['title']);
-                  // print(files[i]['path']);
-                  // File file = new File.fromRawPath(resp);
-                  //print("FILE ------------"+ file.path);
                   //storage.writeFile(file);
                   //File file = await storage.downloadFile(url,files[i]['title']);
                   // print(file.path);
                   // final RenderBox box = context.findRenderObject();
-                  // Share.share(file.readAsStringSync().toString());
+/*                  if (Platform.isAndroid) {
+                    AndroidIntent intent = new AndroidIntent(
+                      action: 'action_view',
+                      data: Uri.file(file).,
+                    );
+                    await intent.launch();
+                  }
+                  file.openSync(mode: FileMode.read);*/
+                  //Share.share(file.readAsBytesSync().toString());
                   //var args = {'url': file.path};
                   //await platform.invokeMethod('viewPdf', args);
                 },

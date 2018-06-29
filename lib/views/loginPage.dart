@@ -93,22 +93,25 @@ class LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.center,
                   ),
                   new FloatingActionButton(
-                    onPressed: () {
-                      /* CODIGO PARA FAZER LAUNCH DO BROWSER EM VEZ DE MOSTRAR O DIALOG DE LOGIN DO PAE
-                         if (await canLaunch('https://pae.ipportalegre.pt/startGenerateChaveApps.do')) {
-                         await launch('https://pae.ipportalegre.pt/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
+                    onPressed: () async {
+
+                      //var url = 'http://10.0.2.2:8080/baco';
+                      var url = 'https://pae.ipportalegre.pt';
+
+                     //  CODIGO PARA FAZER LAUNCH DO BROWSER EM VEZ DE MOSTRAR O DIALOG DE LOGIN DO PAE
+                         if (await canLaunch('$url/startGenerateChaveApps.do')) {
+                         await launch('$url/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
                          } else {
-                         throw 'Could not launch https://pae.ipportalegre.pt/startGenerateChaveApps.do';
+                         throw 'Could not launch $url/startGenerateChaveApps.do';
                          }
-                      */
-                      print(_connectionStatus);
+                    /*  print(_connectionStatus);
                       if (!_connectionStatus.contains('none')) {
                         showDialog(context: context, child: DialogKey());
                       } else
                         showDialog(
                             context: context,
                             child:
-                                buildDialog('Sem acesso a internet', context));
+                                buildDialog('Sem acesso a internet', context));*/
                     },
                     child: Icon(Icons.vpn_key),
                     mini: true,

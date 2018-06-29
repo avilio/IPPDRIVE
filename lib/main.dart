@@ -12,7 +12,7 @@ void main() => runApp(
           debugShowCheckedModeBanner: false,
           theme: buildAppTheme(),
 
-          /* onGenerateRoute: (settings){
+/* onGenerateRoute: (settings){
 
         switch (settings.name) {
 
@@ -20,11 +20,13 @@ void main() => runApp(
 
         }
 
-      },*/
+      },
+
 
           routes: <String, WidgetBuilder>{
             "/login": (_) => new LoginPage(),
             "/home": (_) => new HomePage(),
             "/content": (_) => new UcContent(),
-          }),
+          }*/
+          ),
     );
