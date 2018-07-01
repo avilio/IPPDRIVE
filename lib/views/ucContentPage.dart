@@ -37,7 +37,7 @@ class UcContentState extends State<UcContent> {
     var bodyList = new AsyncLoader(
         initState: () async =>
         await request.courseUnitsFoldersContents(widget.content, widget.paeUser.session),
-        renderLoad: () => new CircularProgressIndicator(),
+        renderLoad: () => Center(child: new CircularProgressIndicator()),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {
           List checker = data['response']['childs'];
@@ -106,11 +106,12 @@ Widget createList(response, paeUser, school, course, context) {
             } else
               return new ListTile(
                 onTap: () async {
-
-                  /*File file = await req.getFiles(paeUser.session, items);
-                  print(file);*/
-                  req.launchInBrowser(
-                      paeUser.session, items['repositoryId'].toString());
+                  bool can = await req.checkPermissions();
+                  print(can);
+                    File file = await req.getFiles(paeUser.session, items);
+                  print(file);
+                /*  req.launchInBrowser(
+                      paeUser.session, items['repositoryId'].toString());*/
                   //storage.writeFile(file);
                   //File file = await storage.downloadFile(url,files[i]['title']);
                   // print(file.path);

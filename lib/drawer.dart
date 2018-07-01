@@ -11,26 +11,38 @@ import 'package:ippdrive/views/loginPage.dart';
 import 'package:ippdrive/views/themes/colorsThemes.dart';
 import 'package:ippdrive/views/ucContentPage.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
   final PaeUser paeUser;
   final String school;
   final String course;
   final Map json;
+  bool isXpandYear,isXpandFav, isXpandRoot ; ///ainda nao sei se é para ficar,mas mantem o tile expanded se o estado anterior foi expanded
 
   MyDrawer(this.paeUser, {this.json,String school, String course})
       : school = school ?? json['childs'][0]['courseUnitsList'][0]['course']['schoolInitials'],
         course = course ?? json['childs'][0]['courseUnitsList'][0]['course']['name'];
 
   @override
+  MyDrawerState createState() {
+    return new MyDrawerState();
+  }
+}
+
+class MyDrawerState extends State<MyDrawer> {
+  @override
   Widget build(BuildContext context) {
     Requests request = Requests();
     Validations validations = Validations();
+    Divider divider = Divider(color: cAppBlackish,height: 0.0);///logo se ve se se mete, se faz sentido esteticamente
 
     return new Drawer(
       child: new ListView(
+        physics: PageScrollPhysics(),
         children: <Widget>[
-          myDrawerHeader(school, paeUser.name, course),
+          myDrawerHeader(widget.school, widget.paeUser.name, widget.course),
           new ExpansionTile(
+            initiallyExpanded: widget.isXpandYear ?? false,
+            onExpansionChanged:(b) => widget.isXpandYear = b,
             leading: new Icon(Icons.school),
             title: new Text(
               ' Ano Lectivo',
@@ -39,14 +51,18 @@ class MyDrawer extends StatelessWidget {
             children: <Widget>[yearList(request, validations)],
           ),
           new ExpansionTile(
+            initiallyExpanded: widget.isXpandFav ?? false,
+            onExpansionChanged:(b) => widget.isXpandFav = b,
             leading: new Icon(Icons.star),
             title: new Text(
               'Favoritos',
               style: new TextStyle(fontWeight: FontWeight.bold),
             ),
-            children: <Widget>[favorites(request, validations, json)],
+            children: <Widget>[favorites(request, validations, widget.json)],
           ),
           new ExpansionTile(
+            initiallyExpanded: widget.isXpandRoot ?? false,
+            onExpansionChanged:(b) => widget.isXpandRoot = b,
             leading: Image(image: AssetImage("assets/images/ipp.png"),width: 40.0,), //ImageIcon(AssetImage("assets/images/ipp.png"))
             title: new Text(
               'IppDrive',
@@ -119,7 +135,7 @@ class MyDrawer extends StatelessWidget {
   }
 
   Widget yearList(Requests request, validations) => new AsyncLoader(
-        initState: () async => await request.getYears(paeUser.session),
+        initState: () async => await request.getYears(widget.paeUser.session),
         renderLoad: () => new CircularProgressIndicator(),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {
@@ -129,6 +145,7 @@ class MyDrawer extends StatelessWidget {
           list.add(data['response']['previous2ImportYear']);
 
           return new ListView.builder(
+            physics: PageScrollPhysics(),
             shrinkWrap: true,
             itemCount: list.length,
             itemBuilder: (context, index) {
@@ -142,11 +159,11 @@ class MyDrawer extends StatelessWidget {
                 ),
                 onTap: () async {
                   Map units = await request.wsYearsCoursesUnitsFolders(
-                      paeUser.session, list[index]);
+                      widget.paeUser.session, list[index]);
                   if (units['response']['childs'].isNotEmpty) {
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                            builder: (context) => new HomePage(units, paeUser)),
+                            builder: (context) => new HomePage(units, widget.paeUser)),
                         (Route<dynamic> route) => false);
                   } else
                     validations.requestResponseValidation(
@@ -160,13 +177,14 @@ class MyDrawer extends StatelessWidget {
 
   Widget favorites(Requests request, Validations validations, Map json) =>
       new AsyncLoader(
-        initState: () async => await request.readFavorites(paeUser.session),
+        initState: () async => await request.readFavorites(widget.paeUser.session),
         renderLoad: () => new CircularProgressIndicator(),
         renderError: ([error]) => new Text('ERROR LOANDING DATA'),
         renderSuccess: ({data}) {
           List list = data['response']['favorites'];
 
           return new ListView.builder(
+            physics: PageScrollPhysics(),
             shrinkWrap: true,
             itemCount: list.length ?? 0,
             itemBuilder: (context, index) {
@@ -185,7 +203,7 @@ class MyDrawer extends StatelessWidget {
                   if (list.isNotEmpty) {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => new UcContent(
-                            list[index], paeUser, school, course)));
+                            list[index], widget.paeUser, widget.school, widget.course)));
                   } else
                     validations.requestResponseValidation(
                         'No Data to Display', context);
@@ -198,15 +216,15 @@ class MyDrawer extends StatelessWidget {
 
   Widget ippDriveRoot(Requests request){
    return new AsyncLoader(
-      initState: () async => await request.courseUnitsFoldersContents({"id" : 5}, paeUser.session),
+      initState: () async => await request.courseUnitsFoldersContents({"id" : 5}, widget.paeUser.session),
       renderLoad: () => new CircularProgressIndicator(),
       renderError: ([error]) => new Text('ERROR LOANDING DATA'),
       renderSuccess: ({data}) {
         List list = data['response']['childs'];
-
      //   list.forEach((val)=>debugPrint(val['title']));
 
         return new ListView.builder(
+          physics: PageScrollPhysics(),
           shrinkWrap: true,
           itemCount: list.length ?? 0,
           itemBuilder: (context, index) {
@@ -221,7 +239,7 @@ class MyDrawer extends StatelessWidget {
                 if (list.isNotEmpty) {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => new UcContent(
-                          list[index], paeUser, school, course)));
+                          list[index], widget.paeUser, widget.school, widget.course)));
                 } else
                   validations.requestResponseValidation(
                       'No Data to Display', context);
@@ -233,8 +251,6 @@ class MyDrawer extends StatelessWidget {
     );
 
   }
-
-
 
   Widget imageSchoolLeading(String title){
     switch (title.toLowerCase()) {
@@ -253,6 +269,7 @@ class MyDrawer extends StatelessWidget {
     }
     return Icon(Icons.layers);
   }
+
   String subtitleSplitter(String sub) {
     String response = '';
 

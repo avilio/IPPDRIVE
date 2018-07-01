@@ -5,8 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ippdrive/services/REST.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart';
-
+import 'package:simple_permissions/simple_permissions.dart';
 
 /// Due to the simulation purposes, the Android VM simulator does not recognize localhost as
 /// localhost, so the address 10.0.2.2 have to replace the original address, in order to work
@@ -177,14 +176,40 @@ class Requests {
   }
 
   Future<File> _downloadFile(String url, String filename) async {
-    var httpClient = new HttpClient();
 
-    var request = await httpClient.getUrl(Uri.parse(url));
-    var response = await request.close();
-    var bytes = await consolidateHttpClientResponseBytes(response);
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/$filename');
-    await file.writeAsBytes(bytes);
-    return file;
+    var httpClient = new HttpClient();
+     var request = await httpClient.getUrl(Uri.parse(url));
+     var response = await request.close();
+     var bytes = await consolidateHttpClientResponseBytes(response);
+//    String dir = (await getApplicationDocumentsDirectory()).path;
+     String dir = (await getExternalStorageDirectory()).path;
+     File file = new File('$dir/$filename');
+     await file.writeAsBytes(bytes);
+     return file;
+
+  }
+
+  Future<bool> checkPermissions() async {
+    bool externalStoragePermissionOkay = false;
+
+    if (Platform.isAndroid) {
+      SimplePermissions
+          .checkPermission(Permission.WriteExternalStorage)
+          .then((checkOkay) {
+        if (!checkOkay) {
+          SimplePermissions
+              .requestPermission(Permission.WriteExternalStorage)
+              .then((okDone) {
+            if (okDone) {
+              debugPrint("${okDone}");
+              externalStoragePermissionOkay = okDone;
+            }
+          });
+        } else {
+            externalStoragePermissionOkay = checkOkay;
+        }
+      });
+    }
+    return externalStoragePermissionOkay;
   }
 }
