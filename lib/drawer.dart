@@ -20,7 +20,8 @@ class MyDrawer extends StatefulWidget {
 
   MyDrawer(this.paeUser, {this.json,String school, String course})
       : school = school ?? json['childs'][0]['courseUnitsList'][0]['course']['schoolInitials'],
-        course = course ?? json['childs'][0]['courseUnitsList'][0]['course']['name'];
+        course = course ?? json['childs'][0]['courseUnitsList'][0]['course']['name'] ;
+
 
   @override
   MyDrawerState createState() {

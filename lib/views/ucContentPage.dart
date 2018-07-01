@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
+import 'package:flutter/services.dart';
 import 'package:ippdrive/common/list_item_builder.dart';
 import 'package:ippdrive/favorites.dart';
 import 'package:ippdrive/folders.dart';
@@ -29,6 +31,21 @@ class UcContent extends StatefulWidget {
 class UcContentState extends State<UcContent> {
 
   Requests request = Requests();
+  TapGestureRecognizer _tapGestureRecognizer;
+  List _listPath = List();
+
+  @override
+  void initState() {
+    super.initState();
+    _tapGestureRecognizer = new TapGestureRecognizer()
+    ..onTap = _handlePress;
+  }
+
+  @override
+  void dispose() {
+    _tapGestureRecognizer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +59,13 @@ class UcContentState extends State<UcContent> {
         renderSuccess: ({data}) {
           List checker = data['response']['childs'];
           if (checker.isNotEmpty)
-            return createList(data, widget.paeUser,widget.school,widget.course,context);
+            return createList(data, widget.paeUser,widget.school,widget.course,context,_tapGestureRecognizer, _listPath);
           else
            return buildDialog('Data is Empty', context);
         });
 //todo arranjar maneira de nao voltar atras caso a rota anterior seja login page
     return new Scaffold(
-        drawer: new MyDrawer(widget.paeUser,school: widget.school, course: widget.course,),
+        drawer: new MyDrawer(widget.paeUser,school: widget.school, course: widget.course,json: widget.content,),
         appBar: new AppBar(
           title: new Text(
             widget.content['title'].toString().split('-')[0],
@@ -59,14 +76,19 @@ class UcContentState extends State<UcContent> {
         body: bodyList);
   }
 
+
+  void _handlePress() {
+    HapticFeedback.vibrate();
+  }
 }
 
-Widget createList(response, paeUser, school, course, context) {
+Widget createList(response, paeUser, school, course, context, TapGestureRecognizer tapGestureRecognizer, List listPath) {
   Iterator items = response['response']['childs'].iterator;
   List files = new List();
   Requests req = Requests();
   Folders folder;
   // FileStorage storage = FileStorage();
+
 
   while (items.moveNext()) {
     if (items.current != null) files.add(items.current);
@@ -81,7 +103,7 @@ Widget createList(response, paeUser, school, course, context) {
         //todo criar uma lista no onTap das directory's adicionar as paginas da rota para tentar ao clickar no path ir para o ligar especifico
         onTap: () => Navigator.of(context).pop(),
         child: new Text(
-          pathBuilder(i.current['pathParent']),
+         TextSpan(text: pathBuilder(i.current, listPath),recognizer: tapGestureRecognizer ).text,
           style: new TextStyle(fontWeight: FontWeight.bold, color: cAppBlue),
         ),
       ),
@@ -200,24 +222,27 @@ Widget trailing(Folders folder, PaeUser paeUser,bool canAdd, BuildContext contex
 
 }
 
-String pathBuilder(String parent) {
+String pathBuilder(Map parent,List listPath) {
   print(parent);
+  parent['pathParent'];
   if (parent != null) {
 
-    if (parent.split('/').length > 7) {
-      List fields = parent.split('/');
+    if ( parent['pathParent'].split('/').length > 7) {
+      List fields =  parent['pathParent'].split('/');
       String path = '';
-      for (var j = 0; j < fields.length; j++) {
-        if (j > 6) path += stringSplitter(fields[j], '.') + ' / ';
+      for (var j = 7; j < fields.length; j++) {
+         path += stringSplitter(fields[j], '.') + ' / ';
       }
+      listPath.add(parent);
       return path;
     }else{
-      List fields = parent.split('/');
+      List fields =  parent['pathParent'].split('/');
       String path = '';
       for (var j = 0; j < fields.length; j++) {
        path += stringSplitter(fields[j], '.') + ' / ';
       }
       print(path);
+      listPath.add(parent);
       return path;
     }
   }

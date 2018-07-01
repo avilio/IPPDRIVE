@@ -46,9 +46,10 @@ class Validations {
         else{
           ///PROVISORIO
           if(courseUnitFoldersJson['response']['childs'].isEmpty) {
-            var courseUnitFoldersJson = await request.courseUnitsFoldersContents({"id" : 0}, paeUser.session);
+//            var courseUnitFoldersJson = await request.courseUnitsFoldersContents({"id" : 0}, paeUser.session);
+            var courseUnitFoldersJson = await request.wsReadMyDefaultFoldersFolders(paeUser.session);
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UcContent(courseUnitFoldersJson['response']['childs'][0], paeUser)));
+                builder: (context) => HomePage(courseUnitFoldersJson, paeUser)));
           }else
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => HomePage(courseUnitFoldersJson, paeUser)));
