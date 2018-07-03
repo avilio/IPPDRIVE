@@ -23,7 +23,7 @@ class Requests {
   Future<Map> wsAuth() async{
     var url = '$host/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
-   // Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
+    // Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
 
 
     return await rest.post(url, body);
@@ -87,7 +87,7 @@ class Requests {
   Future<Map> courseUnitsFoldersContents(Map list, String session) async {
 
     int id;
-    
+
     if(list['id']== null)
       id =list['pageContentId'];
     else
@@ -146,7 +146,7 @@ class Requests {
       return {"": ""};
 
   }
-///
+  ///
   Future<Map> getAppKey(String user, String pass) async {
     var url = '$host/authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps';
     var body = {
@@ -162,8 +162,8 @@ class Requests {
 
   }
 
-/// Create a [url] with given [id] and [bacosession] to send a get request to the api
-/// and returns a Map with the folder added to favorites as [response].
+  /// Create a [url] with given [id] and [bacosession] to send a get request to the api
+  /// and returns a Map with the folder added to favorites as [response].
 
   Future<Null> launchFilesInBrowser(String bacoSess, String id) async {
 
@@ -178,9 +178,9 @@ class Requests {
   launchGenetareKeyInBrowser() async{
     //  CODIGO PARA FAZER LAUNCH DO BROWSER EM VEZ DE MOSTRAR O DIALOG DE LOGIN DO PAE
     if (await canLaunch('$host/startGenerateChaveApps.do')) {
-    await launch('$host/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
+      await launch('$host/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
     } else {
-    throw 'Could not launch $host/startGenerateChaveApps.do';
+      throw 'Could not launch $host/startGenerateChaveApps.do';
     }
   }
 
@@ -191,25 +191,25 @@ class Requests {
     return rest.get(url).then((response) => response);
   }
 
- Future<File> getFiles(String bacoSess, Map file) async {
+  Future<File> getFiles(String bacoSess, Map file) async {
 
-  var url = '$host/repositoryStream/${file['repositoryId']}?BACOSESS=$bacoSess';
+    var url = '$host/repositoryStream/${file['repositoryId']}?BACOSESS=$bacoSess';
 
-  return _downloadFile(url, file['title']);
-  //return rest.get(url).then((response) => response );
+    return _downloadFile(url, file['title']);
+    //return rest.get(url).then((response) => response );
   }
 
   Future<File> _downloadFile(String url, String filename) async {
 
     var httpClient = new HttpClient();
-     var request = await httpClient.getUrl(Uri.parse(url));
-     var response = await request.close();
-     var bytes = await consolidateHttpClientResponseBytes(response);
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+    var bytes = await consolidateHttpClientResponseBytes(response);
 //    String dir = (await getApplicationDocumentsDirectory()).path;
-     String dir = (await getExternalStorageDirectory()).path;
-     File file = new File('$dir/$filename');
-     await file.writeAsBytes(bytes);
-     return file;
+    String dir = (await getExternalStorageDirectory()).path;
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
 
   }
 
@@ -230,7 +230,7 @@ class Requests {
             }
           });
         } else {
-            externalStoragePermissionOkay = checkOkay;
+          externalStoragePermissionOkay = checkOkay;
         }
       });
     }

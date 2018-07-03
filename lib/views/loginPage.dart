@@ -20,10 +20,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
   final _userController = new TextEditingController();
   final _passwordController = new TextEditingController();
+
 
   final Connectivity _connectivity = new Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
@@ -70,70 +72,71 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double deviceWidth = MediaQuery.of(context).size.width;
-    final double targetWidth = deviceWidth > 700.0 ? 500.0 : deviceWidth * 0.85;
-
+    final deviceHeight = MediaQuery.of(context).size.height;
+    final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.95;
+    ///
     print(_connectionStatus);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: cAppWhite,
-        body: Container(
-          width: targetWidth,
-          child: new Form(
-              key: _formKey,
-              child: new Padding(
-                padding: _padding,
-                child: new ListView(
-                  children: <Widget>[
-                    myLoginBox(),
-                    // button,
-                    new Padding(padding: new EdgeInsets.all(35.0)),
-                    new RichText(
-                      text: new TextSpan(
-                          text:
-                              'Nao tem chave app moveis? Clique no botao com a Chave',
-                          style: Theme.of(context).textTheme.caption),
-                      textAlign: TextAlign.center,
-                    ),
-                    new FloatingActionButton(
-                      onPressed: () async {
-                        var url = 'http://10.0.2.2:8080/baco';
-                        //var url = 'https://pae.ipportalegre.pt';
-
-                       //  CODIGO PARA FAZER LAUNCH DO BROWSER EM VEZ DE MOSTRAR O DIALOG DE LOGIN DO PAE
-                           if (await canLaunch('$url/startGenerateChaveApps.do')) {
-                           await launch('$url/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
-                           } else {
-                           throw 'Could not launch $url/startGenerateChaveApps.do';
-                           }
-                      /*  print(_connectionStatus);
-                        if (!_connectionStatus.contains('none')) {
-                          showDialog(context: context, child: DialogKey());
-                        } else
-                          showDialog(
-                              context: context,
-                              child:
-                                  buildDialog('Sem acesso a internet', context));*/
-                      },
-                      child: Icon(Icons.vpn_key),
-                      mini: true,
-                      tooltip: 'Chave Apps Moveis',
-                      backgroundColor: cAppYellowish,
-                      foregroundColor: cAppBlackish,
-                    ),
-                    new Padding(padding: new EdgeInsets.all(15.0)),
-                    Align(
-                      child: new Text(
-                        'Desenvolvido por IPP-ESTG_EI',
+        body: SingleChildScrollView(
+          child: Container(
+            child: new Form(
+                key: _formKey,
+                child: new Padding(
+                  padding: _padding,
+                  child: new Column(
+                    children: <Widget>[
+                      myLoginBox(),
+                      // button,
+                      new Padding(padding: new EdgeInsets.all((deviceHeight-targetHeight)/2)),
+                      new RichText(
+                        text: new TextSpan(
+                            text:
+                                'Nao tem chave app moveis? Clique no botao com a Chave',
+                            style: Theme.of(context).textTheme.caption),
                         textAlign: TextAlign.center,
                       ),
-                      alignment: FractionalOffset.bottomCenter,
-                    ),
-                  ],
-                ),
-              )),
+                      new FloatingActionButton(
+                        onPressed: () async {
+                          var url = 'http://10.0.2.2:8080/baco';
+                          //var url = 'https://pae.ipportalegre.pt';
+
+                         //  CODIGO PARA FAZER LAUNCH DO BROWSER EM VEZ DE MOSTRAR O DIALOG DE LOGIN DO PAE
+                             if (await canLaunch('$url/startGenerateChaveApps.do')) {
+                             await launch('$url/startGenerateChaveApps.do', forceSafariVC: false, forceWebView: false);
+                             } else {
+                             throw 'Could not launch $url/startGenerateChaveApps.do';
+                             }
+                        /*  print(_connectionStatus);
+                          if (!_connectionStatus.contains('none')) {
+                            showDialog(context: context, child: DialogKey());
+                          } else
+                            showDialog(
+                                context: context,
+                                child:
+                                    buildDialog('Sem acesso a internet', context));*/
+                        },
+                        child: Icon(Icons.vpn_key),
+                        mini: true,
+                        tooltip: 'Chave Apps Moveis',
+                        backgroundColor: cAppYellowish,
+                        foregroundColor: cAppBlackish,
+                      ),
+                      new Padding(padding: new EdgeInsets.all(15.0)),
+                      Align(
+                        child: new Text(
+                          'Desenvolvido por IPP-ESTG_EI',
+                          textAlign: TextAlign.center,
+                        ),
+                        alignment: FractionalOffset.bottomCenter,
+                      ),
+                    ],
+                  ),
+                )),
+          ),
         ),
       ),
     );
@@ -195,7 +198,7 @@ class LoginPageState extends State<LoginPage> {
         child: new RaisedButton(
           onPressed: () {
             if (!_connectionStatus.contains('none')) {
-              validations.submit(_userController.text.trim(), _passwordController.text.trim(),
+              validations.submit(_userController.text..trim(), _passwordController.text.trim(),
                   _formKey, context, _scaffoldKey);
             } else
               showDialog(

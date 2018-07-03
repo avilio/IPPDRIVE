@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ippdrive/reformat/blocs/login_provider.dart';
+import 'package:ippdrive/reformat/login/login.dart';
 import 'package:ippdrive/views/homePage.dart';
 
 import 'package:ippdrive/views/loginPage.dart';
@@ -6,27 +8,32 @@ import 'package:ippdrive/views/themes/mainTheme.dart';
 import 'package:ippdrive/views/ucContentPage.dart';
 
 void main() => runApp(
-      new MaterialApp(
+      LoginProvider(
+        child: new MaterialApp(
           title: 'IppDrive',
-          home: new LoginPage(),
+          home: new LoginPageBloc(),
           debugShowCheckedModeBanner: false,
           theme: buildAppTheme(),
-
-/* onGenerateRoute: (settings){
-
-        switch (settings.name) {
-
-          case "/listView": (_) => new ListFolder(null,null);
-
-        }
-
-      },
-
-
-          routes: <String, WidgetBuilder>{
-            "/login": (_) => new LoginPage(),
-            "/home": (_) => new HomePage(),
-            "/content": (_) => new UcContent(),
-          }*/
-          ),
+          onGenerateRoute: routes,
+        ),
+      ),
     );
+
+Route routes(RouteSettings settings){
+  switch(settings.name){
+    case "/" : return MaterialPageRoute(
+        builder: (context)=> LoginPageBloc()
+    );break;
+    case "/home" : return MaterialPageRoute(
+      builder: (context)=> HomePage()
+    );break;
+    case "/content" : return MaterialPageRoute(
+      builder: (context){
+        //get do id para ir buscar cadeiras
+        settings.name.replaceFirst("/", "");
+
+        return UcContent();}
+    );break;
+  }
+  return null;
+}
