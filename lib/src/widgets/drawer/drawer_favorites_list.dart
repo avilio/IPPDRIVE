@@ -42,7 +42,9 @@ class DrawerFavoritesList extends StatelessWidget {
               return new ListTile(
                 dense: true,
                 title: new Text(
-                  favoritesList[index]['title'],
+                  favoritesList[index]['title'].contains('-')
+                      ? favoritesList[index]['title'].split('-').first
+                      : favoritesList[index]['title'],
                   style: new TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: new Text(

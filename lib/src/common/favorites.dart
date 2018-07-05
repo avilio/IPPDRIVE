@@ -40,6 +40,7 @@ class FavoritesState extends State<Favorites> {
 
       if (isFav) {
         favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
+        //todo
         print("Favorito: '${widget.folders.title}' --> Removido");
         setState(() {
           isFav = false;
@@ -47,10 +48,12 @@ class FavoritesState extends State<Favorites> {
       } else {
         favBloc.addFavorites(widget.folders.id,favBloc.paeUser.session)
             .then((map) {
-          print("Favorito: '${widget.folders.title}' --> Adicionado");
-          ///Caso esta situaçao se verifique..muito raro acontecer
+            //todo
+              print("Favorito: '${widget.folders.title}' --> Adicionado");
+          /// Caso esta situaçao se verifique..muito raro acontecer
           if (map['response']['fail'] == 'alreadyExist') {
             favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
+            //todo
             print("Favorito: '${widget.folders.title}' adicionado e removido");
             setState(() {
               isFav = false;
