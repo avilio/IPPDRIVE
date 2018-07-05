@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-
-import 'package:ippdrive/views/homePage.dart';
-import 'package:ippdrive/views/loginPage.dart';
-import 'package:ippdrive/views/themes/mainTheme.dart';
-import 'package:ippdrive/views/ucContentPage.dart';
-
-import './reformat/screens/login.dart';
-import './reformat/blocs/login_provider.dart';
-import './reformat/blocs/favorites_provider.dart';
-import './reformat/blocs/home_provider.dart';
+import './src/common/themes/mainTheme.dart';
+import './src/screens/content.dart';
+import './src/screens/login.dart';
+import './src/screens/home.dart';
+import './src/blocs/login_provider.dart';
+import './src/blocs/favorites_provider.dart';
+import './src/blocs/home_provider.dart';
+import './src/blocs/drawer_provider.dart';
 
 void main() => runApp(
-      FavoritesProvider(
-        child: HomeProvider(
-          child: LoginProvider(
-            child: new MaterialApp(
-              title: 'IppDrive',
-             // home: new LoginPageBloc(),
-              debugShowCheckedModeBanner: false,
-              theme: buildAppTheme(),
-              onGenerateRoute: routes,
+      DrawerProvider(
+        child: FavoritesProvider(
+          child: HomeProvider(
+            child: LoginProvider(
+              child: new MaterialApp(
+                title: 'IppDrive',
+               // home: new LoginPageBloc(),
+                debugShowCheckedModeBanner: false,
+                theme: buildAppTheme(),
+                onGenerateRoute: routes,
+              ),
             ),
           ),
         ),
@@ -30,7 +30,7 @@ void main() => runApp(
 Route routes(RouteSettings settings){
   switch(settings.name){
     case "/" : return MaterialPageRoute(
-        builder: (context)=> LoginPageBloc()
+        builder: (context)=> LoginPage()
     );break;
     case "/home" : return MaterialPageRoute(
       builder: (context)=> HomePage()
@@ -40,7 +40,7 @@ Route routes(RouteSettings settings){
         //get do id para ir buscar cadeiras
         settings.name.replaceFirst("/", "");
 
-        return UcContent();}
+        return Content();}
     );break;
   }
   return null;
