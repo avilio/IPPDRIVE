@@ -16,13 +16,13 @@ class HomeExpansionTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     String title;
 
-    if(child[0]['indexInParent'] != 0)
+    if(child[0]['pathParent'] != '/root')
       title = child[0]['courseUnitsList'][0]['semestre'] == "S1"
           ? 'Semestre 1'
           : 'Semestre 2';
-
+    
     return new ExpansionTile(
-      key: PageStorageKey('expansionTile'),
+      key: PageStorageKey('${child.map((units) => units['id'])}'),
       title: new Text(
         title ?? 'ROOT',
         textScaleFactor: 1.5,
