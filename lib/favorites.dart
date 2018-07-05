@@ -4,7 +4,9 @@ import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:ippdrive/folders.dart';
 import 'package:ippdrive/services/apiRequests.dart';
-import 'package:ippdrive/user.dart';
+
+import './reformat/models/user.dart';
+//import 'package:ippdrive/user.dart';
 
 class Favorites extends StatefulWidget {
   final PaeUser paeUser;

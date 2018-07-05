@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/apiRequests.dart';
 import 'package:ippdrive/views/homePage.dart';
-import 'package:ippdrive/user.dart';
+
+
+//import 'package:ippdrive/user.dart';
+
+import '../../reformat/models/user.dart';
 import 'package:ippdrive/views/ucContentPage.dart';
 
 /// Regular expression to make sure the username contains only letters and/or numbers

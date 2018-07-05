@@ -6,7 +6,8 @@ import 'package:ippdrive/drawer.dart';
 
 import 'package:ippdrive/views/themes/colorsThemes.dart';
 import 'package:ippdrive/views/ucContentPage.dart';
-import 'package:ippdrive/user.dart';
+//import 'package:ippdrive/user.dart';
+import '../reformat/models/user.dart';
 
 class HomePage extends StatelessWidget {
   final Map json;

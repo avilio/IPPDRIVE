@@ -13,7 +13,9 @@ import 'package:ippdrive/views/themes/colorsThemes.dart';
 import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/services/apiRequests.dart';
 import 'package:ippdrive/drawer.dart';
-import 'package:ippdrive/user.dart';
+
+import '../reformat/models/user.dart';
+//import 'package:ippdrive/user.dart';
 import 'package:share/share.dart';
 import 'package:android_intent/android_intent.dart';
 

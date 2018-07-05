@@ -1,21 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:rxdart/rxdart.dart';
 
 import '../models/user.dart';
 import '../resources/apiCalls.dart';
+import '../common/dialogs.dart';
+import './home_provider.dart';
 
-import 'validators.dart';
+import '../common/utilities.dart';
 
-class LoginBloc extends Object with Validators, Requests {
+class LoginBloc extends Object with Utilities, Requests, ExceptionDialog {
   final _username = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
   final _response = BehaviorSubject<dynamic>();
   final _paeUser = BehaviorSubject<PaeUser>();
   final _formKey = BehaviorSubject<GlobalKey<FormState>>();
-  //final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   /// Add data to stream
 //  Stream<String> get username => _username.stream.transform(validateUsername);
@@ -23,8 +23,8 @@ class LoginBloc extends Object with Validators, Requests {
 //  Stream<bool> get submitValid =>
 //      Observable.combineLatest2(username, password, (e, p) => true);
   Stream<dynamic> get response => _response.stream;
-  Stream<PaeUser> get paeUser => _paeUser.stream;
-//  Stream<GlobalKey<FormState>> get formState => _formKey;
+  //Stream<PaeUser> get paeUser => _paeUser.stream;
+  //PaeUser get paeUser => _paeUser.value;
 
   /// Change data
   Function(String) get setUsername => _username.sink.add;
@@ -34,46 +34,39 @@ class LoginBloc extends Object with Validators, Requests {
   Function(String) get checkUser => userValidation;
   Function(String) get checkPass => passwordValidation;
 
-  submit(String user, String password) async {
-    //var state =_formKey.value.currentState;
+  submit(String user, String password, BuildContext context) async {
     setUsername(user);
     setPassword(password);
 
-    if(_formKey.value.currentState.validate()) {
+    if (_formKey.value.currentState.validate()) {
       final validUser = _username.value;
       final validPassword = _password.value;
 
-      print('user is $validUser');
-      print('password is $validPassword');
-
-      await auth(validUser, validPassword);
+      auth(validUser, validPassword, context);
     }
   }
 
-  auth(String user, String password) async {
-    var bacoSessAuth;
-    var bacoSessRLogin;
+  auth(String user, String password, BuildContext context) async {
+    var paeAuth;
+    var paeRLogin;
 
-    bacoSessAuth = await wsAuth();
-    ///
-   !bacoSessAuth.containsValue('ok')
-        ? _response.sink.add(bacoSessAuth['exception'])
-        : bacoSessRLogin = await wsRLogin(
-            user, password, bacoSessAuth['response']['BACOSESS']);
+    final homeBloc = HomeProvider.of(context);
+
+    paeAuth = await wsAuth();
 
     ///
-   bacoSessRLogin['service'] == 'error'
-        ? _response.sink.add(bacoSessRLogin['exception'])
-        : _response.sink.add(bacoSessRLogin['response']);
+    !paeAuth.containsValue('ok')
+        ? _response.sink.add(paeAuth['exception'])
+        : paeRLogin =
+            await wsRLogin(user, password, paeAuth['response']['BACOSESS']);
 
+    ///
+    paeRLogin['service'] == 'error'
+        ? _response.sink.add(paeRLogin['exception'])
+        : _response.sink.add(paeRLogin['response']);
 
-   print(_response.value);
-   if(_response.value.runtimeType != String){
-     setPaeUser(PaeUser.fromJson(_response.value));
-     print(_paeUser.value.session);
-     print(_paeUser.value.name);
-     print(_paeUser.value.username);
-   }
+    homeBloc.setResponse(_response.value);
+    homeBloc.route2Home(context);
   }
 
   dispose() {

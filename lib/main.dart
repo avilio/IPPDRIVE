@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:ippdrive/reformat/blocs/login_provider.dart';
-import 'package:ippdrive/reformat/login/login.dart';
-import 'package:ippdrive/views/homePage.dart';
 
+
+import 'package:ippdrive/views/homePage.dart';
 import 'package:ippdrive/views/loginPage.dart';
 import 'package:ippdrive/views/themes/mainTheme.dart';
 import 'package:ippdrive/views/ucContentPage.dart';
 
+import './reformat/screens/login.dart';
+import './reformat/blocs/login_provider.dart';
+import './reformat/blocs/favorites_provider.dart';
+import './reformat/blocs/home_provider.dart';
+
 void main() => runApp(
-      LoginProvider(
-        child: new MaterialApp(
-          title: 'IppDrive',
-          home: new LoginPageBloc(),
-          debugShowCheckedModeBanner: false,
-          theme: buildAppTheme(),
-          onGenerateRoute: routes,
+      FavoritesProvider(
+        child: HomeProvider(
+          child: LoginProvider(
+            child: new MaterialApp(
+              title: 'IppDrive',
+             // home: new LoginPageBloc(),
+              debugShowCheckedModeBanner: false,
+              theme: buildAppTheme(),
+              onGenerateRoute: routes,
+            ),
+          ),
         ),
       ),
     );

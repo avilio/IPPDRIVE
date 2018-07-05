@@ -73,7 +73,8 @@ class LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
-    final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.95;
+    final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.90;
+    final padding = deviceHeight - targetHeight;
     ///
     print(_connectionStatus);
     return WillPopScope(
@@ -91,7 +92,7 @@ class LoginPageState extends State<LoginPage> {
                     children: <Widget>[
                       myLoginBox(),
                       // button,
-                      new Padding(padding: new EdgeInsets.all((deviceHeight-targetHeight)/2)),
+                      new Padding(padding: new EdgeInsets.all(padding)),
                       new RichText(
                         text: new TextSpan(
                             text:

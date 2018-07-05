@@ -5,7 +5,9 @@ import 'package:ippdrive/security/verifications/display.dart';
 import 'package:ippdrive/security/verifications/validation.dart';
 import 'package:ippdrive/services/apiRequests.dart';
 
-import 'package:ippdrive/user.dart';
+//import 'package:ippdrive/user.dart';
+
+import './reformat/models/user.dart';
 import 'package:ippdrive/views/homePage.dart';
 import 'package:ippdrive/views/loginPage.dart';
 import 'package:ippdrive/views/themes/colorsThemes.dart';
@@ -167,7 +169,7 @@ class MyDrawerState extends State<MyDrawer> {
                             builder: (context) => new HomePage(units, widget.paeUser)),
                         (Route<dynamic> route) => false);
                   } else
-                    validations.requestResponseValidation(
+                    validations.errorDialog(
                         'No Data to Display', context);
                 },
               );

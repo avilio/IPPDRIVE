@@ -25,7 +25,6 @@ class Requests {
     Map body = { "data": { "apikey": "1234567890"}};
     // Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
 
-
     return await rest.post(url, body);
   }
 
@@ -84,14 +83,7 @@ class Requests {
 
   /// Create a [body] JSON with given [list] and [session] to send a post request to the api
   /// and returns a Map with the content of a course unit as [response].
-  Future<Map> courseUnitsFoldersContents(Map list, String session) async {
-
-    int id;
-
-    if(list['id']== null)
-      id =list['pageContentId'];
-    else
-      id = list['id'];
+  Future<Map> courseUnitsFoldersContents(int id, String session) async {
 
     var url = '$host/user/vfs.do';
     var body = {
