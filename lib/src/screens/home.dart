@@ -19,6 +19,7 @@ class HomePage extends StatelessWidget {
     final homeBloc = HomeProvider.of(context);
     final favBloc = FavoritesProvider.of(context);
     favBloc.setPaeUser(homeBloc.paeUser);
+    homeBloc.onConnectionChange();
 
     if (unitsCourseList.length > 1) {
       return discentesDocentes(context, homeBloc);
@@ -28,7 +29,8 @@ class HomePage extends StatelessWidget {
   ///
   Widget discentesDocentes(BuildContext context, HomeBloc bloc) {
     var semestres = SemestersBuilder.fromList2List(unitsCourseList);
-
+    bloc.onConnectionChange();
+    ///
     return WillPopScope(
         onWillPop: () async {
           bloc.quitDialog(context);

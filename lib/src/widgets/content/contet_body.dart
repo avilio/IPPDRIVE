@@ -21,6 +21,7 @@ class ContentBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeBloc = HomeProvider.of(context);
+    homeBloc.onConnectionChange();
 
     return new AsyncLoader(
         initState: () async => await homeBloc.courseUnitsFoldersContents(id, homeBloc.paeUser.session),
@@ -55,11 +56,11 @@ class ContentBody extends StatelessWidget {
                   title: new Text(items['title']),
                   leading: new Icon(Icons.folder_open),
                   trailing: Trailing(canAdd: items['clearances']['addFiles'],folder: folder,),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) =>
-                        new Content(unitContent: items,course: course,school: school)));
-                  },
+                  onTap: () => !homeBloc.connectionStatus.contains('none')
+                      ? Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                            new Content(unitContent: items,course: course,school: school)))
+                      :  homeBloc.errorDialog('Sem acesso a Internet', context),
                 );
               } else
                 return new ListTile(

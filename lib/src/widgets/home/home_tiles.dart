@@ -5,6 +5,7 @@ import '../../common/themes/colorsThemes.dart';
 import '../../common/trailing.dart';
 import '../../common/list_item_builder.dart';
 import '../../screens/content.dart';
+import '../../blocs/home_provider.dart';
 
 
 class HomeExpansionTiles extends StatelessWidget {
@@ -15,6 +16,8 @@ class HomeExpansionTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title;
+    final homeBloc = HomeProvider.of(context);
+    homeBloc.onConnectionChange();
 
     if(child[0]['pathParent'] != '/root')
       title = child[0]['courseUnitsList'][0]['semestre'] == "S1"
@@ -22,7 +25,7 @@ class HomeExpansionTiles extends StatelessWidget {
           : 'Semestre 2';
     
     return new ExpansionTile(
-      key: PageStorageKey('${child.map((units) => units['id'])}'),
+     // key: PageStorageKey('${child.map((units) => units['id'])}'),
       title: new Text(
         title ?? 'ROOT',
         textScaleFactor: 1.5,
@@ -38,9 +41,11 @@ class HomeExpansionTiles extends StatelessWidget {
                 color: cAppBlueAccent),
             child: new ListTile(
               trailing: Trailing(folder: folder,canAdd: courseUnits['clearances']['addFiles']),
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              onTap: () => !homeBloc.connectionStatus.contains('none')
+                ? Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
-                  new Content(unitContent: courseUnits))),
+                  new Content(unitContent: courseUnits)))
+                : homeBloc.errorDialog('Sem acesso a Internet', context),
               title: new Text(courseUnits['title'].toString().split('-').first,
                   textScaleFactor: 0.95),
             ),

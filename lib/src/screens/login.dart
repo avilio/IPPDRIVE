@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+
+import 'package:connectivity/connectivity.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
 import '../common/themes/colorsThemes.dart';
 import '../blocs/login_bloc.dart';
@@ -13,9 +17,10 @@ class LoginPage extends StatefulWidget {
   }
 }
 
-class LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> with Connectivity{
   final _padding = EdgeInsets.all(25.0);
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +32,8 @@ class LoginPageState extends State<LoginPage> {
 
     /// Apenas para evitar enviar por parametro
     loginBloc.setKey(_formKey);
+    loginBloc.initConnection();
+    loginBloc.onConnectionChange();
 
     return WillPopScope(
       onWillPop: () async {loginBloc.quitDialog(context);},
@@ -62,7 +69,9 @@ class LoginPageState extends State<LoginPage> {
   _buttonKey(LoginBloc bloc) {
     return new FloatingActionButton(
       onPressed: () {
-        bloc.launchGenetareKeyInBrowser();
+        !bloc.connectionStatus.contains('none')
+            ? bloc.launchGenetareKeyInBrowser()
+            : bloc.errorDialog('Sem acesso a Internet', context);
       },
       child: Icon(Icons.vpn_key),
       mini: true,

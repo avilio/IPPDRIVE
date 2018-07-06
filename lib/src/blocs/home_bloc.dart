@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -7,19 +8,25 @@ import '../common/dialogs.dart';
 import '../screens/home.dart';
 import '../common/utilities.dart';
 
-class HomeBloc extends Object with  Utilities, Requests, ExceptionDialog{
+class HomeBloc extends Object with  Utilities, Requests, ExceptionDialog, Connectivity{
 
   final _response = BehaviorSubject<dynamic>();
   final _paeUser = BehaviorSubject<PaeUser>();
+  final _connectivityStatus = BehaviorSubject<String>();
+  final _connectivity = Connectivity();
 
   //Stream<dynamic> get response => _response.stream;
   //Stream<PaeUser> get paeUser => _paeUser.stream;
-  PaeUser get paeUser => _paeUser.value;
 
+  PaeUser get paeUser => _paeUser.value;
+  String get connectionStatus => _connectivityStatus.value;
 
   Function(PaeUser) get setPaeUser => _paeUser.sink.add;
   Function(dynamic) get setResponse => _response.sink.add;
+  Function(String) get setConnectionStatus =>_connectivityStatus.sink.add;
 
+  void initConnection() async => setConnectionStatus((await _connectivity.checkConnectivity()).toString());
+  void onConnectionChange() => _connectivity.onConnectivityChanged.listen((ConnectivityResult result)=> setConnectionStatus(result.toString()));
 
   route2Home(BuildContext context) async {
     var contentYear;
@@ -52,5 +59,7 @@ class HomeBloc extends Object with  Utilities, Requests, ExceptionDialog{
   dispose() {
     _response.close();
     _paeUser.close();
+    _connectivityStatus.close();
+
   }
 }

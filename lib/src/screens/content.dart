@@ -23,6 +23,8 @@ class Content extends StatelessWidget {
     final homeBloc = HomeProvider.of(context);
     final drawerBloc = DrawerProvider.of(context);
 
+    homeBloc.onConnectionChange();
+
     tapGestureRecognizer ..onTap = _handlePress;
 
     int unitID = unitContent['id'] ?? unitContent['pageContentId'];
