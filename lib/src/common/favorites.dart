@@ -20,30 +20,29 @@ class FavoritesState extends State<Favorites> {
   final _favRem = new Icon(Icons.star_border);
   final _favAdd = new Icon(Icons.star, color: Colors.yellow);
 
-  bool isFav = false;
+  bool _isFav = false;
 
   @override
   void initState() {
     super.initState();
-    print('${widget.folders.title} : ${widget.folders.isFav}');
-
-    isFav = widget.folders.isFav;
+   // print('${widget.folders.title} : ${widget.folders.isFav}');
+    _isFav= widget.folders.isFav;
   }
 
   @override
   Widget build(BuildContext context) {
     final favBloc = FavoritesProvider.of(context);
 
-    favBloc.setIsFav(isFav);
+    favBloc.setIsFav(_isFav);
 
     void handleTap() {
 
-      if (isFav) {
+      if (_isFav) {
         favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
         //todo
         print("Favorito: '${widget.folders.title}' --> Removido");
         setState(() {
-          isFav = false;
+          _isFav = false;
         });
       } else {
         favBloc.addFavorites(widget.folders.id,favBloc.paeUser.session)
@@ -56,12 +55,12 @@ class FavoritesState extends State<Favorites> {
             //todo
             print("Favorito: '${widget.folders.title}' adicionado e removido");
             setState(() {
-              isFav = false;
+              _isFav = false;
             });
           }
         });
         setState(() {
-          isFav = true;
+          _isFav = true;
         });
       }
     }

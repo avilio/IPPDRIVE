@@ -1,8 +1,4 @@
-import 'dart:async';
-
-
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 import '../common/themes/colorsThemes.dart';
