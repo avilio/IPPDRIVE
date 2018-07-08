@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class REST {
 
@@ -25,11 +27,11 @@ class REST {
           throw (response.statusCode);
       });
 
-
+  ///
   Future<dynamic> get(String url) async =>
       http.get(url).then((response)=> jsonDecode(response.body));
 
-//  authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps
+  ///
   Future<dynamic> postAppKey(String url, bodyApp) async =>
       http.post(url,
           headers: {
@@ -38,4 +40,32 @@ class REST {
           body: bodyApp
       ).then((response) => jsonDecode(response.body));
 
+  ///
+  Future<dynamic> multipartRequest(List<String> mimeType,String url,String filename, String filePath,{String fileFolders} ) async{
+    final fileUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
+    final file = await http.MultipartFile.fromPath('$filename', filePath,
+        contentType: MediaType(mimeType[0],mimeType[1]));
+
+    fileUploadRequest.files.add(file);
+    if(fileFolders != null){
+      //fileUploadRequest.fields['Referer'] = Uri.encodeComponent(fileFolders);
+      fileUploadRequest.headers['Referer'] = fileFolders;
+    }
+
+    try{
+      final streamedResponse = await fileUploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      if(response.statusCode != 200 && response.statusCode != 201) {
+        print('Algo correu mal');
+        print(jsonDecode(response.body));
+        return null;
+      }
+      return jsonDecode(response.body);
+
+    }catch(error){
+      print(error);
+      return null;
+    }
+
+  }
 }

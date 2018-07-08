@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:simple_permissions/simple_permissions.dart';
+import 'package:mime/mime.dart';
 
 import 'REST.dart';
 
@@ -139,6 +140,20 @@ class Requests {
       return {"": ""};
 
   }
+
+  ///
+  Future<Map> uploadFile(File file) async {
+    final mimeTypeData = lookupMimeType(file.path).split('/');
+    final fileUploadfile = await rest.multipartRequest(mimeTypeData, '$host/filesUpload',
+        "filenameHere", file.path);
+
+    if(fileUploadfile == null){
+      print('Upload Falhado');
+      return null;
+    }
+    return fileUploadfile;
+  }
+
   ///
   Future<Map> getAppKey(String user, String pass) async {
     var url = '$host/authenticateWidget.do?dispatch=executeService&serviceJson=generateChaveApps';
@@ -148,11 +163,8 @@ class Requests {
     };
 
     Map map = await rest.postAppKey(url, body);
-    if(map.isNotEmpty)
-      return map;
-    else
-      return {"": ""};
 
+    return map.isNotEmpty ? map : {"": ""};
   }
 
   /// Create a [url] with given [id] and [bacosession] to send a get request to the api
@@ -168,6 +180,7 @@ class Requests {
     }
   }
 
+  ///
   launchGenetareKeyInBrowser() async{
     //  CODIGO PARA FAZER LAUNCH DO BROWSER EM VEZ DE MOSTRAR O DIALOG DE LOGIN DO PAE
     if (await canLaunch('$host/startGenerateChaveApps.do')) {
@@ -177,6 +190,7 @@ class Requests {
     }
   }
 
+  ///
   Future<Map> getYears(String bacoSess) async {
 
     var url = '$host/wsjson/api/user/ws-configs-get-import-year?BACOSESS=$bacoSess';
@@ -184,6 +198,7 @@ class Requests {
     return rest.get(url).then((response) => response);
   }
 
+  ///
   Future<File> getFiles(String bacoSess, Map file) async {
 
     var url = '$host/repositoryStream/${file['repositoryId']}?BACOSESS=$bacoSess';
@@ -192,6 +207,7 @@ class Requests {
     //return rest.get(url).then((response) => response );
   }
 
+  ///
   Future<File> _downloadFile(String url, String filename) async {
 
     var httpClient = new HttpClient();
@@ -206,9 +222,10 @@ class Requests {
 
   }
 
+  ///
   Future<bool> checkPermissions() async {
     bool externalStoragePermissionOkay = false;
-
+    //todo tbm deve dar permissoes para ler
     if (Platform.isAndroid) {
       SimplePermissions
           .checkPermission(Permission.WriteExternalStorage)
