@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:simple_permissions/simple_permissions.dart';
 import 'package:mime/mime.dart';
 
 import 'REST.dart';
@@ -144,8 +143,9 @@ class Requests {
   ///
   Future<Map> uploadFile(File file) async {
     final mimeTypeData = lookupMimeType(file.path).split('/');
+    //wsjson/api/user/vfs
     final fileUploadfile = await rest.multipartRequest(mimeTypeData, '$host/filesUpload',
-        "filenameHere", file.path);
+        file.path.split("/").last, file.path);
 
     if(fileUploadfile == null){
       print('Upload Falhado');
@@ -222,28 +222,4 @@ class Requests {
 
   }
 
-  ///
-  Future<bool> checkPermissions() async {
-    bool externalStoragePermissionOkay = false;
-    //todo tbm deve dar permissoes para ler
-    if (Platform.isAndroid) {
-      SimplePermissions
-          .checkPermission(Permission.WriteExternalStorage)
-          .then((checkOkay) {
-        if (!checkOkay) {
-          SimplePermissions
-              .requestPermission(Permission.WriteExternalStorage)
-              .then((okDone) {
-            if (okDone) {
-              debugPrint("$okDone");
-              externalStoragePermissionOkay = okDone;
-            }
-          });
-        } else {
-          externalStoragePermissionOkay = checkOkay;
-        }
-      });
-    }
-    return externalStoragePermissionOkay;
-  }
 }

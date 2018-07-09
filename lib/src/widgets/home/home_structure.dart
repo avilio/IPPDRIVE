@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../blocs/home_provider.dart';
-import '../../common/drawer.dart';
+import '../../common/widgets/drawer.dart';
 import '../../blocs/drawer_bloc.dart';
 import '../../blocs/drawer_provider.dart';
 

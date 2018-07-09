@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../models/folders.dart';
-import '../blocs/favorites_bloc.dart';
-import '../blocs/favorites_provider.dart';
+import '../../models/folders.dart';
+import '../../blocs/favorites_bloc.dart';
+import '../../blocs/favorites_provider.dart';
 
 
 class Favorites extends StatefulWidget {

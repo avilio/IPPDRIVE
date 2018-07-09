@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/folders.dart';
 import '../../common/themes/colorsThemes.dart';
-import '../../common/trailing.dart';
-import '../../common/list_item_builder.dart';
+import '../../common/widgets/trailing.dart';
 import '../../screens/content.dart';
 import '../../blocs/home_provider.dart';
 

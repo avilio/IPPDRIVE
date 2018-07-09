@@ -42,11 +42,23 @@ class REST {
 
   ///
   Future<dynamic> multipartRequest(List<String> mimeType,String url,String filename, String filePath,{String fileFolders} ) async{
+
+    print('${mimeType[0]} / ${mimeType[1]} ');
+    print(url);
+    print(filename);
+    print(filePath);
+
     final fileUploadRequest = http.MultipartRequest('POST', Uri.parse(url));
     final file = await http.MultipartFile.fromPath('$filename', filePath,
-        contentType: MediaType(mimeType[0],mimeType[1]));
+        contentType: MediaType(mimeType[0],mimeType[1]),
+    filename: filename);
 
+
+    //Content-Disposition: form-data; name="filesInputId-UPLOAD[]";
+    fileUploadRequest.fields['Content-Disposition'] = "form-data";
+    fileUploadRequest.fields['name'] = "filesInputId-UPLOAD[]";
     fileUploadRequest.files.add(file);
+
     if(fileFolders != null){
       //fileUploadRequest.fields['Referer'] = Uri.encodeComponent(fileFolders);
       fileUploadRequest.headers['Referer'] = fileFolders;

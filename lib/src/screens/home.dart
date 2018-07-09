@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../common/semesters_item_builder.dart';
+import '../widgets/home/semesters_lists_builder.dart';
 import '../common/themes/colorsThemes.dart';
 import '../models/user.dart';
 import '../blocs/home_provider.dart';

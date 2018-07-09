@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/folders.dart';
 
-import '../common/favorites.dart';
-import '../common/add_files.dart';
-import '../blocs/favorites_provider.dart';
+import '../../models/folders.dart';
+import '../../common/widgets/favorites.dart';
+import '../../common/widgets/add_files.dart';
 
 class Trailing extends StatelessWidget {
   final bool canAdd;
@@ -13,10 +12,6 @@ class Trailing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   //final homeBloc = HomeProvider.of(context);
-   //final favBloc = FavoritesProvider.of(context);
-   //favBloc.setFolders(folder);
-  // favBloc.setIsFav(folder.isFav);
 
     if(canAdd){
       return new Row(mainAxisSize: MainAxisSize.min,children: <Widget>[

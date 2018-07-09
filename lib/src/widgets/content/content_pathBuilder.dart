@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../common/list_item_builder.dart';
+
+import '../../common/widgets/list_item_builder.dart';
 import '../../common//themes/colorsThemes.dart';
 
 import '../../blocs/home_provider.dart';

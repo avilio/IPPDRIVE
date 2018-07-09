@@ -21,6 +21,7 @@ dependencies:
   android_intent: "^0.2.1"
   shared_preferences: "^0.4.2"
   mime: "^0.9.6+1"
+  documents_picker: "^0.0.2"
 
 
 

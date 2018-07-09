@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
 
-import '../../common/list_item_builder.dart';
+import '../../common/widgets/list_item_builder.dart';
 import '../../models/folders.dart';
 import '../../blocs/home_provider.dart';
 import '../../blocs/home_bloc.dart';
-import '../../common/trailing.dart';
+import '../../common/widgets/trailing.dart';
 import '../../screens/content.dart';
 import '../../widgets/content/content_pathBuilder.dart';
 
