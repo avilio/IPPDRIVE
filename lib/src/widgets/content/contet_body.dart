@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,8 @@ class ContentBody extends StatelessWidget {
            ///
             homeBloc.wsAuth()
                 .then((response) => homeBloc.paeUser.session = response['response']['BACOSESS']);
+           ///
+            Future.delayed(Duration.zero);
            ///
             homeBloc.wsRLogin(homeBloc.paeUser.username, homeBloc.paeUser.password, homeBloc.paeUser.session)
                 .then((response) => homeBloc.paeUser.session = response['response']['BACOSESS']);
