@@ -73,8 +73,6 @@ class DialogKey extends StatelessWidget {
                         content: _error(response['exception'], context),
                       ));
                 }
-                //todo fazer o ok button para a loginPage ou ok para pop caso de erro
-                //todo ver como se mete um icon ou button para copiar para a area de transferencia
               },
               child: new Text('Login'),
               elevation: 2.0,

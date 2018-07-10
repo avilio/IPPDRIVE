@@ -1,13 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
 
 import '../../common/widgets/list_item_builder.dart';
+import '../../common/widgets/trailing.dart';
+import '../../common/widgets/progress_indicator.dart';
+
 import '../../models/folders.dart';
 import '../../blocs/home_provider.dart';
 import '../../blocs/home_bloc.dart';
-import '../../common/widgets/trailing.dart';
+
 import '../../screens/content.dart';
 import '../../widgets/content/content_pathBuilder.dart';
 
@@ -25,10 +29,19 @@ class ContentBody extends StatelessWidget {
 
     return new AsyncLoader(
         initState: () async => await homeBloc.courseUnitsFoldersContents(id, homeBloc.paeUser.session),
-        renderLoad: () => Center(child: new CircularProgressIndicator()),
-        renderError: ([error]) => new Text('ERROR LOANDING DATA'),
+        renderLoad: () => Center(child: AdaptiveProgressIndicator()),
+        renderError: ([error]) {
+          if(error == 401) {
+           ///
+            homeBloc.wsAuth()
+                .then((response) => homeBloc.paeUser.session = response['response']['BACOSESS']);
+           ///
+            homeBloc.wsRLogin(homeBloc.paeUser.username, homeBloc.paeUser.password, homeBloc.paeUser.session)
+                .then((response) => homeBloc.paeUser.session = response['response']['BACOSESS']);
+          }
+          return new Text('ERROR LOANDING DATA');
+        },
         renderSuccess: ({data}) {
-
           List checker = data['response']['childs'];
           if (checker.isNotEmpty)
             return createList(checker ,context, homeBloc);
@@ -65,18 +78,10 @@ class ContentBody extends StatelessWidget {
               } else
                 return new ListTile(
                   onTap: () async {
-                    /*    bool can = await checkPermissions();
-                  print(can);
-                  File file = await getFiles(paeUser.session, items);
-                  print(file);*/
-                    homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
-                    //storage.writeFile(file);
-                    //File file = await storage.downloadFile(url,files[i]['title']);
-                    // print(file.path);
-                    // final RenderBox box = context.findRenderObject();
-                    //Share.share(file.readAsBytesSync().toString());
-                    //var args = {'url': file.path};
-                    //await platform.invokeMethod('viewPdf', args);
+
+                    homeBloc.getFiles(homeBloc.paeUser.session, items);
+                    //homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
+
                   },
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),

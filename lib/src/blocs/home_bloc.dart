@@ -28,14 +28,15 @@ class HomeBloc extends Object with  Utilities, Requests, ExceptionDialog, Connec
   void initConnection() async => setConnectionStatus((await _connectivity.checkConnectivity()).toString());
   void onConnectionChange() => _connectivity.onConnectivityChanged.listen((ConnectivityResult result)=> setConnectionStatus(result.toString()));
 
-  route2Home(BuildContext context) async {
+  route2Home(BuildContext context, String password) async {
     var contentYear;
 
     if (_response.value.runtimeType != String) {
-      setPaeUser(PaeUser.fromJson(_response.value));
+
+      setPaeUser(PaeUser.fromJson(_response.value,password: password));
 
       contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
-
+      print(paeUser.password);
       contentYear['service'] == 'error'
           ? _response.sink.add(contentYear['exception'])
           : _response.sink.add(contentYear['response']);

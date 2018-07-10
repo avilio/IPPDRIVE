@@ -66,7 +66,7 @@ class LoginBloc extends Object with Utilities, Requests, ExceptionDialog, Connec
         : _response.sink.add(paeRLogin['response']);
 
     homeBloc.setResponse(_response.value);
-    homeBloc.route2Home(context);
+    homeBloc.route2Home(context,password);
   }
 
   dispose() {

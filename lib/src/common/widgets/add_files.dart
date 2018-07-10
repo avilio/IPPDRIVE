@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:documents_picker/documents_picker.dart';
+
 import '../permissions.dart';
 import '../../resources/apiCalls.dart';
+import '../../blocs/home_provider.dart';
 
 class AddFiles extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class AddFiles extends StatefulWidget {
 class _AddFilesState extends State<AddFiles> {
 
 
-  _filePicker()async {
+  _filePicker(String session)async {
     List<dynamic> docPaths;
 
     try {
@@ -29,12 +31,15 @@ class _AddFilesState extends State<AddFiles> {
     print(file.path.split("/").last);
     Requests request = Requests();
 
-    Map response = await request.uploadFile(file);
-    response.forEach((a,b)=> debugPrint('$a : $b'));
+    Map response = await request.uploadFile(file, session);
+    //response.forEach((a,b)=> debugPrint('$a : $b'));
+    print(response['uploadedFiles'][0]);
   }
 
 
   _openFilePicker(BuildContext context){
+    final homeBloc = HomeProvider.of(context);
+
     showModalBottomSheet(context: context, builder: (BuildContext context){
       return Container(padding: EdgeInsets.all(55.0),
         //decoration: BoxDecoration(border: Border.all()),
@@ -46,7 +51,7 @@ class _AddFilesState extends State<AddFiles> {
             permit = await permiss.checkWriteExternalStorage();
             print(permit);
            // if(permit)
-             _filePicker();
+             _filePicker(homeBloc.paeUser.session);
 
         },
           textTheme: ButtonTextTheme.primary,

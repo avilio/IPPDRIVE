@@ -58,6 +58,7 @@ class LoginFormState extends State<LoginForm> {
   ///
   Widget _passwordField(LoginBloc bloc) {
     return TextFormField(
+      controller: _passwordController,
       obscureText: true,
       maxLines: 1,
       decoration: new InputDecoration(
@@ -81,7 +82,7 @@ class LoginFormState extends State<LoginForm> {
       child: new RaisedButton(
         onPressed: () {
           !bloc.connectionStatus.contains('none')
-            ? bloc.submit(_userController.text.trim(), _passwordController.text.trim(), context)
+            ? bloc.submit(_userController.text.trim(), _passwordController.text, context)
             : bloc.errorDialog('Sem acesso a Internet', context);
             },
         child: new Text('Login'),

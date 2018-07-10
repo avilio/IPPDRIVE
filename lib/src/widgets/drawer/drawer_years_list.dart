@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
 
+import '../../common/widgets/progress_indicator.dart';
 import '../../blocs/home_bloc.dart';
 import '../../blocs/home_provider.dart';
 import '../../screens/home.dart';
@@ -26,7 +27,7 @@ class DrawerYearsList extends StatelessWidget {
 
   Widget yearList(HomeBloc homeBloc) => new AsyncLoader(
     initState: () async => await homeBloc.getYears(homeBloc.paeUser.session),
-    renderLoad: () => new CircularProgressIndicator(),
+    renderLoad: () => new AdaptiveProgressIndicator(),
     renderError: ([error]) => new Text('ERROR LOANDING DATA'),
     renderSuccess: ({data}) {
       List yearsList = List();

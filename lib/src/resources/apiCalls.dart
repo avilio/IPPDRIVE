@@ -41,7 +41,6 @@ class Requests {
       },
       "BACOSESS": bacoSess
     };
-
     return await rest.post(url, body);
   }
 
@@ -141,11 +140,11 @@ class Requests {
   }
 
   ///
-  Future<Map> uploadFile(File file) async {
+  Future<Map> uploadFile(File file, String session) async {
     final mimeTypeData = lookupMimeType(file.path).split('/');
     //wsjson/api/user/vfs
-    final fileUploadfile = await rest.multipartRequest(mimeTypeData, '$host/filesUpload',
-        file.path.split("/").last, file.path);
+    final fileUploadfile = await rest.multipartRequest(session, mimeTypeData, '$host/filesUpload', file);
+   // final fileUploadfile = await rest.multipartRequest(session,mimeTypeData, '$host/filesUpload', file);
 
     if(fileUploadfile == null){
       print('Upload Falhado');
@@ -216,6 +215,8 @@ class Requests {
     var bytes = await consolidateHttpClientResponseBytes(response);
 //    String dir = (await getApplicationDocumentsDirectory()).path;
     String dir = (await getExternalStorageDirectory()).path;
+    ///todo
+    print(dir);
     File file = new File('$dir/$filename');
     await file.writeAsBytes(bytes);
     return file;

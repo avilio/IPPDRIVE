@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
 
+import '../../common/widgets/progress_indicator.dart';
 import '../../screens/content.dart';
 import '../../blocs/home_bloc.dart';
 import '../../blocs/home_provider.dart';
@@ -28,7 +29,7 @@ class IppDriveList extends StatelessWidget {
 
   Widget ippDriveRoot(HomeBloc bloc)=> new AsyncLoader(
       initState: () async => await bloc.courseUnitsFoldersContents( 5, bloc.paeUser.session),
-      renderLoad: () => new CircularProgressIndicator(),
+      renderLoad: () => AdaptiveProgressIndicator(),
       renderError: ([error]) => new Text('ERROR LOANDING DATA'),
       renderSuccess: ({data}) {
         List ippDriveRootList = data['response']['childs'];
