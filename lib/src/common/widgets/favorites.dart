@@ -35,7 +35,6 @@ class FavoritesState extends State<Favorites> {
     final homeBloc = HomeProvider.of(context);
 
    favBloc.setIsFav(_isFav);
-
     void handleTap() {
       if(homeBloc.connectionStatus.contains('none'))
         homeBloc.errorDialog("Sem acesso a Internet", context);

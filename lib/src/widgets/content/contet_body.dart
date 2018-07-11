@@ -79,17 +79,20 @@ class ContentBody extends StatelessWidget {
                             new Content(unitContent: items,course: course,school: school)))
                       :  homeBloc.errorDialog('Sem acesso a Internet', context),
                 );
-              } else
+              } else {
+                folder = Folders.fromJson(items);
                 return new ListTile(
                   onTap: () async {
-                   //File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
-                    homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
+                    //File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
+                    homeBloc.launchFilesInBrowser(homeBloc.paeUser.session,
+                        items['repositoryId'].toString());
                   },
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),
                   leading: new Icon(Icons.description),
-                  trailing:  Trailing(canAdd: items['clearances']['addFiles'],folder: folder, content: items),
+                  trailing: Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
                 );
+              }
             },
           ),
         ),

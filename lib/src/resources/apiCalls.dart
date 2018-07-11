@@ -159,7 +159,7 @@ class Requests {
 
   ///
   Future<Map> removeFile(Map object, int parentId, String session) async {
-
+    print(parentId);
     var url = '$host/user/vfs.do';
     var body = {
       "BACOSESS": session,

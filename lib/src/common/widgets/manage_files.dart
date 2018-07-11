@@ -59,6 +59,7 @@ class _ManageFilesState extends State<ManageFiles> {
         "visible": true,
         "cols": 12
       };
+      print(widget.content);
       return request.addFile(object, widget.content['id'], session);
     });
     Navigator.push(
@@ -183,7 +184,7 @@ class _ManageFilesState extends State<ManageFiles> {
                                         widget.parentId,
                                         homeBloc.paeUser.session)
                                     .then((resp) {
-                                    resp.forEach((a,b)=>print);
+                                      print(resp);
                                   Navigator.pop(context);
                                 });
                               },

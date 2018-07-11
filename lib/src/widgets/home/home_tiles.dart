@@ -39,7 +39,7 @@ class HomeExpansionTiles extends StatelessWidget {
                 border: Border.all(style: BorderStyle.solid, color: cAppBlackish),
                 color: cAppBlueAccent),
             child: new ListTile(
-              trailing: Trailing(folder: folder,canAdd: courseUnits['clearances']['addFiles']),
+              trailing: Trailing(folder: folder,canAdd: courseUnits['clearances']['addFiles'],content: courseUnits,),
               onTap: () => !homeBloc.connectionStatus.contains('none')
                 ? Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
