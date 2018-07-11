@@ -10,6 +10,18 @@ Folders(this.id, this.title, this.pathParent, this.path, this.directory,this.isF
     : repositoryFile4JsonView = repositoryFile4JsonView ?? Map(),
       repositoryId = repositoryId ?? -1;
 
+Map toMap()=> {
+  "id" : id,
+  "title" :title,
+  "pathParent" : pathParent,
+  "path" : path,
+  "directory" :directory,
+  "favorite" : isFav,
+  "clearances" : clearances,
+  "repositoryId" : repositoryId,
+  "repositoryFile4JsonView" :repositoryFile4JsonView
+};
+
 Folders.fromJson(Map json)
     : id = json['id'],
       title = json['title'],

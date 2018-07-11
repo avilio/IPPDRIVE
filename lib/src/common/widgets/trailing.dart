@@ -3,13 +3,15 @@ import 'dart:math' as math;
 
 import '../../models/folders.dart';
 import '../../common/widgets/favorites.dart';
-import '../../common/widgets/add_files.dart';
+import '../../common/widgets/manage_files.dart';
 
 class Trailing extends StatefulWidget {
   final bool canAdd;
   final Folders folder;
+  final Map content;
+  final int parentId;
 
-  Trailing({this.canAdd, this.folder, Key key}) : super(key: key);
+  Trailing({this.canAdd, this.folder, this.content,this.parentId,Key key}) : super(key: key);
 
   @override
   TrailingState createState() {
@@ -31,26 +33,11 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     if (widget.canAdd) {
       return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        Container(
-          child: ScaleTransition(
-              scale: CurvedAnimation(
-                  parent: _controller,
-                  curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
-              child: new AddFiles()),
-          alignment: FractionalOffset.center,
-        ),
-        Container(
-            child: ScaleTransition(
-                scale: CurvedAnimation(
-                    parent: _controller,
-                    curve: Interval(0.0, 0.5, curve: Curves.easeOut)),
-                child: new Favorites(
-                  folders: widget.folder,
-                )),
-            alignment: FractionalOffset.center),
+        new ManageFiles(content: widget.content,controller:_controller, parentId: widget.parentId ),
+        new Favorites(folders: widget.folder, controller: _controller),
         IconButton(
             icon: AnimatedBuilder(
-                animation: _controller,
+                animation: _controller.view,
                 builder: (BuildContext context, Widget child) {
                   return Transform(
                       alignment: FractionalOffset.center,
@@ -79,25 +66,16 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
           Container(
             child: ScaleTransition(
               scale: CurvedAnimation(
-                  parent: _controller,
+                  parent: _controller.view,
                   curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
               child: IconButton(icon: Icon(Icons.cloud_off), onPressed: ()=> print("TESTE")),
               alignment: FractionalOffset.center,
             ),
           ),
-          Container(
-              child: ScaleTransition(
-                scale: CurvedAnimation(
-                    parent: _controller,
-                    curve: Interval(0.0, 0.5, curve: Curves.easeOut)),
-                child: new Favorites(
-                  folders: widget.folder,
-                ),
-                alignment: FractionalOffset.center,
-              )),
+         new Favorites(folders: widget.folder,controller: _controller),
           IconButton(
               icon: AnimatedBuilder(
-                  animation: _controller,
+                  animation: _controller.view,
                   builder: (BuildContext context, Widget child) {
                     return Transform(
                         alignment: FractionalOffset.center,

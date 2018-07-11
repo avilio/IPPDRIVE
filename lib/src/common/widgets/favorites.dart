@@ -4,11 +4,11 @@ import '../../models/folders.dart';
 import '../../blocs/favorites_bloc.dart';
 import '../../blocs/favorites_provider.dart';
 
-
 class Favorites extends StatefulWidget {
   final Folders folders;
+  final AnimationController controller;
 
-  Favorites({this.folders, Key key}) : super(key: key);
+  Favorites({this.folders, this.controller, Key key}) : super(key: key);
 
   @override
   FavoritesState createState() {
@@ -25,8 +25,8 @@ class FavoritesState extends State<Favorites> {
   @override
   void initState() {
     super.initState();
-   // print('${widget.folders.title} : ${widget.folders.isFav}');
-    _isFav= widget.folders.isFav;
+    // print('${widget.folders.title} : ${widget.folders.isFav}');
+    _isFav = widget.folders.isFav;
   }
 
   @override
@@ -36,7 +36,6 @@ class FavoritesState extends State<Favorites> {
     favBloc.setIsFav(_isFav);
 
     void handleTap() {
-
       if (_isFav) {
         favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
         //todo
@@ -45,10 +44,12 @@ class FavoritesState extends State<Favorites> {
           _isFav = false;
         });
       } else {
-        favBloc.addFavorites(widget.folders.id,favBloc.paeUser.session)
+        favBloc
+            .addFavorites(widget.folders.id, favBloc.paeUser.session)
             .then((map) {
-            //todo
-              print("Favorito: '${widget.folders.title}' --> Adicionado");
+          //todo
+          print("Favorito: '${widget.folders.title}' --> Adicionado");
+
           /// Caso esta situaçao se verifique..muito raro acontecer
           if (map['response']['fail'] == 'alreadyExist') {
             favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
@@ -65,8 +66,13 @@ class FavoritesState extends State<Favorites> {
       }
     }
 
-    return new IconButton(
-        icon: !favBloc.isFav ? _favRem : _favAdd, onPressed: handleTap);
+    return Container(
+        child: ScaleTransition(
+            scale: CurvedAnimation(
+                parent: widget.controller.view,
+                curve: Interval(0.0, 0.5, curve: Curves.easeOut)),
+            child: new IconButton(
+                icon: !favBloc.isFav ? _favRem : _favAdd, onPressed: handleTap),
+            alignment: FractionalOffset.center));
   }
 }
-

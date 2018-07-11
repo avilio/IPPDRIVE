@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
 
+import '../../common/widgets/dialog.dart';
 import '../../common/widgets/progress_indicator.dart';
 import '../../screens/content.dart';
 import '../../blocs/home_bloc.dart';
@@ -27,8 +28,8 @@ class IppDriveList extends StatelessWidget {
     );
   }
 
-  Widget ippDriveRoot(HomeBloc bloc)=> new AsyncLoader(
-      initState: () async => await bloc.courseUnitsFoldersContents( 5, bloc.paeUser.session),
+  Widget ippDriveRoot(HomeBloc homeBloc)=> new AsyncLoader(
+      initState: () async => await homeBloc.courseUnitsFoldersContents( 5, homeBloc.paeUser.session),
       renderLoad: () => AdaptiveProgressIndicator(),
       renderError: ([error]) => new Text('ERROR LOANDING DATA'),
       renderSuccess: ({data}) {
@@ -41,7 +42,7 @@ class IppDriveList extends StatelessWidget {
           itemBuilder: (context, index) {
             return new ListTile(
               dense: true,
-              leading: bloc.imageSchoolLeading(ippDriveRootList[index]['title']),
+              leading: homeBloc.imageSchoolLeading(ippDriveRootList[index]['title']),
               title: new Text(
                 ippDriveRootList[index]['title'],
                 style: new TextStyle(fontWeight: FontWeight.bold),
@@ -51,7 +52,7 @@ class IppDriveList extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => new Content(unitContent: ippDriveRootList[index],school: school,course: course,)));
                 } else
-                  bloc.errorDialog('No Data to Display', context);
+                  return showDialog(context: context,builder: (context )=> new DialogAlert(message: 'Sem dados para mostrar') );
               },
             );
           },

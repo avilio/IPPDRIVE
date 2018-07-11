@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -36,12 +37,12 @@ class ExceptionDialog {
   }
 
   /// Dialog de erros
-  void errorDialog(String message, BuildContext context) =>
-      showDialog(context: context, child: _buildErrorDialog(message, context));
+  Future<Null> errorDialog(String message, BuildContext context) =>
+      showDialog<Null>(context: context, builder:(context)=> _buildErrorDialog(message, context));
 
   /// Dialog Box Builder
-  AlertDialog _buildErrorDialog(String message, BuildContext context) {
-    var dialog = AlertDialog(
+  AlertDialog _buildErrorDialog(String message, BuildContext context) =>
+      AlertDialog(
       title: Text(
         'ALERT!',
         style: TextStyle(fontWeight: FontWeight.bold),
@@ -61,6 +62,5 @@ class ExceptionDialog {
       ],
     );
 
-    return dialog;
-  }
+
 }

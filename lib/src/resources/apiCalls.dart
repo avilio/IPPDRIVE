@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -24,7 +25,7 @@ class Requests {
   Future<Map> wsAuth() async{
     var url = '$host/wsjson/api/app/ws-authenticate';
     Map body = { "data": { "apikey": "1234567890"}};
-    // Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
+   //  Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
 
     return await rest.post(url, body);
   }
@@ -137,6 +138,40 @@ class Requests {
     else
       return {"": ""};
 
+  }
+
+  ///
+  Future<Map> addFile(Map object, int parentId, String session) async {
+  print(jsonEncode(object));
+    var url = '$host/user/vfs.do';
+    var body = {
+      "BACOSESS": session,
+      "data": {
+        "command": "addFiles",
+        "object":jsonEncode(object),
+        "parentId" : parentId,
+      },
+      "serviceJson": "vfscommand"
+    };
+      print(jsonEncode(body));
+    return await rest.post(url, body);
+  }
+
+  ///
+  Future<Map> removeFile(Map object, int parentId, String session) async {
+
+    var url = '$host/user/vfs.do';
+    var body = {
+      "BACOSESS": session,
+      "data": {
+        "command": "removeFiles",
+        "object":jsonEncode(object),
+        "parentId" : parentId,
+      },
+      "serviceJson": "vfscommand"
+    };
+    //print(jsonEncode(body));
+    return await rest.post(url, body);
   }
 
   ///

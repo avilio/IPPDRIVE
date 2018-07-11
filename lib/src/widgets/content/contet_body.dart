@@ -1,15 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
+//import 'package:slugify/slugify.dart';
 
 import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/trailing.dart';
 import '../../common/widgets/progress_indicator.dart';
+import '../../common/widgets/dialog.dart';
+import '../../common/error401.dart';
 
+import '../../common/slugify.dart';
+import '../../common/widgets/manage_files.dart';
 import '../../models/folders.dart';
 import '../../blocs/home_provider.dart';
 import '../../blocs/home_bloc.dart';
@@ -28,21 +34,15 @@ class ContentBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeBloc = HomeProvider.of(context);
     homeBloc.onConnectionChange();
+    Error401 error401 = Error401();
 
     return new AsyncLoader(
         initState: () async => await homeBloc.courseUnitsFoldersContents(id, homeBloc.paeUser.session),
         renderLoad: () => Center(child: AdaptiveProgressIndicator()),
         renderError: ([error]) {
-          if(error == 401) {
-           ///
-            homeBloc.wsAuth()
-                .then((response) => homeBloc.paeUser.session = response['response']['BACOSESS']);
-           ///
-            Future.delayed(Duration.zero);
-           ///
-            homeBloc.wsRLogin(homeBloc.paeUser.username, homeBloc.paeUser.password, homeBloc.paeUser.session)
-                .then((response) => homeBloc.paeUser.session = response['response']['BACOSESS']);
-          }
+          if(error == 401)
+            error401.error401(context);
+
           return new Text('ERROR LOANDING DATA');
         },
         renderSuccess: ({data}) {
@@ -50,7 +50,7 @@ class ContentBody extends StatelessWidget {
           if (checker.isNotEmpty)
             return createList(checker ,context, homeBloc);
           else
-            homeBloc.errorDialog('Data is Empty', context);
+            return DialogAlert(message: 'Pasta vazia');
         });
   }
 
@@ -60,7 +60,7 @@ class ContentBody extends StatelessWidget {
     Widget bodyList;
 
       bodyList = new Column(children: <Widget>[
-        ContentPathBuilder(tapGestureRecognizer: tapGestureRecognizer,courseUnitsContent: courseUnitsContent,),
+        new ContentPathBuilder(tapGestureRecognizer: tapGestureRecognizer,courseUnitsContent: courseUnitsContent,),
         new Divider(),
         new Expanded(
           child: ListItemsBuilder<dynamic>(
@@ -72,7 +72,7 @@ class ContentBody extends StatelessWidget {
                   dense: true,
                   title: new Text(items['title']),
                   leading: new Icon(Icons.folder_open),
-                  trailing: Trailing(canAdd: items['clearances']['addFiles'],folder: folder,),
+                  trailing: Trailing(canAdd: items['clearances']['addFiles'],folder: folder, content: items, parentId: id),
                   onTap: () => !homeBloc.connectionStatus.contains('none')
                       ? Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
@@ -82,14 +82,13 @@ class ContentBody extends StatelessWidget {
               } else
                 return new ListTile(
                   onTap: () async {
-
-                    homeBloc.getFiles(homeBloc.paeUser.session, items);
-                    //homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
-
+                   //File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
+                    homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
                   },
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),
                   leading: new Icon(Icons.description),
+                  trailing:  Trailing(canAdd: items['clearances']['addFiles'],folder: folder, content: items),
                 );
             },
           ),
