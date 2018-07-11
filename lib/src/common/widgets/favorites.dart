@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/folders.dart';
-import '../../blocs/favorites_bloc.dart';
+import '../../blocs/home_provider.dart';
 import '../../blocs/favorites_provider.dart';
 
 class Favorites extends StatefulWidget {
@@ -32,37 +32,43 @@ class FavoritesState extends State<Favorites> {
   @override
   Widget build(BuildContext context) {
     final favBloc = FavoritesProvider.of(context);
+    final homeBloc = HomeProvider.of(context);
 
-    favBloc.setIsFav(_isFav);
+   favBloc.setIsFav(_isFav);
 
     void handleTap() {
-      if (_isFav) {
-        favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
-        //todo
-        print("Favorito: '${widget.folders.title}' --> Removido");
-        setState(() {
-          _isFav = false;
-        });
-      } else {
-        favBloc
-            .addFavorites(widget.folders.id, favBloc.paeUser.session)
-            .then((map) {
+      if(homeBloc.connectionStatus.contains('none'))
+        homeBloc.errorDialog("Sem acesso a Internet", context);
+      else {
+        if (_isFav) {
+          favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
           //todo
-          print("Favorito: '${widget.folders.title}' --> Adicionado");
-
-          /// Caso esta situaçao se verifique..muito raro acontecer
-          if (map['response']['fail'] == 'alreadyExist') {
-            favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
+          print("Favorito: '${widget.folders.title}' --> Removido");
+          setState(() {
+            _isFav = false;
+          });
+        } else {
+          favBloc
+              .addFavorites(widget.folders.id, favBloc.paeUser.session)
+              .then((map) {
             //todo
-            print("Favorito: '${widget.folders.title}' adicionado e removido");
-            setState(() {
-              _isFav = false;
-            });
-          }
-        });
-        setState(() {
-          _isFav = true;
-        });
+            print("Favorito: '${widget.folders.title}' --> Adicionado");
+
+            /// Caso esta situaçao se verifique..muito raro acontecer
+            if (map['response']['fail'] == 'alreadyExist') {
+              favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
+              //todo
+              print(
+                  "Favorito: '${widget.folders.title}' adicionado e removido");
+              setState(() {
+                _isFav = false;
+              });
+            }
+          });
+          setState(() {
+            _isFav = true;
+          });
+        }
       }
     }
 

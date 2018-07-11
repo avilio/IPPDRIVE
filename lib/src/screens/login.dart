@@ -23,7 +23,7 @@ class LoginPageState extends State<LoginPage> with Connectivity{
     final loginBloc = LoginProvider.of(context);
 
     final deviceHeight = MediaQuery.of(context).size.height;
-    final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.90;
+    final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.95;
     final paddingDevice = deviceHeight - targetHeight;
 
     /// Apenas para evitar enviar por parametro

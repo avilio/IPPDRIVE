@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import '../../models/folders.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
+import '../../blocs/home_provider.dart';
 
 class Trailing extends StatefulWidget {
   final bool canAdd;
@@ -11,7 +12,8 @@ class Trailing extends StatefulWidget {
   final Map content;
   final int parentId;
 
-  Trailing({this.canAdd, this.folder, this.content,this.parentId,Key key}) : super(key: key);
+  Trailing({this.canAdd, this.folder, this.content, this.parentId, Key key})
+      : super(key: key);
 
   @override
   TrailingState createState() {
@@ -31,9 +33,13 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     if (widget.canAdd) {
       return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        new ManageFiles(content: widget.content,controller:_controller, parentId: widget.parentId ),
+        new ManageFiles(
+            content: widget.content,
+            controller: _controller,
+            parentId: widget.parentId),
         new Favorites(folders: widget.folder, controller: _controller),
         IconButton(
             icon: AnimatedBuilder(
@@ -68,19 +74,20 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
               scale: CurvedAnimation(
                   parent: _controller.view,
                   curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
-              child: IconButton(icon: Icon(Icons.cloud_off), onPressed: ()=> print("TESTE")),
+              child: IconButton(
+                  icon: Icon(Icons.cloud_off), onPressed: () => print("TESTE")),
               alignment: FractionalOffset.center,
             ),
           ),
-         new Favorites(folders: widget.folder,controller: _controller),
+          new Favorites(folders: widget.folder, controller: _controller),
           IconButton(
               icon: AnimatedBuilder(
                   animation: _controller.view,
                   builder: (BuildContext context, Widget child) {
                     return Transform(
                         alignment: FractionalOffset.center,
-                        transform:
-                        Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+                        transform: Matrix4
+                            .rotationZ(_controller.value * 0.5 * math.pi),
                         child: Icon(
                           _controller.isDismissed
                               ? Icons.more_horiz

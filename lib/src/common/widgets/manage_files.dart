@@ -73,26 +73,30 @@ class _ManageFilesState extends State<ManageFiles> {
   _openFilePicker(BuildContext context) {
     final homeBloc = HomeProvider.of(context);
 
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.all(50.0),
-            children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  _addField(homeBloc),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  _removeField(homeBloc)
-                ],
-              ),
-            ],
-          );
-        });
+    if(homeBloc.connectionStatus.contains('none'))
+      homeBloc.errorDialog("Sem acesso a Internet", context);
+    else {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.all(50.0),
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    _addField(homeBloc),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    _removeField(homeBloc)
+                  ],
+                ),
+              ],
+            );
+          });
+    }
   }
 
   Widget _addField(HomeBloc homeBloc) {
@@ -179,7 +183,7 @@ class _ManageFilesState extends State<ManageFiles> {
                                         widget.parentId,
                                         homeBloc.paeUser.session)
                                     .then((resp) {
-                                   print(resp);
+                                    resp.forEach((a,b)=>print);
                                   Navigator.pop(context);
                                 });
                               },
