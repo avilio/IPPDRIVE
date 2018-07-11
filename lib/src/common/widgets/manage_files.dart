@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:documents_picker/documents_picker.dart';
 
+import '../../common/widgets/trailing_remove_button.dart';
 import '../../blocs/home_bloc.dart';
 import '../themes/colorsThemes.dart';
 import '../permissions.dart';
@@ -91,7 +92,7 @@ class _ManageFilesState extends State<ManageFiles> {
                     SizedBox(
                       height: 5.0,
                     ),
-                    _removeField(homeBloc)
+                    TrailingRemoveButton(content: widget.content,parentId: widget.parentId,)
                   ],
                 ),
               ],
@@ -142,107 +143,6 @@ class _ManageFilesState extends State<ManageFiles> {
             mini: true,
             elevation: 0.0,
             heroTag: "Add",
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _removeField(HomeBloc homeBloc) {
-    return Container(
-      decoration:
-          new BoxDecoration(color: cAppBlueAccent, border: Border.all()),
-      alignment: FractionalOffset.center,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          GestureDetector(
-            child: Text('Remover Ficheiro',
-                style: TextStyle(
-                    color: Colors.redAccent, fontWeight: FontWeight.bold),
-                softWrap: true),
-            onTap: () async {
-              DevicePermissions permiss = DevicePermissions();
-              bool permit = false;
-              permit = await permiss.checkWriteExternalStorage();
-              showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Icon(
-                          Icons.info,
-                          color: Colors.yellow,
-                        ),
-                        content:
-                            Text("Tem a certeza que quer apagar o ficheiro?"),
-                        actions: <Widget>[
-                          FlatButton(
-                              onPressed: () {
-                                homeBloc
-                                    .removeFile(
-                                        widget.content,
-                                        widget.parentId,
-                                        homeBloc.paeUser.session)
-                                    .then((resp) {
-                                      print(resp);
-                                  Navigator.pop(context);
-                                });
-                              },
-                              child: Text('Sim')),
-                          FlatButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Nao')),
-                        ],
-                      ));
-            },
-          ),
-          FloatingActionButton(
-            onPressed: () async {
-              DevicePermissions permiss = DevicePermissions();
-              bool permit = false;
-              permit = await permiss.checkWriteExternalStorage();
-              showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: Icon(
-                          Icons.info,
-                          color: Colors.yellow,
-                        ),
-                        content:
-                            Text("Tem a certeza que quer apagar o ficheiro?"),
-                        actions: <Widget>[
-                          FlatButton(
-                              onPressed: () {
-                                homeBloc
-                                    .removeFile(
-                                        widget.content,
-                                        widget.parentId,
-                                        homeBloc.paeUser.session)
-                                    .then((resp) {
-                                   print(resp);
-                                  Navigator.pop(context);
-                                });
-                              },
-                              child: Text('Sim')),
-                          FlatButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Nao')),
-                        ],
-                      ));
-            },
-            backgroundColor: Theme.of(context).buttonColor,
-            foregroundColor: Theme.of(context).accentColor,
-            shape: OutlineInputBorder(
-                borderSide: BorderSide(),
-                borderRadius: BorderRadius.circular(10.0)),
-            materialTapTargetSize: MaterialTapTargetSize.padded,
-            child: Icon(
-              Icons.remove,
-              color: Colors.redAccent,
-            ),
-            mini: true,
-            elevation: 0.0,
-            heroTag: "Remove",
           )
         ],
       ),

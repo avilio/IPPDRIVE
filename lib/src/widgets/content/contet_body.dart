@@ -6,8 +6,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:async_loader/async_loader.dart';
-//import 'package:slugify/slugify.dart';
 
+//import 'package:slugify/slugify.dart';
+import '../../common/widgets/trailing_remove_button.dart';
 import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/trailing.dart';
 import '../../common/widgets/progress_indicator.dart';
@@ -90,7 +91,7 @@ class ContentBody extends StatelessWidget {
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),
                   leading: new Icon(Icons.description),
-                  trailing: Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
+                  trailing: TrailingRemoveButton(content: items, parentId: id,) ///Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
                 );
               }
             },
