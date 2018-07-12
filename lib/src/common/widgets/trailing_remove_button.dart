@@ -20,7 +20,7 @@ class TrailingRemoveButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           IconButton(
-            icon: Icon( Icons.remove,color: Colors.redAccent,),
+            icon: Icon( Icons.delete,color: Colors.redAccent,),
             onPressed: () async {
               if(homeBloc.connectionStatus.contains('none'))
                 homeBloc.errorDialog("Sem acesso a Internet", context);
