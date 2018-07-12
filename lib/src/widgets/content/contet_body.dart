@@ -85,8 +85,9 @@ class ContentBody extends StatelessWidget {
                 return new ListTile(
                   onTap: () async {
                     //File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
-                    homeBloc.launchFilesInBrowser(homeBloc.paeUser.session,
-                        items['repositoryId'].toString());
+                    homeBloc.connectionStatus.contains('none') 
+                    ?  homeBloc.errorDialog("Sem acesso a Internet", context)
+                    : homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
                   },
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),

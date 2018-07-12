@@ -135,7 +135,6 @@ class _ManageFilesState extends State<ManageFiles> {
             shape: OutlineInputBorder(
                 borderSide: BorderSide(),
                 borderRadius: BorderRadius.circular(10.0)),
-            materialTapTargetSize: MaterialTapTargetSize.padded,
             child: Icon(
               Icons.add,
               color: Colors.green,
