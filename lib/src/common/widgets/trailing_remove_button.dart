@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../screens/content.dart';
 import '../permissions.dart';
-import '../themes/colorsThemes.dart';
 import '../../blocs/home_provider.dart';
 
 class TrailingRemoveButton extends StatelessWidget {
@@ -40,13 +38,18 @@ class TrailingRemoveButton extends StatelessWidget {
                       actions: <Widget>[
                         FlatButton(
                             onPressed: () {
-                              
                               homeBloc.removeFile(content,parentId,homeBloc.paeUser.session)
                               .then((resp) {
                                 ///
+                                if(resp.containsKey("ok")){
                                 print(resp);
                                 Navigator.pop(context);
                                 homeBloc.errorDialog('Ficheiro Apagado!', context);
+                                }else {
+                                  print(resp);
+                                Navigator.pop(context);
+                                homeBloc.errorDialog('Erro ao tentar apagar o ficheiro!\n ERRO: ${resp['exception']}', context);
+                                }
                                 ///TODO fazer de forma a ter o path parent ou forma de fazer refresh depois de apagar 
                                 //Navigator.push(context, MaterialPageRoute(builder: (context)=> Content(unitContent: content,)));
                               });

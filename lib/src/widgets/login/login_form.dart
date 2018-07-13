@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../blocs/login_provider.dart';
 import '../../blocs/login_bloc.dart';
 
@@ -16,6 +19,8 @@ class LoginFormState extends State<LoginForm> {
   final _userController = new TextEditingController();
   final _passwordController = new TextEditingController();
   final _regUser = new RegExp("[a-zA-Z0-9]{1,256}");
+  bool _flagLog = false;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +36,25 @@ class LoginFormState extends State<LoginForm> {
             _usernameField(bloc),
             new Padding(padding: new EdgeInsets.all(1.5)),
             _passwordField(bloc),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Text('Memorizar o login'),
+                Checkbox(
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  value: _flagLog,
+                  onChanged: (bool b) {
+                    isMemoUserLogin(b);
+
+                    setState(() {
+                      _flagLog = b;
+                    });
+                  },
+                  activeColor: Theme.of(context).buttonColor,
+                ),
+              ],
+            ),
             _submitButton(bloc, context),
             new Padding(padding: new EdgeInsets.all(1.5)),
           ],
@@ -38,6 +62,13 @@ class LoginFormState extends State<LoginForm> {
         //  ),
       ),
     );
+  }
+
+  ///
+  Future isMemoUserLogin(bool memo) async {
+    SharedPreferences prefs = await _prefs;
+    prefs.setBool("memoLoginUser", memo);
+    print(prefs.getBool("memoLoginUser"));
   }
 
   ///
@@ -82,9 +113,10 @@ class LoginFormState extends State<LoginForm> {
       child: new RaisedButton(
         onPressed: () {
           !bloc.connectionStatus.contains('none')
-            ? bloc.submit(_userController.text.trim(), _passwordController.text, context)
-            : bloc.errorDialog('Sem acesso a Internet', context);
-            },
+              ? bloc.submit(_userController.text.trim(),
+                  _passwordController.text, context)
+              : bloc.errorDialog('Sem acesso a Internet', context);
+        },
         child: new Text('Login'),
         elevation: 2.0,
         shape: BeveledRectangleBorder(

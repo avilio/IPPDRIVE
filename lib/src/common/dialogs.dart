@@ -21,7 +21,7 @@ class ExceptionDialog {
           ),
           actions: <Widget>[
             FlatButton(
-                onPressed: () => exit(0),
+                onPressed: () => exit(0),//todo mudar isto do exit para algo "melhor"
                 child: Text('Sim'),
                 color: cAppYellowish,
                 shape: BeveledRectangleBorder(

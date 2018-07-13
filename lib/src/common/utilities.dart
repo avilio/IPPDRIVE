@@ -1,15 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class Utilities {
 
   ///Usar para TextFormField
   String userValidation(String user) =>
-      RegExp("[a-zA-Z0-9]{1,256}").hasMatch(user) ? null : 'User is not valid';
+      RegExp("[a-zA-Z0-9]{1,256}").hasMatch(user) ? null : 'Utilizador nao valido';
 
   String passwordValidation(String password) =>
-      password.length < 5 ? 'Password too short' : null;
+      password.length < 5 ? 'Password muito curta' : null;
 
   /// Verifica se a String é número
   bool isNumeric(String s) {

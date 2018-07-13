@@ -10,7 +10,8 @@ import '../common/dialogs.dart';
 import './home_provider.dart';
 import '../common/utilities.dart';
 
-class LoginBloc extends Object with Utilities, Requests, ExceptionDialog, Connectivity{
+class LoginBloc extends Object
+    with Utilities, Requests, ExceptionDialog, Connectivity {
   final _username = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
   final _response = BehaviorSubject<dynamic>();
@@ -30,11 +31,12 @@ class LoginBloc extends Object with Utilities, Requests, ExceptionDialog, Connec
   Function(GlobalKey<FormState>) get setKey => _formKey.sink.add;
   Function(String) get checkUser => userValidation;
   Function(String) get checkPass => passwordValidation;
-  Function(String) get setConnectionStatus =>_connectivityStatus.sink.add;
+  Function(String) get setConnectionStatus => _connectivityStatus.sink.add;
 
-  Future initConnection() async => setConnectionStatus((await _connectivity.checkConnectivity()).toString());
-  void onConnectionChange() => _connectivity.onConnectivityChanged.listen((ConnectivityResult result)=> setConnectionStatus(result.toString()));
-
+  Future initConnection() async =>
+      setConnectionStatus((await _connectivity.checkConnectivity()).toString());
+  void onConnectionChange() => _connectivity.onConnectivityChanged.listen(
+      (ConnectivityResult result) => setConnectionStatus(result.toString()));
 
   submit(String user, String password, BuildContext context) async {
     setUsername(user);
@@ -54,6 +56,7 @@ class LoginBloc extends Object with Utilities, Requests, ExceptionDialog, Connec
     final homeBloc = HomeProvider.of(context);
 
     paeAuth = await wsAuth();
+
     ///
     !paeAuth.containsValue('ok')
         ? _response.sink.add(paeAuth['exception'])
@@ -66,7 +69,7 @@ class LoginBloc extends Object with Utilities, Requests, ExceptionDialog, Connec
         : _response.sink.add(paeRLogin['response']);
 
     homeBloc.setResponse(_response.value);
-    homeBloc.route2Home(context,password);
+    homeBloc.route2Home(context, password);
   }
 
   dispose() {

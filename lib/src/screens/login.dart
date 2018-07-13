@@ -1,5 +1,9 @@
-import 'package:connectivity/connectivity.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/themes/colorsThemes.dart';
 import '../blocs/login_bloc.dart';
@@ -13,10 +17,9 @@ class LoginPage extends StatefulWidget {
   }
 }
 
-class LoginPageState extends State<LoginPage> with Connectivity{
+class LoginPageState extends State<LoginPage> with Connectivity {
   final _padding = EdgeInsets.all(25.0);
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,7 @@ class LoginPageState extends State<LoginPage> with Connectivity{
     final deviceHeight = MediaQuery.of(context).size.height;
     final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.95;
     final paddingDevice = deviceHeight - targetHeight;
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
     /// Apenas para evitar enviar por parametro
     loginBloc.setKey(_formKey);
@@ -32,7 +36,9 @@ class LoginPageState extends State<LoginPage> with Connectivity{
     loginBloc.onConnectionChange();
 
     return WillPopScope(
-      onWillPop: () async {loginBloc.quitDialog(context);},
+      onWillPop: () async {
+        loginBloc.quitDialog(context);
+      },
       child: Scaffold(body: _buildBody(loginBloc, paddingDevice, context)),
     );
   }
