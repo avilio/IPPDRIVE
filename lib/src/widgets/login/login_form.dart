@@ -66,6 +66,7 @@ class LoginFormState extends State<LoginForm> {
 
   ///
   Future isMemoUserLogin(bool memo) async {
+    memo ?? false;
     SharedPreferences prefs = await _prefs;
     prefs.setBool("memoLoginUser", memo);
     print(prefs.getBool("memoLoginUser"));

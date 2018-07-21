@@ -39,7 +39,7 @@ class HomeBloc extends Object
       setPaeUser(PaeUser.fromJson(_response.value, password: password));
 
       ///todo
-      if (preferences.getBool("memoLoginUser"))
+      if (preferences.getBool("memoLoginUser")!= null && preferences.getBool("memoLoginUser"))
         preferences.setStringList("userLogin", [paeUser.username, password]);
 
       contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);

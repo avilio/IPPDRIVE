@@ -23,6 +23,7 @@ dependencies:
   mime: "^0.9.6+1"
   documents_picker: "^0.0.2"
   slugify: "^0.1.1"
+  open_file: ^1.0.2
 
 
 

@@ -5,9 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+
+import 'package:open_file/open_file.dart';
 import 'package:async_loader/async_loader.dart';
 
 //import 'package:slugify/slugify.dart';
+import '../../common/permissions.dart';
 import '../../common/widgets/trailing_remove_button.dart';
 import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/trailing.dart';
@@ -84,15 +87,21 @@ class ContentBody extends StatelessWidget {
                 folder = Folders.fromJson(items);
                 return new ListTile(
                   onTap: () async {
-                    //File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
-                    homeBloc.connectionStatus.contains('none') 
+                    DevicePermissions permiss = DevicePermissions();
+                    bool permit = false;
+                    permit = await permiss.checkWriteExternalStorage();
+                    
+                    File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
+                    print(file.path);
+                    OpenFile.open(file.path);
+                   /* homeBloc.connectionStatus.contains('none')
                     ?  homeBloc.errorDialog("Sem acesso a Internet", context)
-                    : homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());
+                    : homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());*/
                   },
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),
                   leading: new Icon(Icons.description),
-                  trailing: TrailingRemoveButton(content: items, parentId: id,) ///Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
+                  trailing: TrailingRemoveButton(content: items, parentId: id, canRemove: items['clearances']['removeFiles'],) ///Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
                 );
               }
             },
