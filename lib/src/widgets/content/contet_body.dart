@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:async_loader/async_loader.dart';
 
+
 //import 'package:slugify/slugify.dart';
 import '../../common/permissions.dart';
 import '../../common/widgets/trailing_remove_button.dart';
@@ -90,7 +91,8 @@ class ContentBody extends StatelessWidget {
                     DevicePermissions permiss = DevicePermissions();
                     bool permit = false;
                     permit = await permiss.checkWriteExternalStorage();
-                    
+                    //final AndroidIntent intent = new AndroidIntent(action: 'action_view');
+                    //intent.launch();
                     File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
                     print(file.path);
                     OpenFile.open(file.path);

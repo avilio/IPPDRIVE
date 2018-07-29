@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './common/themes/mainTheme.dart';
 import './screens/content.dart';
@@ -28,9 +31,10 @@ class _IppDriveState extends State<IppDrive> {
 }
 
 Route routes(RouteSettings settings){
+
   switch(settings.name){
     case "/" : return MaterialPageRoute(
-        builder: (context)=> LoginPage()
+        builder: (context) =>  LoginPage()
     );break;
     case "/home" : return MaterialPageRoute(
         builder: (context)=> HomePage()

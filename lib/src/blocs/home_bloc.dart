@@ -43,7 +43,7 @@ class HomeBloc extends Object
         preferences.setStringList("userLogin", [paeUser.username, password]);
 
       contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
-      //print(paeUser.password);
+
       contentYear['service'] == 'error'
           ? _response.sink.add(contentYear['exception'])
           : _response.sink.add(contentYear['response']);
