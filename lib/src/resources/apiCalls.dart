@@ -201,7 +201,7 @@ class Requests {
 
   /// Create a [url] with given [id] and [bacosession] to send a get request to the api
   /// and returns a Map with the folder added to favorites as [response].
-
+  @deprecated
   Future<Null> launchFilesInBrowser(String bacoSess, String id) async {
 
     var url = '$host/repositoryStream/$id?BACOSESS=$bacoSess';

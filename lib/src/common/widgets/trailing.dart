@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'dart:math' as math;
 
 import '../../models/folders.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
+import '../../common/widgets/trailing_cloud.dart';
 import '../../blocs/home_provider.dart';
 
 class Trailing extends StatefulWidget {
@@ -36,11 +38,12 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
 
     if (widget.canAdd) {
       return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        new ManageFiles(
+        SyncCloudOffline(controller: _controller,content: widget.content,folders: widget.folder,),
+        ManageFiles(
             content: widget.content,
             controller: _controller,
             parentId: widget.parentId),
-        new Favorites(folders: widget.folder, controller: _controller),
+       Favorites(folders: widget.folder, controller: _controller),
         IconButton(
             icon: AnimatedBuilder(
                 animation: _controller.view,
@@ -69,17 +72,8 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            child: ScaleTransition(
-              scale: CurvedAnimation(
-                  parent: _controller.view,
-                  curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
-              child: IconButton(
-                  icon: Icon(Icons.cloud_off), onPressed: () => print("TESTE")),
-              alignment: FractionalOffset.center,
-            ),
-          ),
-          new Favorites(folders: widget.folder, controller: _controller),
+          SyncCloudOffline(controller: _controller,content: widget.content,folders: widget.folder,),
+          Favorites(folders: widget.folder, controller: _controller),
           IconButton(
               icon: AnimatedBuilder(
                   animation: _controller.view,
