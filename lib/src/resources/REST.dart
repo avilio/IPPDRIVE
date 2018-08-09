@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class REST {
+
   ///creates a singleton
   static final REST _instance = new REST.internal();
 

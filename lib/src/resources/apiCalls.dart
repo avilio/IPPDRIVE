@@ -17,7 +17,7 @@ final String server = defaultTargetPlatform == TargetPlatform.android ? "10.0.2.
 var host = 'https://pae.ipportalegre.pt';
 
 class Requests {
-  final rest = REST();
+  final rest = REST.internal();
 
   /// Create a body JSON to send a post request to the api and returns a [Map] obtained as response,
   /// this is the first phase of user authentication, in order to 'login' into to the app.
@@ -235,19 +235,19 @@ class Requests {
 
     var url = '$host/repositoryStream/${file['repositoryId']}?BACOSESS=$bacoSess';
 
-    return _downloadFile(url, file['title']);
+    return _downloadFile(url, file['title'], file['path']);
     //return rest.get(url).then((response) => response );
   }
 
   ///
-  Future<File> _downloadFile(String url, String filename) async {
+  Future<File> _downloadFile(String url, String filename, String path) async {
 
     var httpClient = new HttpClient();
     var request = await httpClient.getUrl(Uri.parse(url));
     var response = await request.close();
     var bytes = await consolidateHttpClientResponseBytes(response);
 //    String dir = (await getApplicationDocumentsDirectory()).path;
-    String dir = (await getExternalStorageDirectory()).path;
+    String dir = (await getExternalStorageDirectory()).path + path;
     ///todo
     print(dir);
     File file = new File('$dir/$filename');
