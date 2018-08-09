@@ -52,7 +52,7 @@ class IppDriveList extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => new Content(unitContent: ippDriveRootList[index],school: school,course: course,)));
                 } else
-                  return showDialog(context: context,builder: (context )=> new DialogAlert(message: 'Sem dados para mostrar') );
+                  showDialog(context: context,builder: (context )=> new DialogAlert(message: 'Sem dados para mostrar') );
               },
             );
           },

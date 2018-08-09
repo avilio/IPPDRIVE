@@ -91,11 +91,11 @@ class ContentBody extends StatelessWidget {
                     DevicePermissions permiss = DevicePermissions();
                     bool permit = false;
                     permit = await permiss.checkWriteExternalStorage();
-                    //final AndroidIntent intent = new AndroidIntent(action: 'action_view');
-                    //intent.launch();
                     File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
                     print(file.path);
                     OpenFile.open(file.path);
+                    //final AndroidIntent intent = new AndroidIntent(action: 'action_view');
+                    //intent.launch();
                    /* homeBloc.connectionStatus.contains('none')
                     ?  homeBloc.errorDialog("Sem acesso a Internet", context)
                     : homeBloc.launchFilesInBrowser(homeBloc.paeUser.session, items['repositoryId'].toString());*/

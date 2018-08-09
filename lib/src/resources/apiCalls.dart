@@ -246,12 +246,16 @@ class Requests {
     var request = await httpClient.getUrl(Uri.parse(url));
     var response = await request.close();
     var bytes = await consolidateHttpClientResponseBytes(response);
-//    String dir = (await getApplicationDocumentsDirectory()).path;
-    String dir = (await getExternalStorageDirectory()).path + path;
+
+    var lastIndex = path.lastIndexOf("/");
+    print(path.substring(0,lastIndex));
+    String dir = (await getExternalStorageDirectory()).path + path.substring(0,lastIndex);
     ///todo
-    print(dir);
-    File file = new File('$dir/$filename');
+    //print(dir);
+    File file = await new File('$dir/$filename').create(recursive: true);
     await file.writeAsBytes(bytes);
+
+    print(file.path);
     return file;
 
   }
