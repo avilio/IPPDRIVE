@@ -34,7 +34,7 @@ class LoginPageState extends State<LoginPage> with Connectivity {
     loginBloc.setKey(_formKey);
     loginBloc.initConnection();
     loginBloc.onConnectionChange();
-
+      
     return WillPopScope(
       onWillPop: () async {
         loginBloc.quitDialog(context);
@@ -45,6 +45,7 @@ class LoginPageState extends State<LoginPage> with Connectivity {
 
   ///
   Widget _buildBody(LoginBloc bloc, double padding, BuildContext context) {
+
     return SingleChildScrollView(
       child: Container(
         child: Form(

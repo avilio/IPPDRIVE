@@ -24,6 +24,7 @@ class LoginBloc extends Object
   Stream<dynamic> get response => _response.stream;
   String get connectionStatus => _connectivityStatus.value;
 
+
   /// Recebe valores para a stream
   Function(String) get setUsername => _username.sink.add;
   Function(String) get setPassword => _password.sink.add;
@@ -33,12 +34,16 @@ class LoginBloc extends Object
   Function(String) get checkPass => passwordValidation;
   Function(String) get setConnectionStatus => _connectivityStatus.sink.add;
 
+
   Future initConnection() async =>
       setConnectionStatus((await _connectivity.checkConnectivity()).toString());
   void onConnectionChange() => _connectivity.onConnectivityChanged.listen(
       (ConnectivityResult result) => setConnectionStatus(result.toString()));
 
   submit(String user, String password, BuildContext context) async {
+
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     setUsername(user);
     setPassword(password);
 
