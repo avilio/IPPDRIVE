@@ -39,7 +39,7 @@ class _ManageFilesState extends State<ManageFiles> {
                     SizedBox(
                       height: 5.0,
                     ),
-                    TrailingRemoveButton(content: widget.content,parentId: widget.parentId,)
+                    TrailingRemoveButton(content: widget.content,parentId: widget.parentId,canRemove: true,)
                   ],
                 ),
               ],

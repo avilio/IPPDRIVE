@@ -113,10 +113,10 @@ class LoginFormState extends State<LoginForm> {
       padding: _padding,
       child: new RaisedButton(
         onPressed: () {
-          !bloc.connectionStatus.contains('none')
-              ? bloc.submit(_userController.text.trim(),
-                  _passwordController.text, context)
-              : bloc.errorDialog('Sem acesso a Internet', context);
+          //!bloc.connectionStatus.contains('none')?
+          bloc.submit(_userController.text.trim(),
+                  _passwordController.text, context);
+             // : bloc.errorDialog('Sem acesso a Internet', context);
         },
         child: new Text('Login'),
         elevation: 2.0,

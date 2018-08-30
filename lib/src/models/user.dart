@@ -17,5 +17,10 @@ class PaeUser{
         session = json['BACOSESS'],
         password = password ?? "dummy";
 
+  @override
+  String toString() {
+    return '{username: $username, name: $name, session: $session, password: $password}';
+  }
+
 
 }

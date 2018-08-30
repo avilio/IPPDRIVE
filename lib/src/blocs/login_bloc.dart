@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user.dart';
 import '../resources/apiCalls.dart';
@@ -60,20 +62,44 @@ class LoginBloc extends Object
     var paeRLogin;
     final homeBloc = HomeProvider.of(context);
 
-    paeAuth = await wsAuth();
+    //print(connectionStatus);
+    if(connectionStatus.contains('none')) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      List list = preferences.get("home");
+      Map json = {
+        "username" : preferences.get("username"),
+        "session" : "",
+        "name" : preferences.get("name")
+      };
+      homeBloc.setPaeUser(PaeUser.fromJson(json, password: password));
 
-    ///
-    !paeAuth.containsValue('ok')
-        ? _response.sink.add(paeAuth['exception'])
-        : paeRLogin =
-            await wsRLogin(user, password, paeAuth['response']['BACOSESS']);
+      print(homeBloc.paeUser.name);
 
-    ///
-    paeRLogin['service'] == 'error'
-        ? _response.sink.add(paeRLogin['exception'])
-        : _response.sink.add(paeRLogin['response']);
+
+      List newList = new List();
+      list.forEach((value){
+        newList.add(jsonDecode(value));
+      });
+
+      _response.sink.add(newList);
+
+    }else {
+      paeAuth = await wsAuth();
+
+      ///
+      !paeAuth.containsValue('ok')
+          ? _response.sink.add(paeAuth['exception'])
+          : paeRLogin =
+      await wsRLogin(user, password, paeAuth['response']['BACOSESS']);
+
+      ///
+      paeRLogin['service'] == 'error'
+          ? _response.sink.add(paeRLogin['exception'])
+          : _response.sink.add(paeRLogin['response']);
+    }
 
     homeBloc.setResponse(_response.value);
+    homeBloc.setConnectionStatus(connectionStatus);
     homeBloc.route2Home(context, password);
   }
 

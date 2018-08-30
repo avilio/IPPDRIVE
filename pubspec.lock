@@ -35,7 +35,7 @@ packages:
       name: async_loader
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -56,7 +56,7 @@ packages:
       name: collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.14.6"
+    version: "1.14.11"
   connectivity:
     dependency: "direct main"
     description:
@@ -84,7 +84,7 @@ packages:
       name: csslib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.4+1"
+    version: "0.14.5"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -98,7 +98,7 @@ packages:
       name: documents_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -136,7 +136,7 @@ packages:
       name: html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.3+2"
+    version: "0.13.3+3"
   http:
     dependency: "direct main"
     description:
@@ -199,14 +199,14 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.2+1"
+    version: "0.12.3+1"
   meta:
     dependency: transitive
     description:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.5"
+    version: "1.1.6"
   mime:
     dependency: "direct main"
     description:
@@ -234,7 +234,7 @@ packages:
       name: open_file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.7"
   package_config:
     dependency: transitive
     description:
@@ -269,7 +269,7 @@ packages:
       name: platform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.2.0"
   plugin:
     dependency: transitive
     description:
@@ -311,7 +311,7 @@ packages:
       name: share
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.3"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -353,19 +353,12 @@ packages:
       name: simple_permissions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.5"
+    version: "0.1.6"
   sky_engine:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.99"
-  slugify:
-    dependency: "direct main"
-    description:
-      name: slugify
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
   source_map_stack_trace:
     dependency: transitive
     description:
@@ -407,7 +400,7 @@ packages:
       name: string_scanner
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   term_glyph:
     dependency: transitive
     description:
@@ -421,14 +414,14 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.41"
+    version: "1.3.0"
   typed_data:
     dependency: transitive
     description:
       name: typed_data
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.5"
+    version: "1.1.6"
   url_launcher:
     dependency: "direct main"
     description:
@@ -479,5 +472,5 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.0.0-dev.62.0 <=2.0.0-dev.69.5.flutter-eab492385c"
+  dart: ">=2.0.0-dev.68.0 <3.0.0"
   flutter: ">=0.1.4 <2.0.0"

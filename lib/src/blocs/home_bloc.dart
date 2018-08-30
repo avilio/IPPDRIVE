@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -35,35 +36,75 @@ class HomeBloc extends Object
 
   route2Home(BuildContext context, String password) async {
     var contentYear;
+    print(_response.value);
+    print(_response.value.runtimeType);
 
-    if (_response.value.runtimeType != String) {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      setPaeUser(PaeUser.fromJson(_response.value, password: password));
+    print(connectionStatus);
+    if(connectionStatus.contains('none')){
 
-      ///todo
-      if (preferences.getBool("memoLoginUser")!= null && preferences.getBool("memoLoginUser"))
-        preferences.setStringList("userLogin", [paeUser.username, password]);
-
-      contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
-
-      contentYear['service'] == 'error'
-          ? _response.sink.add(contentYear['exception'])
-          : _response.sink.add(contentYear['response']);
-
-      _response.value['childs'].isEmpty
-          ? contentYear = await wsReadMyDefaultFoldersFolders(paeUser.session)
-          : contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
-
-      _response.sink.add(contentYear['response']);
+     // print(jsonDecode(_response.value));
+      print(_response.value);
+      print(_response.value.runtimeType);
 
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage(
-                  unitsCourseList: _response.value['childs'],
-                  paeUser: paeUser)));
-    } else
-      errorDialog(_response.value, context);
+              builder: (context) =>
+                  HomePage(
+                      unitsCourseList: _response.value,
+                      paeUser: paeUser)));
+
+    }else {
+      if (_response.value.runtimeType != String) {
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        setPaeUser(PaeUser.fromJson(_response.value, password: password));
+
+        preferences.setString("username", paeUser.username);
+        preferences.setString("name", paeUser.name);
+        print(preferences.get("user"));
+        print(preferences.get("name"));
+
+        ///todo
+        if (preferences.getBool("memoLoginUser") != null &&
+            preferences.getBool("memoLoginUser"))
+          preferences.setStringList("userLogin", [paeUser.username, password]);
+
+        contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
+
+        contentYear['service'] == 'error'
+            ? _response.sink.add(contentYear['exception'])
+            : _response.sink.add(contentYear['response']);
+
+        _response.value['childs'].isEmpty
+            ? contentYear = await wsReadMyDefaultFoldersFolders(paeUser.session)
+            : contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
+
+        _response.sink.add(contentYear['response']);
+
+        List lista = _response.value['childs'];
+        List<String> jsonList = new List();
+        lista.forEach((value) {
+          jsonList.add(jsonEncode(value));
+        });
+
+        /*jsonList.forEach((value){
+        print(value);
+      });*/
+
+        preferences.setStringList("home", jsonList);
+
+        print(preferences.get("home"));
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomePage(
+                        unitsCourseList: _response.value['childs'],
+                        paeUser: paeUser)));
+      } else
+        errorDialog(_response.value, context);
+    }
   }
 
   dispose() {

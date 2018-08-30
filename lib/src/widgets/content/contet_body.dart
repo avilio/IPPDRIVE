@@ -103,7 +103,7 @@ class ContentBody extends StatelessWidget {
                   title: new Text(items['title'] ??
                       items['repositoryFile4JsonView']['name']),
                   leading: new Icon(Icons.description),
-                  trailing: TrailingRemoveButton(content: items, parentId: id, canRemove: items['clearances']['removeFiles'],) ///Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
+                  trailing: TrailingRemoveButton(content: items, parentId: id, canRemove: items['clearances']['removeFiles'], ) ///Trailing(canAdd: items['clearances']['addFiles'], folder: folder, content: items, parentId: id,),
                 );
               }
             },
