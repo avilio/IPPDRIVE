@@ -40,11 +40,17 @@ class HomeExpansionTiles extends StatelessWidget {
                 color: cAppBlueAccent),
             child: new ListTile(
               trailing: Trailing(folder: folder,canAdd: courseUnits['clearances']['addFiles'],content: courseUnits,),
-              onTap: () => !homeBloc.connectionStatus.contains('none')
-                ? Navigator.of(context).push(MaterialPageRoute(
+              onTap: () {
+                //!homeBloc.connectionStatus.contains('none')?
+
+                if(homeBloc.sharedPrefs.get(courseUnits['id'].toString()) != null ||  homeBloc.sharedPrefs.get(courseUnits['pageContentId'].toString()) != null )
+                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
-                  new Content(unitContent: courseUnits)))
-                : homeBloc.errorDialog('Sem acesso a Internet', context),
+                  new Content(unitContent: courseUnits)));
+                else
+                  homeBloc.errorDialog('Sem acesso a Internet', context);
+              },
+              //: homeBloc.errorDialog('Sem acesso a Internet', context),
               title: new Text(courseUnits['title'].toString().split('-').first,
                   textScaleFactor: 0.95),
             ),

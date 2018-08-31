@@ -65,6 +65,8 @@ class LoginBloc extends Object
     //print(connectionStatus);
     if(connectionStatus.contains('none')) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
+      homeBloc.setSharedPref(preferences);
+
       List list = preferences.get("home");
       Map json = {
         "username" : preferences.get("username"),

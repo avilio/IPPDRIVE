@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'package:open_file/open_file.dart';
 import 'package:async_loader/async_loader.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 //import 'package:slugify/slugify.dart';
@@ -41,7 +43,24 @@ class ContentBody extends StatelessWidget {
     homeBloc.onConnectionChange();
     Error401 error401 = Error401();
 
-    return new AsyncLoader(
+    if(homeBloc.connectionStatus.contains('none')){
+
+        try {
+          homeBloc.sharedPrefs.getStringList(id.toString());
+
+          List newList = new List();
+          homeBloc.sharedPrefs.getStringList(id.toString()).forEach((value) {
+                    newList.add(jsonDecode(value));
+                  });
+
+          return createList(newList, context, homeBloc);
+        } catch (e) {
+          print(e);
+          homeBloc.errorDialog('Sem acesso a Internet', context);
+        }
+
+    }else
+      return new AsyncLoader(
         initState: () async => await homeBloc.courseUnitsFoldersContents(id, homeBloc.paeUser.session),
         renderLoad: () => Center(child: AdaptiveProgressIndicator()),
         renderError: ([error]) {
@@ -52,9 +71,13 @@ class ContentBody extends StatelessWidget {
         },
         renderSuccess: ({data}) {
           List checker = data['response']['childs'];
-          if (checker.isNotEmpty)
-            return createList(checker ,context, homeBloc);
-          else
+          if (checker.isNotEmpty) {
+
+            ///
+            homeBloc.saveListLocally(this.id.toString(), checker, homeBloc.sharedPrefs);
+
+            return createList(checker, context, homeBloc);
+          }else
             return DialogAlert(message: 'Pasta vazia');
         });
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,23 +12,27 @@ import '../resources/apiCalls.dart';
 import '../common/dialogs.dart';
 import '../screens/home.dart';
 import '../common/utilities.dart';
+import '../saveLocally.dart';
 
 class HomeBloc extends Object
-    with Utilities, Requests, ExceptionDialog, Connectivity {
+    with Utilities, Requests, ExceptionDialog, Connectivity, SaveLocally {
   final _response = BehaviorSubject<dynamic>();
   final _paeUser = BehaviorSubject<PaeUser>();
   final _connectivityStatus = BehaviorSubject<String>();
   final _connectivity = Connectivity();
+  final _shared = BehaviorSubject<SharedPreferences>();
 
   //Stream<dynamic> get response => _response.stream;
   //Stream<PaeUser> get paeUser => _paeUser.stream;
 
   PaeUser get paeUser => _paeUser.value;
   String get connectionStatus => _connectivityStatus.value;
+  SharedPreferences get sharedPrefs => _shared.value;
 
   Function(PaeUser) get setPaeUser => _paeUser.sink.add;
   Function(dynamic) get setResponse => _response.sink.add;
   Function(String) get setConnectionStatus => _connectivityStatus.sink.add;
+  Function(SharedPreferences) get setSharedPref => _shared.sink.add;
 
   void initConnection() async =>
       setConnectionStatus((await _connectivity.checkConnectivity()).toString());
@@ -36,15 +41,9 @@ class HomeBloc extends Object
 
   route2Home(BuildContext context, String password) async {
     var contentYear;
-    print(_response.value);
-    print(_response.value.runtimeType);
-
+///
     print(connectionStatus);
     if(connectionStatus.contains('none')){
-
-     // print(jsonDecode(_response.value));
-      print(_response.value);
-      print(_response.value.runtimeType);
 
       Navigator.push(
           context,
@@ -56,18 +55,19 @@ class HomeBloc extends Object
 
     }else {
       if (_response.value.runtimeType != String) {
-        SharedPreferences preferences = await SharedPreferences.getInstance();
-        setPaeUser(PaeUser.fromJson(_response.value, password: password));
 
-        preferences.setString("username", paeUser.username);
-        preferences.setString("name", paeUser.name);
-        print(preferences.get("user"));
-        print(preferences.get("name"));
+
+        setPaeUser(PaeUser.fromJson(_response.value, password: password));
+        
+        sharedPrefs.setString("username", paeUser.username);
+        sharedPrefs.setString("name", paeUser.name);
+        print(sharedPrefs.get("user"));
+        print(sharedPrefs.get("name"));
 
         ///todo
-        if (preferences.getBool("memoLoginUser") != null &&
-            preferences.getBool("memoLoginUser"))
-          preferences.setStringList("userLogin", [paeUser.username, password]);
+        if (sharedPrefs.getBool("memoLoginUser") != null &&
+            sharedPrefs.getBool("memoLoginUser"))
+          sharedPrefs.setStringList("userLogin", [paeUser.username, password]);
 
         contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
 
@@ -82,18 +82,10 @@ class HomeBloc extends Object
         _response.sink.add(contentYear['response']);
 
         List lista = _response.value['childs'];
-        List<String> jsonList = new List();
-        lista.forEach((value) {
-          jsonList.add(jsonEncode(value));
-        });
 
-        /*jsonList.forEach((value){
-        print(value);
-      });*/
-
-        preferences.setStringList("home", jsonList);
-
-        print(preferences.get("home"));
+        saveListLocally("home", lista, sharedPrefs);
+///
+        //print(preferences.get("home"));
 
         Navigator.push(
             context,
@@ -111,5 +103,6 @@ class HomeBloc extends Object
     _response.close();
     _paeUser.close();
     _connectivityStatus.close();
+    _shared.close();
   }
 }
