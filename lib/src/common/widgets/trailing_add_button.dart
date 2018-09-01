@@ -61,7 +61,7 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     File file;
    
     docPaths.forEach((data) => file = File(data));
-
+    //todo fazer caso offline 
     Requests request = Requests();
 
      await request.uploadFile(file, session).then((resp) {

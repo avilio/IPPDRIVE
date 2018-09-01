@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
@@ -72,8 +73,6 @@ class Bloc extends Object
     }
   }
 
-
-
   submit(String user, String password, BuildContext context) async {
 
     FocusScope.of(context).requestFocus(new FocusNode());
@@ -119,6 +118,8 @@ class Bloc extends Object
       _response.sink.add(newList);
 
     }else {
+      Timer timer = Timer(Duration(seconds: 10),(){ errorDialog("Algo correu mal!!\nVerifique se o PAE esta com os servidores UP!", context); });
+
       paeAuth = await wsAuth();
       SharedPreferences preferences = await SharedPreferences.getInstance();
 
@@ -134,17 +135,19 @@ class Bloc extends Object
       paeRLogin['service'] == 'error'
           ? _response.sink.add(paeRLogin['exception'])
           : _response.sink.add(paeRLogin['response']);
+
+      timer.cancel();
     }
     //todo mudar isto daqui e fazer um auth mesmo fora do bloc
     setResponse(_response.value);
     setConnectionStatus(connectionStatus);
-    return route2Home(context, password);
+    route2Home(context, password);
   }
 
 
    route2Home(BuildContext context, String password) async {
     var contentYear;
-///
+///todo
     print(connectionStatus);
     if(connectionStatus.contains('none')){
 

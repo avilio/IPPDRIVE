@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import './themes/colorsThemes.dart';
 
 class ExceptionDialog {
@@ -37,8 +37,8 @@ class ExceptionDialog {
   }
 
   /// Dialog de erros
-  Future<Null> errorDialog(String message, BuildContext context) =>
-      showDialog<Null>(context: context, builder:(context)=> _buildErrorDialog(message, context));
+  void errorDialog(String message, BuildContext context) =>
+      showDialog(context: context, builder:(context)=> _buildErrorDialog(message, context));
 
   /// Dialog Box Builder
   AlertDialog _buildErrorDialog(String message, BuildContext context) =>

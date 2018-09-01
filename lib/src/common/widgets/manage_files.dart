@@ -25,8 +25,8 @@ class _ManageFilesState extends State<ManageFiles> {
     super.initState();
 
     Future.delayed(Duration.zero, () {
-      final homeBloc = BlocProvider.of(context);
-      homeBloc.onConnectionChange();
+      final bloc = BlocProvider.of(context);
+      bloc.onConnectionChange();
       /* onConnectivityChanged.listen((ConnectivityResult result){
         loginBloc.setConnectionStatus(result.toString());
       });*/
@@ -35,10 +35,10 @@ class _ManageFilesState extends State<ManageFiles> {
  
 ///
   _openFilePicker() {
-    final homeBloc = BlocProvider.of(context);
+    final bloc = BlocProvider.of(context);
     //todo alterar isto pois o modo de fazer isto offline vai ser diferente
-    if(homeBloc.connectionStatus.contains('none'))
-      homeBloc.errorDialog("Sem acesso a Internet", context);
+    if(bloc.connectionStatus.contains('none'))
+      bloc.errorDialog("Sem acesso a Internet", context);
     else {
       showModalBottomSheet(
           context: context,
