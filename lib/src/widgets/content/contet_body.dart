@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../blocs/home_bloc.dart';
-import '../../blocs/home_provider.dart';
+import '../../blocs/bloc.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/error401.dart';
 import '../../common/permissions.dart';
 import '../../common/widgets/dialog.dart';
@@ -32,7 +32,7 @@ class ContentBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     homeBloc.onConnectionChange();
     Error401 error401 = Error401();
 
@@ -83,7 +83,7 @@ class ContentBody extends StatelessWidget {
 
   }
 
-  Widget createList(List courseUnitsContent,context, HomeBloc homeBloc) {
+  Widget createList(List courseUnitsContent,context, Bloc homeBloc) {
 
     Folders folder;
     Widget bodyList;

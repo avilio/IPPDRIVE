@@ -2,14 +2,14 @@
 import 'dart:io';
 
 import 'package:documents_picker/documents_picker.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../../screens/content.dart';
-import '../../common/slugify.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/permissions.dart';
-import '../../blocs/home_provider.dart';
+import '../../common/slugify.dart';
 import '../../resources/apiCalls.dart';
+import '../../screens/content.dart';
 
 
 class TrailingAddButton extends StatefulWidget {
@@ -26,7 +26,7 @@ class TrailingAddButton extends StatefulWidget {
 class TrailingAddButtonState extends State<TrailingAddButton> {
   @override
   Widget build(BuildContext context) {
-  final homeBloc = HomeProvider.of(context);
+  final homeBloc = BlocProvider.of(context);
 
    return Row(
         mainAxisAlignment: MainAxisAlignment.center,

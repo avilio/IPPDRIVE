@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../blocs/bloc_provider.dart';
 import '../../blocs/favorites_provider.dart';
-import '../../blocs/home_provider.dart';
 import '../../models/folders.dart';
 
 class Favorites extends StatefulWidget {
@@ -30,7 +30,7 @@ class FavoritesState extends State<Favorites> {
     super.initState();
 
     Future.delayed(Duration.zero, () {
-      final homeBloc = HomeProvider.of(context);
+      final homeBloc = BlocProvider.of(context);
       homeBloc.onConnectionChange();
       /* onConnectivityChanged.listen((ConnectivityResult result){
         loginBloc.setConnectionStatus(result.toString());
@@ -53,7 +53,7 @@ class FavoritesState extends State<Favorites> {
 
     new Future.delayed(Duration.zero, () {
       final favBloc = FavoritesProvider.of(context);
-      final homeBloc = HomeProvider.of(context);
+      final homeBloc = BlocProvider.of(context);
 
       favBloc.setIsFav(_isFav);
 

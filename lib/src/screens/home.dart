@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../blocs/bloc.dart';
+import '../blocs/bloc_provider.dart';
 import '../blocs/favorites_provider.dart';
-import '../blocs/home_bloc.dart';
-import '../blocs/home_provider.dart';
 import '../common/themes/colorsThemes.dart';
 import '../models/user.dart';
 import '../widgets/home/home_structure.dart';
@@ -30,7 +30,7 @@ class HomePageState extends State<HomePage> {
     super.initState();
 
     Future.delayed(Duration.zero, () {
-      final homeBloc = HomeProvider.of(context);
+      final homeBloc = BlocProvider.of(context);
       homeBloc.onConnectionChange();
       /* onConnectivityChanged.listen((ConnectivityResult result){
         loginBloc.setConnectionStatus(result.toString());
@@ -40,7 +40,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     final favBloc = FavoritesProvider.of(context);
     favBloc.setPaeUser(homeBloc.paeUser);
     homeBloc.onConnectionChange();
@@ -52,7 +52,7 @@ class HomePageState extends State<HomePage> {
   }
 
   ///
-  Widget discentesDocentes(BuildContext context, HomeBloc bloc) {
+  Widget discentesDocentes(BuildContext context, Bloc bloc) {
     var semestres = SemestersBuilder.fromList2List(widget.unitsCourseList);
     bloc.onConnectionChange();
     ///
@@ -83,7 +83,7 @@ class HomePageState extends State<HomePage> {
   }
 
   ///
-  Widget funcionarios(BuildContext context, HomeBloc bloc) {
+  Widget funcionarios(BuildContext context, Bloc bloc) {
 
     return WillPopScope(
         onWillPop: () async {

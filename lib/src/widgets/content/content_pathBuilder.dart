@@ -1,10 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/widgets/list_item_builder.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common//themes/colorsThemes.dart';
-
-import '../../blocs/home_provider.dart';
 
 class ContentPathBuilder extends StatelessWidget {
   final List courseUnitsContent;
@@ -15,7 +13,7 @@ class ContentPathBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
       Iterator units = courseUnitsContent.iterator;
 
       while(units.moveNext()) {

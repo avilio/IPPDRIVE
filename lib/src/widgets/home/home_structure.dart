@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../blocs/home_provider.dart';
-import '../../common/widgets/drawer.dart';
-import '../../blocs/drawer_bloc.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../blocs/drawer_provider.dart';
+import '../../common/widgets/drawer.dart';
 
 class HomeStructure extends StatelessWidget {
   final List unitsCourseList;
@@ -17,7 +16,7 @@ class HomeStructure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
 
     final drawerBloc = DrawerProvider.of(context);
 

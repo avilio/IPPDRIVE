@@ -1,8 +1,8 @@
 import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
 
-import '../../blocs/home_bloc.dart';
-import '../../blocs/home_provider.dart';
+import '../../blocs/bloc.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/progress_indicator.dart';
 import '../../screens/content.dart';
 
@@ -16,7 +16,7 @@ class DrawerFavoritesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
 
     return new ExpansionTile(
       leading: new Icon(Icons.star),
@@ -28,7 +28,7 @@ class DrawerFavoritesList extends StatelessWidget {
     );
   }
 
-  Widget favorites(HomeBloc bloc) =>
+  Widget favorites(Bloc bloc) =>
       new AsyncLoader(
         initState: () async => await bloc.readFavorites(bloc.paeUser.session),
         renderLoad: () => AdaptiveProgressIndicator(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../blocs/home_provider.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/themes/colorsThemes.dart';
 import '../../common/widgets/trailing.dart';
 import '../../models/folders.dart';
@@ -15,7 +15,7 @@ class HomeExpansionTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title;
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     homeBloc.onConnectionChange();
 
     if(child[0]['pathParent'] != '/root')

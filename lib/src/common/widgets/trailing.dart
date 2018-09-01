@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../blocs/home_provider.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
 import '../../common/widgets/trailing_cloud.dart';
@@ -35,7 +35,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     homeBloc.onConnectionChange();
     String status = homeBloc.connectionStatus;
 

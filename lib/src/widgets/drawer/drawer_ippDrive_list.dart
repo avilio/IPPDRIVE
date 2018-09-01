@@ -1,12 +1,11 @@
+import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
 
-import 'package:async_loader/async_loader.dart';
-
+import '../../blocs/bloc.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/dialog.dart';
 import '../../common/widgets/progress_indicator.dart';
 import '../../screens/content.dart';
-import '../../blocs/home_bloc.dart';
-import '../../blocs/home_provider.dart';
 
 class IppDriveList extends StatelessWidget {
 
@@ -17,7 +16,7 @@ class IppDriveList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
 
     return new ExpansionTile(
       leading: Image(image: AssetImage("assets/images/ipp.png"),width: 40.0,), //ImageIcon(AssetImage("assets/images/ipp.png"))
@@ -28,7 +27,7 @@ class IppDriveList extends StatelessWidget {
     );
   }
 
-  Widget ippDriveRoot(HomeBloc homeBloc)=> new AsyncLoader(
+  Widget ippDriveRoot(Bloc homeBloc)=> new AsyncLoader(
       initState: () async => await homeBloc.courseUnitsFoldersContents( 5, homeBloc.paeUser.session),
       renderLoad: () => AdaptiveProgressIndicator(),
       renderError: ([error]) => new Text('ERROR LOANDING DATA'),

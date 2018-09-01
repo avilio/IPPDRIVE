@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../themes/colorsThemes.dart';
+import '../../blocs/bloc.dart';
+import '../../blocs/bloc_provider.dart';
+import '../../blocs/drawer_provider.dart';
 import '../../models/user.dart';
 import '../../screens/login.dart';
-import '../../blocs/home_provider.dart';
-import '../../blocs/home_bloc.dart';
-import '../../blocs/drawer_bloc.dart';
-import '../../blocs/drawer_provider.dart';
-import '../../widgets/drawer/drawer_years_list.dart';
 import '../../widgets/drawer/drawer_favorites_list.dart';
 import '../../widgets/drawer/drawer_ippDrive_list.dart';
+import '../../widgets/drawer/drawer_years_list.dart';
+import '../themes/colorsThemes.dart';
 
 class MyDrawer extends StatelessWidget {
   final PaeUser paeUser;
@@ -22,7 +21,7 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     final drawerBloc = DrawerProvider.of(context);
 
     return new Drawer(
@@ -39,7 +38,7 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-  Widget _myDrawerHeader(String school, String user, String name, String course, HomeBloc bloc) {
+  Widget _myDrawerHeader(String school, String user, String name, String course, Bloc bloc) {
     ImageProvider imgSchool = bloc.imageSchoolHeader(school);
 
     return new UserAccountsDrawerHeader(

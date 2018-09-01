@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../blocs/home_provider.dart';
+import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/trailing_add_button.dart';
 import '../../common/widgets/trailing_remove_button.dart';
 
@@ -25,7 +25,7 @@ class _ManageFilesState extends State<ManageFiles> {
     super.initState();
 
     Future.delayed(Duration.zero, () {
-      final homeBloc = HomeProvider.of(context);
+      final homeBloc = BlocProvider.of(context);
       homeBloc.onConnectionChange();
       /* onConnectivityChanged.listen((ConnectivityResult result){
         loginBloc.setConnectionStatus(result.toString());
@@ -35,7 +35,7 @@ class _ManageFilesState extends State<ManageFiles> {
  
 ///
   _openFilePicker() {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     //todo alterar isto pois o modo de fazer isto offline vai ser diferente
     if(homeBloc.connectionStatus.contains('none'))
       homeBloc.errorDialog("Sem acesso a Internet", context);

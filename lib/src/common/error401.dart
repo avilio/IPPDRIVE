@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../blocs/home_provider.dart';
+import '../blocs/bloc_provider.dart';
 
 class Error401 {
 
   error401(BuildContext context){
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     ///
     homeBloc.wsAuth().then((response) {
       homeBloc.paeUser.session =

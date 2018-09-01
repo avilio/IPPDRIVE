@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../blocs/login_bloc.dart';
-import '../../blocs/login_provider.dart';
+import '../../blocs/bloc.dart';
+import '../../blocs/bloc_provider.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = LoginProvider.of(context);
+    final bloc = BlocProvider.of(context);
 
     return new Center(
       child: Container(
@@ -73,7 +73,7 @@ class LoginFormState extends State<LoginForm> {
   }
 
   ///
-  Widget _usernameField(LoginBloc bloc) {
+  Widget _usernameField(Bloc bloc) {
     return TextFormField(
       controller: _userController,
       maxLines: 1,
@@ -88,7 +88,7 @@ class LoginFormState extends State<LoginForm> {
   }
 
   ///
-  Widget _passwordField(LoginBloc bloc) {
+  Widget _passwordField(Bloc bloc) {
     return TextFormField(
       controller: _passwordController,
       obscureText: true,
@@ -108,7 +108,7 @@ class LoginFormState extends State<LoginForm> {
   }
 
   ///
-  Widget _submitButton(LoginBloc bloc, BuildContext context) {
+  Widget _submitButton(Bloc bloc, BuildContext context) {
     return new Container(
       padding: _padding,
       child: new RaisedButton(

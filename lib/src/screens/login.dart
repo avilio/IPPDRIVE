@@ -4,8 +4,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../blocs/login_bloc.dart';
-import '../blocs/login_provider.dart';
+import '../blocs/bloc.dart';
+import '../blocs/bloc_provider.dart';
 import '../common/themes/colorsThemes.dart';
 import '../widgets/login/login_form.dart';
 
@@ -26,8 +26,8 @@ class LoginPageState extends State<LoginPage> with Connectivity {
     super.initState();
 
     Future.delayed(Duration.zero,(){
-      final loginBloc = LoginProvider.of(context);
-      loginBloc.onConnectionChange();
+      final bloc = BlocProvider.of(context);
+      bloc.onConnectionChange();
      /* onConnectivityChanged.listen((ConnectivityResult result){
         loginBloc.setConnectionStatus(result.toString());
       });*/
@@ -38,7 +38,7 @@ class LoginPageState extends State<LoginPage> with Connectivity {
 
   @override
   Widget build(BuildContext context) {
-    final loginBloc = LoginProvider.of(context);
+    final bloc = BlocProvider.of(context);
 
     final deviceHeight = MediaQuery.of(context).size.height;
     final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.95;
@@ -46,24 +46,24 @@ class LoginPageState extends State<LoginPage> with Connectivity {
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
     /// Apenas para evitar enviar por parametro
-    loginBloc.setKey(_formKey);
-    loginBloc.initConnection();
+    bloc.setKey(_formKey);
+    bloc.initConnection();
 
 
-    loginBloc.onConnectionChange();
+    bloc.onConnectionChange();
       
     return WillPopScope(
       onWillPop: () async {
-        loginBloc.quitDialog(context);
+        bloc.quitDialog(context);
       },
-      child: Scaffold(body: _buildBody(loginBloc, paddingDevice, context)),
+      child: Scaffold(body: _buildBody(bloc, paddingDevice, context)),
     );
   }
 
 
 
   ///
-  Widget _buildBody(LoginBloc bloc, double padding, BuildContext context) {
+  Widget _buildBody(Bloc bloc, double padding, BuildContext context) {
     bloc.onConnectionChange();
     return SingleChildScrollView(
       child: Container(
@@ -88,7 +88,7 @@ class LoginPageState extends State<LoginPage> with Connectivity {
   }
 
   ///
-  _buttonKey(LoginBloc bloc) {
+  _buttonKey(Bloc bloc) {
 
     return new FloatingActionButton(
       onPressed: () {

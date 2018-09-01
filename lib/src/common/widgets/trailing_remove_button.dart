@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../blocs/bloc_provider.dart';
 import '../permissions.dart';
-import '../../blocs/home_provider.dart';
 
 class TrailingRemoveButton extends StatelessWidget {
   final content;
@@ -12,7 +12,7 @@ class TrailingRemoveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = HomeProvider.of(context);
+    final homeBloc = BlocProvider.of(context);
     if (canRemove) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
