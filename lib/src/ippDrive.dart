@@ -1,14 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import './common/themes/mainTheme.dart';
 import './screens/content.dart';
-import './screens/login.dart';
 import './screens/home.dart';
-
-import './blocs/login_provider.dart';
+import './screens/login.dart';
 
 class IppDrive extends StatefulWidget {
   @override
@@ -42,7 +37,7 @@ Route routes(RouteSettings settings){
     case "/content" : return MaterialPageRoute(
         builder: (context){
           //get do id para ir buscar cadeiras
-          settings.name.replaceFirst("/", "");
+         // settings.name.replaceFirst("/", "");
 
           return Content();}
     );break;

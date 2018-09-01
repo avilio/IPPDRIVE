@@ -1,18 +1,14 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../common/dialogs.dart';
+import '../common/utilities.dart';
 import '../models/user.dart';
 import '../resources/apiCalls.dart';
-import '../common/dialogs.dart';
-import '../screens/home.dart';
-import '../common/utilities.dart';
 import '../saveLocally.dart';
+import '../screens/home.dart';
 
 class HomeBloc extends Object
     with Utilities, Requests, ExceptionDialog, Connectivity, SaveLocally {
@@ -58,16 +54,15 @@ class HomeBloc extends Object
 
 
         setPaeUser(PaeUser.fromJson(_response.value, password: password));
-        
+
         sharedPrefs.setString("username", paeUser.username);
+        sharedPrefs.setString("password", password);
         sharedPrefs.setString("name", paeUser.name);
-        print(sharedPrefs.get("user"));
-        print(sharedPrefs.get("name"));
 
         ///todo
-        if (sharedPrefs.getBool("memoLoginUser") != null &&
+    /*    if (sharedPrefs.getBool("memoLoginUser") != null &&
             sharedPrefs.getBool("memoLoginUser"))
-          sharedPrefs.setStringList("userLogin", [paeUser.username, password]);
+          sharedPrefs.setStringList("userLogin", [paeUser.username, password]);*/
 
         contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
 

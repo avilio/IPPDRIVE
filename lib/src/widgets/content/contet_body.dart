@@ -1,34 +1,27 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:async_loader/async_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-
 import 'package:open_file/open_file.dart';
-import 'package:async_loader/async_loader.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
-
-//import 'package:slugify/slugify.dart';
-import '../../common/permissions.dart';
-import '../../common/widgets/trailing_remove_button.dart';
-import '../../common/widgets/list_item_builder.dart';
-import '../../common/widgets/trailing.dart';
-import '../../common/widgets/progress_indicator.dart';
-import '../../common/widgets/dialog.dart';
-import '../../common/error401.dart';
-
-import '../../common/slugify.dart';
-import '../../common/widgets/manage_files.dart';
-import '../../models/folders.dart';
-import '../../blocs/home_provider.dart';
 import '../../blocs/home_bloc.dart';
-
+import '../../blocs/home_provider.dart';
+import '../../common/error401.dart';
+import '../../common/permissions.dart';
+import '../../common/widgets/dialog.dart';
+import '../../common/widgets/list_item_builder.dart';
+import '../../common/widgets/progress_indicator.dart';
+import '../../common/widgets/trailing.dart';
+import '../../common/widgets/trailing_remove_button.dart';
+import '../../models/folders.dart';
 import '../../screens/content.dart';
 import '../../widgets/content/content_pathBuilder.dart';
+//import 'package:slugify/slugify.dart';
+
 
 class ContentBody extends StatelessWidget {
   final String course, school;
@@ -43,9 +36,8 @@ class ContentBody extends StatelessWidget {
     homeBloc.onConnectionChange();
     Error401 error401 = Error401();
 
-    if(homeBloc.connectionStatus.contains('none')){
+    if(homeBloc.connectionStatus.contains('none') && (homeBloc.sharedPrefs.get(id.toString()) != null)){
 
-        try {
           homeBloc.sharedPrefs.getStringList(id.toString());
 
           List newList = new List();
@@ -54,13 +46,9 @@ class ContentBody extends StatelessWidget {
                   });
 
           return createList(newList, context, homeBloc);
-        } catch (e) {
-          print(e);
-          homeBloc.errorDialog('Sem acesso a Internet', context);
-        }
 
-    }else
-      return new AsyncLoader(
+    }else if(!homeBloc.connectionStatus.contains('none'))
+        return new AsyncLoader(
         initState: () async => await homeBloc.courseUnitsFoldersContents(id, homeBloc.paeUser.session),
         renderLoad: () => Center(child: AdaptiveProgressIndicator()),
         renderError: ([error]) {
@@ -80,6 +68,19 @@ class ContentBody extends StatelessWidget {
           }else
             return DialogAlert(message: 'Pasta vazia');
         });
+   else
+     return Center(
+       child: Container(
+         child: Column(
+           mainAxisSize: MainAxisSize.min,
+           crossAxisAlignment: CrossAxisAlignment.center,
+           children: <Widget>[
+             Text("Sem Informação Disponivel",textScaleFactor: 1.5,),
+           ],
+         )
+       ),
+     );
+
   }
 
   Widget createList(List courseUnitsContent,context, HomeBloc homeBloc) {
@@ -101,22 +102,34 @@ class ContentBody extends StatelessWidget {
                   title: new Text(items['title']),
                   leading: new Icon(Icons.folder_open),
                   trailing: Trailing(canAdd: items['clearances']['addFiles'],folder: folder, content: items, parentId: id),
-                  onTap: () => !homeBloc.connectionStatus.contains('none')
-                      ? Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                            new Content(unitContent: items,course: course,school: school)))
-                      :  homeBloc.errorDialog('Sem acesso a Internet', context),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                        new Content(unitContent: items,
+                            course: course,
+                            school: school)))
                 );
               } else {
-                folder = Folders.fromJson(items);
+                folder = homeBloc.sharedPrefs.getString("${items['title']}") ?? Folders.fromJson(items);
                 return new ListTile(
                   onTap: () async {
                     DevicePermissions permiss = DevicePermissions();
                     bool permit = false;
                     permit = await permiss.checkWriteExternalStorage();
-                    File file = await homeBloc.getFiles(homeBloc.paeUser.session, items);
-                    print(file.path);
-                    OpenFile.open(file.path);
+                    if(!homeBloc.connectionStatus.contains('none')) {
+                      File file = await homeBloc.getFiles(
+                          homeBloc.paeUser.session, items);
+                      print(file.path);
+                      OpenFile.open(file.path);
+                    }else {
+
+                      var lastIndex = items['path'].lastIndexOf("/");
+                      String dir = (await getExternalStorageDirectory()).path + items['path'].substring(0,lastIndex);
+
+                      File file = new File('$dir/${items['title']}');
+                      print(file.path);
+                      OpenFile.open(file.path);
+                    }
+
                     //final AndroidIntent intent = new AndroidIntent(action: 'action_view');
                     //intent.launch();
                    /* homeBloc.connectionStatus.contains('none')

@@ -1,18 +1,42 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import '../widgets/home/semesters_lists_builder.dart';
-import '../common/themes/colorsThemes.dart';
-import '../models/user.dart';
-import '../blocs/home_provider.dart';
 import '../blocs/favorites_provider.dart';
 import '../blocs/home_bloc.dart';
-import '../widgets/home/home_tiles.dart';
+import '../blocs/home_provider.dart';
+import '../common/themes/colorsThemes.dart';
+import '../models/user.dart';
 import '../widgets/home/home_structure.dart';
+import '../widgets/home/home_tiles.dart';
+import '../widgets/home/semesters_lists_builder.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final List unitsCourseList;
   final PaeUser paeUser;
   HomePage({this.unitsCourseList, this.paeUser, Key key}) : super(key: key);
+
+  @override
+  HomePageState createState() {
+    return new HomePageState();
+  }
+}
+
+class HomePageState extends State<HomePage> {
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      final homeBloc = HomeProvider.of(context);
+      homeBloc.onConnectionChange();
+      /* onConnectivityChanged.listen((ConnectivityResult result){
+        loginBloc.setConnectionStatus(result.toString());
+      });*/
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +45,15 @@ class HomePage extends StatelessWidget {
     favBloc.setPaeUser(homeBloc.paeUser);
     homeBloc.onConnectionChange();
 
-    if (unitsCourseList.length > 1) {
+    if (widget.unitsCourseList.length > 1) {
       return discentesDocentes(context, homeBloc);
     } else
       return funcionarios(context, homeBloc);
   }
+
   ///
   Widget discentesDocentes(BuildContext context, HomeBloc bloc) {
-    var semestres = SemestersBuilder.fromList2List(unitsCourseList);
+    var semestres = SemestersBuilder.fromList2List(widget.unitsCourseList);
     bloc.onConnectionChange();
     ///
     return WillPopScope(
@@ -36,7 +61,7 @@ class HomePage extends StatelessWidget {
           bloc.quitDialog(context);
         },
         child: HomeStructure(
-          unitsCourseList: unitsCourseList,
+          unitsCourseList: widget.unitsCourseList,
           children: <Widget>[
             new Padding(padding: EdgeInsets.all(0.5)),
             new Container(
@@ -65,8 +90,8 @@ class HomePage extends StatelessWidget {
           bloc.quitDialog(context);
         },
         child: HomeStructure(
-          appBarTitle: '${unitsCourseList[0]['title']}',
-          unitsCourseList: unitsCourseList,
+          appBarTitle: '${widget.unitsCourseList[0]['title']}',
+          unitsCourseList: widget.unitsCourseList,
           children: <Widget>[
             new Padding(padding: EdgeInsets.all(0.5)),
             new Container(
@@ -75,9 +100,8 @@ class HomePage extends StatelessWidget {
                   border: Border.all(
                       style: BorderStyle.solid, color: cAppBlackish),
                 ),
-                child: HomeExpansionTiles(child: unitsCourseList)),
+                child: HomeExpansionTiles(child: widget.unitsCourseList)),
           ])
         );
   }
-
 }

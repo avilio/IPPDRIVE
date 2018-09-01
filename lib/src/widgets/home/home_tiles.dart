@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../models/folders.dart';
+import '../../blocs/home_provider.dart';
 import '../../common/themes/colorsThemes.dart';
 import '../../common/widgets/trailing.dart';
+import '../../models/folders.dart';
 import '../../screens/content.dart';
-import '../../blocs/home_provider.dart';
 
 
 class HomeExpansionTiles extends StatelessWidget {
@@ -41,16 +41,13 @@ class HomeExpansionTiles extends StatelessWidget {
             child: new ListTile(
               trailing: Trailing(folder: folder,canAdd: courseUnits['clearances']['addFiles'],content: courseUnits,),
               onTap: () {
-                //!homeBloc.connectionStatus.contains('none')?
-
-                if(homeBloc.sharedPrefs.get(courseUnits['id'].toString()) != null ||  homeBloc.sharedPrefs.get(courseUnits['pageContentId'].toString()) != null )
+                if(!homeBloc.connectionStatus.contains('none') || (homeBloc.connectionStatus.contains('none') && (homeBloc.sharedPrefs.get(courseUnits['id'].toString()) != null)))
                  Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
                   new Content(unitContent: courseUnits)));
-                else
+               else
                   homeBloc.errorDialog('Sem acesso a Internet', context);
               },
-              //: homeBloc.errorDialog('Sem acesso a Internet', context),
               title: new Text(courseUnits['title'].toString().split('-').first,
                   textScaleFactor: 0.95),
             ),

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../blocs/login_provider.dart';
+
 import '../../blocs/login_bloc.dart';
+import '../../blocs/login_provider.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -36,7 +36,7 @@ class LoginFormState extends State<LoginForm> {
             _usernameField(bloc),
             new Padding(padding: new EdgeInsets.all(1.5)),
             _passwordField(bloc),
-            Row(
+           /* Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -54,7 +54,7 @@ class LoginFormState extends State<LoginForm> {
                   activeColor: Theme.of(context).buttonColor,
                 ),
               ],
-            ),
+            ),*/
             _submitButton(bloc, context),
             new Padding(padding: new EdgeInsets.all(1.5)),
           ],

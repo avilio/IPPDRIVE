@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../common/themes/colorsThemes.dart';
 import '../blocs/login_bloc.dart';
 import '../blocs/login_provider.dart';
+import '../common/themes/colorsThemes.dart';
 import '../widgets/login/login_form.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,6 +20,22 @@ class LoginPageState extends State<LoginPage> with Connectivity {
   final _padding = EdgeInsets.all(25.0);
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero,(){
+      final loginBloc = LoginProvider.of(context);
+      loginBloc.onConnectionChange();
+     /* onConnectivityChanged.listen((ConnectivityResult result){
+        loginBloc.setConnectionStatus(result.toString());
+      });*/
+    });
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginBloc = LoginProvider.of(context);
@@ -33,6 +48,8 @@ class LoginPageState extends State<LoginPage> with Connectivity {
     /// Apenas para evitar enviar por parametro
     loginBloc.setKey(_formKey);
     loginBloc.initConnection();
+
+
     loginBloc.onConnectionChange();
       
     return WillPopScope(
@@ -43,9 +60,11 @@ class LoginPageState extends State<LoginPage> with Connectivity {
     );
   }
 
+
+
   ///
   Widget _buildBody(LoginBloc bloc, double padding, BuildContext context) {
-
+    bloc.onConnectionChange();
     return SingleChildScrollView(
       child: Container(
         child: Form(
@@ -70,6 +89,7 @@ class LoginPageState extends State<LoginPage> with Connectivity {
 
   ///
   _buttonKey(LoginBloc bloc) {
+
     return new FloatingActionButton(
       onPressed: () {
         !bloc.connectionStatus.contains('none')

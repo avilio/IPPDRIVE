@@ -1,11 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../common/widgets/drawer.dart';
-import '../blocs/home_provider.dart';
-import '../blocs/drawer_bloc.dart';
 import '../blocs/drawer_provider.dart';
+import '../blocs/home_provider.dart';
+import '../common/widgets/drawer.dart';
 import '../widgets/content/contet_body.dart';
 
 class Content extends StatelessWidget {
@@ -25,8 +23,6 @@ class Content extends StatelessWidget {
 
     homeBloc.onConnectionChange();
 
-    tapGestureRecognizer ..onTap = _handlePress;
-
     int unitID = unitContent['id'] ?? unitContent['pageContentId'];
 
     return new Scaffold(
@@ -40,9 +36,6 @@ class Content extends StatelessWidget {
         body: ContentBody(tapGestureRecognizer: tapGestureRecognizer,school: school,course: course,id: unitID));
   }
 
-  void _handlePress() {
-    HapticFeedback.vibrate();
-  }
 }
 
 

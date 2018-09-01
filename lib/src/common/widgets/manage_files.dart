@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import '../../common/widgets/trailing_remove_button.dart';
-import '../../common/widgets/trailing_add_button.dart';
 import '../../blocs/home_provider.dart';
+import '../../common/widgets/trailing_add_button.dart';
+import '../../common/widgets/trailing_remove_button.dart';
 
 
 class ManageFiles extends StatefulWidget {
@@ -17,11 +19,24 @@ class ManageFiles extends StatefulWidget {
 }
 
 class _ManageFilesState extends State<ManageFiles> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      final homeBloc = HomeProvider.of(context);
+      homeBloc.onConnectionChange();
+      /* onConnectivityChanged.listen((ConnectivityResult result){
+        loginBloc.setConnectionStatus(result.toString());
+      });*/
+    });
+  }
  
 ///
   _openFilePicker() {
     final homeBloc = HomeProvider.of(context);
-
+    //todo alterar isto pois o modo de fazer isto offline vai ser diferente
     if(homeBloc.connectionStatus.contains('none'))
       homeBloc.errorDialog("Sem acesso a Internet", context);
     else {

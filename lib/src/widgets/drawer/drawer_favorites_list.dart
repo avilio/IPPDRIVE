@@ -1,10 +1,10 @@
 import 'package:async_loader/async_loader.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/widgets/progress_indicator.dart';
-import '../../screens/content.dart';
 import '../../blocs/home_bloc.dart';
 import '../../blocs/home_provider.dart';
+import '../../common/widgets/progress_indicator.dart';
+import '../../screens/content.dart';
 
 
 class DrawerFavoritesList extends StatelessWidget {
@@ -36,10 +36,12 @@ class DrawerFavoritesList extends StatelessWidget {
         renderSuccess: ({data}) {
           List favoritesList = data['response']['favorites'];
 
+            favoritesList.length ?? 0;
+
           return new ListView.builder(
             physics: PageScrollPhysics(),
             shrinkWrap: true,
-            itemCount: favoritesList.length ?? 0,
+            itemCount: favoritesList.length,
             itemBuilder: (context, index) {
               return new ListTile(
                 dense: true,

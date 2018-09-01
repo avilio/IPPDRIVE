@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import './home_provider.dart';
+import '../common/dialogs.dart';
+import '../common/utilities.dart';
 import '../models/user.dart';
 import '../resources/apiCalls.dart';
-import '../common/dialogs.dart';
-import './home_provider.dart';
-import '../common/utilities.dart';
 
 class LoginBloc extends Object
     with Utilities, Requests, ExceptionDialog, Connectivity {
@@ -42,6 +42,34 @@ class LoginBloc extends Object
   void onConnectionChange() => _connectivity.onConnectivityChanged.listen(
       (ConnectivityResult result) => setConnectionStatus(result.toString()));
 
+  void offlineToOnline() async{
+
+    if(!connectionStatus.contains('none') && _paeUser.value.session == null){
+
+      var paeAuth;
+      var paeRLogin;
+
+       paeAuth = await wsAuth();
+       SharedPreferences preferences = await SharedPreferences.getInstance();
+       var user = preferences.get("username");
+       var password = preferences.get("password");
+
+       ///
+       !paeAuth.containsValue('ok')
+           ? _response.sink.add(paeAuth['exception'])
+           : paeRLogin =
+           await wsRLogin(user, password, paeAuth['response']['BACOSESS']);
+
+       ///
+       paeRLogin['service'] == 'error'
+           ? _response.sink.add(paeRLogin['exception'])
+           : _response.sink.add(paeRLogin['response']);
+
+       setPaeUser(PaeUser.fromJson(_response.value,password: password));
+
+      }
+  }
+
   submit(String user, String password, BuildContext context) async {
 
     FocusScope.of(context).requestFocus(new FocusNode());
@@ -65,17 +93,19 @@ class LoginBloc extends Object
     //print(connectionStatus);
     if(connectionStatus.contains('none')) {
       SharedPreferences preferences = await SharedPreferences.getInstance();
+
       homeBloc.setSharedPref(preferences);
 
       List list = preferences.get("home");
       Map json = {
         "username" : preferences.get("username"),
+        "password" : preferences.get("password"),
         "session" : "",
         "name" : preferences.get("name")
       };
       homeBloc.setPaeUser(PaeUser.fromJson(json, password: password));
 
-      print(homeBloc.paeUser.name);
+      print(homeBloc.paeUser.toString());
 
 
       List newList = new List();
@@ -87,6 +117,9 @@ class LoginBloc extends Object
 
     }else {
       paeAuth = await wsAuth();
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+
+      homeBloc.setSharedPref(preferences);
 
       ///
       !paeAuth.containsValue('ok')
@@ -99,7 +132,7 @@ class LoginBloc extends Object
           ? _response.sink.add(paeRLogin['exception'])
           : _response.sink.add(paeRLogin['response']);
     }
-
+    //todo mudar isto daqui e fazer um auth mesmo fora do bloc
     homeBloc.setResponse(_response.value);
     homeBloc.setConnectionStatus(connectionStatus);
     homeBloc.route2Home(context, password);
