@@ -24,12 +24,17 @@ class Bloc extends Object
   final _username = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
   final _formKey = BehaviorSubject<GlobalKey<FormState>>();
+  final _isMemo = BehaviorSubject<bool>();
 
 
   PaeUser get paeUser => _paeUser.value;
   String get connectionStatus => _connectivityStatus.value;
   SharedPreferences get sharedPrefs => _shared.value;
+  bool get isMemo => _isMemo.value;
+  String get username => _username.value;
+  String get password => _password.value;
 
+  Function(bool) get setIsMemo => _isMemo.sink.add;
   Function(PaeUser) get setPaeUser => _paeUser.sink.add;
   Function(dynamic) get setResponse => _response.sink.add;
   Function(String) get setConnectionStatus => _connectivityStatus.sink.add;
@@ -77,14 +82,23 @@ class Bloc extends Object
 
     FocusScope.of(context).requestFocus(new FocusNode());
 
-    setUsername(user);
-    setPassword(password);
+    bool b = false;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+      b = pref.get("memoUser") ?? false;
 
-    if (_formKey.value.currentState.validate()) {
-      final validUser = _username.value;
-      final validPassword = _password.value;
+    if(b)
+      auth(user, password, context);
+    else {
+      setUsername(user);
+      setPassword(password);
 
-      auth(validUser, validPassword, context);
+
+      if (_formKey.value.currentState.validate()) {
+        final validUser = _username.value;
+        final validPassword = _password.value;
+
+        auth(validUser, validPassword, context);
+      }
     }
   }
 
@@ -212,5 +226,6 @@ class Bloc extends Object
     _paeUser.close();
     _connectivityStatus.close();
     _shared.close();
+    _isMemo.close();
   }
 }

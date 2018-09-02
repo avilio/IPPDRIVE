@@ -36,7 +36,7 @@ class LoginFormState extends State<LoginForm> {
             _usernameField(bloc),
             new Padding(padding: new EdgeInsets.all(1.5)),
             _passwordField(bloc),
-           /* Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -46,7 +46,6 @@ class LoginFormState extends State<LoginForm> {
                   value: _flagLog,
                   onChanged: (bool b) {
                     isMemoUserLogin(b);
-
                     setState(() {
                       _flagLog = b;
                     });
@@ -54,7 +53,7 @@ class LoginFormState extends State<LoginForm> {
                   activeColor: Theme.of(context).buttonColor,
                 ),
               ],
-            ),*/
+            ),
             _submitButton(bloc, context),
             new Padding(padding: new EdgeInsets.all(1.5)),
           ],
@@ -68,8 +67,8 @@ class LoginFormState extends State<LoginForm> {
   Future isMemoUserLogin(bool memo) async {
     memo ?? false;
     SharedPreferences prefs = await _prefs;
-    prefs.setBool("memoLoginUser", memo);
-    print(prefs.getBool("memoLoginUser"));
+    prefs.setBool("memoUser", memo);
+    print(prefs.getBool("memoUser"));
   }
 
   ///

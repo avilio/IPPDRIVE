@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './common/themes/mainTheme.dart';
 import './screens/content.dart';
 import './screens/home.dart';
-import './screens/login.dart';
+import './screens/inicio.dart';
 
 class IppDrive extends StatefulWidget {
   @override
@@ -29,7 +29,14 @@ Route routes(RouteSettings settings){
 
   switch(settings.name){
     case "/" : return MaterialPageRoute(
-        builder: (context) =>  LoginPage()
+        builder: (context) {
+          return Index();
+           /* if(b) {
+              //todo criar outro widget de Entrada para estetica do autologin
+              return AutoLogin();
+            }else
+              return LoginPage();*/
+        }
     );break;
     case "/home" : return MaterialPageRoute(
         builder: (context)=> HomePage()

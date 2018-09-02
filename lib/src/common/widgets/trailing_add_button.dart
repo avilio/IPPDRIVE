@@ -5,6 +5,7 @@ import 'package:documents_picker/documents_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/permissions.dart';
 import '../../common/slugify.dart';
@@ -26,7 +27,7 @@ class TrailingAddButton extends StatefulWidget {
 class TrailingAddButtonState extends State<TrailingAddButton> {
   @override
   Widget build(BuildContext context) {
-  final homeBloc = BlocProvider.of(context);
+  final bloc = BlocProvider.of(context);
 
    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -37,7 +38,7 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
               DevicePermissions permiss = DevicePermissions();
               bool permit = false;
               permit = await permiss.checkWriteExternalStorage();
-              _filePicker(homeBloc.paeUser.session);
+              _filePicker(bloc);
             },
             icon: Icon(
               Icons.add,
@@ -48,7 +49,7 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     );
   }
 
-   _filePicker(String session) async {
+   _filePicker(Bloc bloc) async {
     List<dynamic> docPaths;
 
     try {
@@ -61,10 +62,10 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     File file;
    
     docPaths.forEach((data) => file = File(data));
-    //todo fazer caso offline 
+    //todo fazer caso offline
     Requests request = Requests();
 
-     await request.uploadFile(file, session).then((resp) {
+     await request.uploadFile(file, bloc.paeUser.session).then((resp) {
       Slugify slug = Slugify();
  
       Map object = {
@@ -79,8 +80,11 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
         "cols": 12
       };
       print(widget.content);
-      return request.addFile(object, widget.content['id'], session);
+      return request.addFile(object, widget.content['id'], bloc.paeUser.session);
     });
+
+    bloc.errorDialog("Ficheiro ${widget.content['title']} adicionado!", context);
+
     Navigator.push(
         context,
         MaterialPageRoute(

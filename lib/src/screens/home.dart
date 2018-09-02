@@ -30,8 +30,9 @@ class HomePageState extends State<HomePage> {
     super.initState();
 
     Future.delayed(Duration.zero, () {
-      final homeBloc = BlocProvider.of(context);
-      homeBloc.onConnectionChange();
+      final bloc = BlocProvider.of(context);
+      bloc.onConnectionChange();
+
       /* onConnectivityChanged.listen((ConnectivityResult result){
         loginBloc.setConnectionStatus(result.toString());
       });*/
@@ -40,15 +41,15 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = BlocProvider.of(context);
+    final bloc = BlocProvider.of(context);
     final favBloc = FavoritesProvider.of(context);
-    favBloc.setPaeUser(homeBloc.paeUser);
-    homeBloc.onConnectionChange();
+    favBloc.setPaeUser(bloc.paeUser);
+    bloc.onConnectionChange();
 
     if (widget.unitsCourseList.length > 1) {
-      return discentesDocentes(context, homeBloc);
+      return discentesDocentes(context, bloc);
     } else
-      return funcionarios(context, homeBloc);
+      return funcionarios(context, bloc);
   }
 
   ///

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../blocs/bloc.dart';
 import '../blocs/bloc_provider.dart';
@@ -43,7 +42,6 @@ class LoginPageState extends State<LoginPage> with Connectivity {
     final deviceHeight = MediaQuery.of(context).size.height;
     final targetHeight = deviceHeight > 1080 ? 1080 : deviceHeight * 0.95;
     final paddingDevice = deviceHeight - targetHeight;
-    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
     /// Apenas para evitar enviar por parametro
     bloc.setKey(_formKey);
