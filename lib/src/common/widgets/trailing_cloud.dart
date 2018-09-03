@@ -50,7 +50,10 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       String direct = (await getExternalStorageDirectory()).path +
           widget.folders.path;
     Directory directory = await Directory(direct).create(recursive: true);
+    //todo criar as pastas todas e etc so ta a cirar a pasta mae
+   // File file = await File(direct).create(recursive: true);
       print(directory.path);
+     // print(file.path);
       setState(() {
         _cloudFlag = true;
       });
@@ -79,7 +82,6 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
                     setState(() {
                       _cloudFlag = false;
                     });
-
                     sharedPreferences.setBool("cloud/${widget.folders.title}", _cloudFlag);
                     Navigator.pop(context);
                   },

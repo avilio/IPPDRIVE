@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../blocs/bloc_provider.dart';
 import '../../blocs/favorites_provider.dart';
@@ -28,37 +25,19 @@ class FavoritesState extends State<Favorites> {
   @override
   void initState() {
     super.initState();
-
-    Future.delayed(Duration.zero, () {
-      final homeBloc = BlocProvider.of(context);
-      homeBloc.onConnectionChange();
-      /* onConnectivityChanged.listen((ConnectivityResult result){
-        loginBloc.setConnectionStatus(result.toString());
-      });*/
-    });
-
-    SharedPreferences.getInstance().then((sharedPreferences) {
-      //sharedPreferences.setBool("favorite/${widget.folders.title}", widget.folders.isFav);
-
-      setState(() {
-        _isFav =
-            sharedPreferences.getBool("favorite/${widget.folders.title}") ??
-                false;
-      });
-    });
+    // print('${widget.folders.title} : ${widget.folders.isFav}');
+    _isFav = widget.folders.isFav;
   }
 
-  void handleTap() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  @override
+  Widget build(BuildContext context) {
+    final favBloc = FavoritesProvider.of(context);
+    final bloc = BlocProvider.of(context);
 
-    new Future.delayed(Duration.zero, () {
-      final favBloc = FavoritesProvider.of(context);
-      final homeBloc = BlocProvider.of(context);
-
-      favBloc.setIsFav(_isFav);
-
-      if (homeBloc.connectionStatus.contains('none'))
-        homeBloc.errorDialog("Sem acesso a Internet", context);
+    favBloc.setIsFav(_isFav);
+    void handleTap() {
+      if(bloc.connectionStatus.contains('none'))
+        bloc.errorDialog("Sem acesso a Internet", context);
       else {
         if (_isFav) {
           favBloc.remFavorites(widget.folders.id, favBloc.paeUser.session);
@@ -67,7 +46,6 @@ class FavoritesState extends State<Favorites> {
           setState(() {
             _isFav = false;
           });
-          sharedPreferences.setBool("favorite/${widget.folders.isFav}", _isFav);
         } else {
           favBloc
               .addFavorites(widget.folders.id, favBloc.paeUser.session)
@@ -84,28 +62,22 @@ class FavoritesState extends State<Favorites> {
               setState(() {
                 _isFav = false;
               });
-              sharedPreferences.setBool(
-                  "favorite/${widget.folders.isFav}", _isFav);
             }
           });
           setState(() {
             _isFav = true;
           });
-          sharedPreferences.setBool("favorite/${widget.folders.isFav}", _isFav);
         }
       }
-    });
-  }
+    }
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
         child: ScaleTransition(
             scale: CurvedAnimation(
                 parent: widget.controller.view,
                 curve: Interval(0.0, 0.5, curve: Curves.easeOut)),
             child: new IconButton(
-                icon: !_isFav ? _favRem : _favAdd, onPressed: handleTap),
+                icon: !favBloc.isFav ? _favRem : _favAdd, onPressed: handleTap),
             alignment: FractionalOffset.center));
   }
 }
