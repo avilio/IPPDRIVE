@@ -29,6 +29,7 @@ class FavoritesState extends State<Favorites> {
     _isFav = widget.folders.isFav;
   }
 
+  //todo tentar com que  funcione  como a  icon  da  clou no  expand
   @override
   Widget build(BuildContext context) {
     final favBloc = FavoritesProvider.of(context);
@@ -71,13 +72,18 @@ class FavoritesState extends State<Favorites> {
       }
     }
 
-    return Container(
+   Widget fav =widget.controller != null
+        ? Container(
         child: ScaleTransition(
             scale: CurvedAnimation(
                 parent: widget.controller.view,
                 curve: Interval(0.0, 0.5, curve: Curves.easeOut)),
             child: new IconButton(
                 icon: !favBloc.isFav ? _favRem : _favAdd, onPressed: handleTap),
-            alignment: FractionalOffset.center));
+            alignment: FractionalOffset.center))
+        :  new IconButton(
+             icon: !favBloc.isFav ? _favRem : _favAdd, onPressed: handleTap);
+
+    return fav;
   }
 }

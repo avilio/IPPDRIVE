@@ -73,7 +73,7 @@ class _IndexState extends State<Index> {
                      builder: (context) => LoginPage()));
           // : bloc.errorDialog('Sem acesso a Internet', context);
         },
-        child: new Text('Login'),
+        child: new Text('Entrar'),
         elevation: 2.0,
         shape: BeveledRectangleBorder(
             borderRadius: new BorderRadius.circular(5.0)),

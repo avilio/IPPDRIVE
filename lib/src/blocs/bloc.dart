@@ -146,9 +146,11 @@ class Bloc extends Object
       await wsRLogin(user, password, paeAuth['response']['BACOSESS']);
 
       ///
-      paeRLogin['service'] == 'error'
-          ? _response.sink.add(paeRLogin['exception'])
-          : _response.sink.add(paeRLogin['response']);
+      if(paeRLogin['service'] == 'error'){
+           _response.sink.add(paeRLogin['exception']);
+           preferences.setBool("memoUser", false);
+      }else
+         _response.sink.add(paeRLogin['response']);
 
       timer.cancel();
     }

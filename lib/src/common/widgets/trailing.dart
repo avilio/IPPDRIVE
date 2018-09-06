@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
-import '../../common/widgets/trailing_cloud.dart';
 import '../../models/folders.dart';
 
 class Trailing extends StatefulWidget {
@@ -35,9 +34,9 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = BlocProvider.of(context);
-    homeBloc.onConnectionChange();
-    String status = homeBloc.connectionStatus;
+    final bloc = BlocProvider.of(context);
+    bloc.onConnectionChange();
+    String status = bloc.connectionStatus;
 
     if(status.contains('none')){
       if (widget.canAdd) {
@@ -46,33 +45,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
               content: widget.content,
               controller: _controller,
               parentId: widget.parentId),
-          IconButton(
-              icon: AnimatedBuilder(
-                  animation: _controller.view,
-                  builder: (BuildContext context, Widget child) {
-                    return Transform(
-                        alignment: FractionalOffset.center,
-                        transform:
-                        Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
-                        child: Icon(
-                          _controller.isDismissed
-                              ? Icons.more_horiz
-                              : Icons.close,
-                          color: _controller.isDismissed
-                              ? Theme
-                              .of(context)
-                              .accentColor
-                              : Theme
-                              .of(context)
-                              .errorColor,
-                        ));
-                  }),
-              onPressed: () {
-                if (_controller.isDismissed) {
-                  _controller.forward();
-                } else
-                  _controller.reverse();
-              })
+          _buildIconButton()
         ]);
       } else
         return Row(
@@ -81,23 +54,37 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
     }else {
       if (widget.canAdd) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          SyncCloudOffline(controller: _controller,
+          /*SyncCloudOffline(controller: _controller,
             content: widget.content,
-            folders: widget.folder,),
+            folders: widget.folder,),*/
           ManageFiles(
               content: widget.content,
               controller: _controller,
               parentId: widget.parentId),
           status.contains('none') ? null : Favorites(
               folders: widget.folder, controller: _controller),
-          IconButton(
+          _buildIconButton()
+        ]);
+      } else
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            status.contains('none') ? null : Favorites(
+                folders: widget.folder),
+          ],
+        );
+    }
+  }
+
+  IconButton _buildIconButton() {
+    return IconButton(
               icon: AnimatedBuilder(
                   animation: _controller.view,
                   builder: (BuildContext context, Widget child) {
                     return Transform(
                         alignment: FractionalOffset.center,
-                        transform:
-                        Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+                        transform: Matrix4
+                            .rotationZ(_controller.value * 0.5 * math.pi),
                         child: Icon(
                           _controller.isDismissed
                               ? Icons.more_horiz
@@ -116,62 +103,6 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
                   _controller.forward();
                 } else
                   _controller.reverse();
-              })
-        ]);
-      } else
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            status.contains('none') ? null : SyncCloudOffline(
-              controller: _controller,
-              content: widget.content,
-              folders: widget.folder,),
-            status.contains('none') ? null : Favorites(
-                folders: widget.folder, controller: _controller),
-            IconButton(
-                icon: AnimatedBuilder(
-                    animation: _controller.view,
-                    builder: (BuildContext context, Widget child) {
-                      return Transform(
-                          alignment: FractionalOffset.center,
-                          transform: Matrix4
-                              .rotationZ(_controller.value * 0.5 * math.pi),
-                          child: Icon(
-                            _controller.isDismissed
-                                ? Icons.more_horiz
-                                : Icons.close,
-                            color: _controller.isDismissed
-                                ? Theme
-                                .of(context)
-                                .accentColor
-                                : Theme
-                                .of(context)
-                                .errorColor,
-                          ));
-                    }),
-                onPressed: () {
-                  if (_controller.isDismissed) {
-                    _controller.forward();
-                  } else
-                    _controller.reverse();
-                })
-          ],
-        );
-    }
+              });
   }
 }
-
-/* Se ficar melhor subistituir pelo IconButton ///
-FloatingActionButton(
-backgroundColor: cAppYellowish,
-foregroundColor: cAppBlackish,
-heroTag: "Options",
-elevation: 0.0,
-mini: true,
-child: Icon(Icons.more_horiz),
-onPressed: () {
-if (_controller.isDismissed) {
-_controller.forward();
-} else
-_controller.reverse();
-})*/
