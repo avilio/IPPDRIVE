@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,37 @@ import 'package:flutter/material.dart';
 import './themes/colorsThemes.dart';
 
 class ExceptionDialog {
+
+///
+  void questionDialog(String message, BuildContext context, Future sim){
+
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text(
+            'IppDrive',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            message,
+            textAlign: TextAlign.justify,
+          ),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () async => await sim,
+                child: Text('Sim'),
+                color: cAppYellowish,
+                shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.circular(3.0))),
+            FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Nao'),
+                color: cAppYellowish,
+                shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.circular(3.0)))
+          ],
+        ));
+  }
 
   /// Dialog de saida da app
   void quitDialog(BuildContext context) {
@@ -35,6 +67,7 @@ class ExceptionDialog {
           ],
         ));
   }
+
 
   /// Dialog de erros
   void errorDialog(String message, BuildContext context) =>

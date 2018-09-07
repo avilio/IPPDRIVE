@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
+import './common/themes/colorsThemes.dart';
 import './resources/apiCalls.dart';
 import './screens/login.dart';
-import './common/themes/colorsThemes.dart';
 
 class DialogKey extends StatelessWidget {
   final Requests req = Requests();
@@ -102,7 +101,7 @@ class DialogKey extends StatelessWidget {
           RaisedButton(
             onPressed: () {
               Clipboard.setData(new ClipboardData(text: key));
-              Fluttertoast.showToast(msg: "Chave copiada para a area de Transferencias",toastLength: Toast.LENGTH_SHORT);
+              Scaffold.of(context).showSnackBar(new SnackBar(content: Text("Chave copiada para a area de Transferencias")));
 
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => new LoginPage()),

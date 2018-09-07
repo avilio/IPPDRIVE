@@ -38,7 +38,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
     bloc.onConnectionChange();
     String status = bloc.connectionStatus;
 
-    if(status.contains('none')){
+    if (status.contains('none')) {
       if (widget.canAdd) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
           ManageFiles(
@@ -48,10 +48,8 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
           _buildIconButton()
         ]);
       } else
-        return Row(
-          mainAxisSize: MainAxisSize.min
-        );
-    }else {
+        return Row(mainAxisSize: MainAxisSize.min);
+    } else {
       if (widget.canAdd) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
           /*SyncCloudOffline(controller: _controller,
@@ -61,16 +59,16 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
               content: widget.content,
               controller: _controller,
               parentId: widget.parentId),
-          status.contains('none') ? null : Favorites(
-              folders: widget.folder, controller: _controller),
+          status.contains('none')
+              ? null
+              : Favorites(folders: widget.folder, controller: _controller),
           _buildIconButton()
         ]);
       } else
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            status.contains('none') ? null : Favorites(
-                folders: widget.folder),
+            status.contains('none') ? null : Favorites(folders: widget.folder),
           ],
         );
     }
@@ -78,31 +76,25 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
 
   IconButton _buildIconButton() {
     return IconButton(
-              icon: AnimatedBuilder(
-                  animation: _controller.view,
-                  builder: (BuildContext context, Widget child) {
-                    return Transform(
-                        alignment: FractionalOffset.center,
-                        transform: Matrix4
-                            .rotationZ(_controller.value * 0.5 * math.pi),
-                        child: Icon(
-                          _controller.isDismissed
-                              ? Icons.more_horiz
-                              : Icons.close,
-                          color: _controller.isDismissed
-                              ? Theme
-                              .of(context)
-                              .accentColor
-                              : Theme
-                              .of(context)
-                              .errorColor,
-                        ));
-                  }),
-              onPressed: () {
-                if (_controller.isDismissed) {
-                  _controller.forward();
-                } else
-                  _controller.reverse();
-              });
+        icon: AnimatedBuilder(
+            animation: _controller.view,
+            builder: (BuildContext context, Widget child) {
+              return Transform(
+                  alignment: FractionalOffset.center,
+                  transform:
+                      Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+                  child: Icon(
+                    _controller.isDismissed ? Icons.more_horiz : Icons.close,
+                    color: _controller.isDismissed
+                        ? Theme.of(context).accentColor
+                        : Theme.of(context).errorColor,
+                  ));
+            }),
+        onPressed: () {
+          if (_controller.isDismissed) {
+            _controller.forward();
+          } else
+            _controller.reverse();
+        });
   }
 }

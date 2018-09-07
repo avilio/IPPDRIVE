@@ -142,6 +142,7 @@ class Requests {
 
   ///
   Future<Map> addFile(Map object, int parentId, String session) async {
+ //todo apagar prints
   print(jsonEncode(object));
     var url = '$host/user/vfs.do';
     var body = {
@@ -156,6 +157,25 @@ class Requests {
       print(jsonEncode(body));
     return await rest.post(url, body);
   }
+
+  ///
+  Future<Map> editFile(Map object, int parentId, String session) async {
+    //todo apagar prints
+    print(jsonEncode(object));
+    var url = '$host/user/vfs.do';
+    var body = {
+      "BACOSESS": session,
+      "data": {
+        "command": "editFiles",
+        "object":jsonEncode(object),
+        "parentId" : parentId,
+      },
+      "serviceJson": "vfscommand"
+    };
+    print(jsonEncode(body));
+    return await rest.post(url, body);
+  }
+
 
   ///
   Future<Map> removeFile(Map object, int parentId, String session) async {

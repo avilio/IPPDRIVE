@@ -12,7 +12,7 @@ class TrailingRemoveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = BlocProvider.of(context);
+    final bloc = BlocProvider.of(context);
     if (canRemove) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -24,12 +24,11 @@ class TrailingRemoveButton extends StatelessWidget {
               color: Colors.redAccent,
             ),
             onPressed: () async {
-              if (homeBloc.connectionStatus.contains('none'))
-                homeBloc.errorDialog("Sem acesso a Internet", context);
+              if (bloc.connectionStatus.contains('none'))
+                bloc.errorDialog("Sem acesso a Internet", context);
               else {
                 DevicePermissions permiss = DevicePermissions();
-                bool permit = false;
-                permit = await permiss.checkWriteExternalStorage();
+                await permiss.checkWriteExternalStorage();
                 showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -42,26 +41,23 @@ class TrailingRemoveButton extends StatelessWidget {
                           actions: <Widget>[
                             FlatButton(
                                 onPressed: () {
-                                  homeBloc
+                                  bloc
                                       .removeFile(content, parentId,
-                                          homeBloc.paeUser.session)
+                                          bloc.paeUser.session)
                                       .then((resp) {
                                     ///
                                     if (resp.containsKey("ok")) {
                                       print(resp);
                                       Navigator.pop(context);
-                                      homeBloc.errorDialog(
+                                      bloc.errorDialog(
                                           'Ficheiro Apagado!', context);
                                     } else {
                                       print(resp);
                                       Navigator.pop(context);
-                                      homeBloc.errorDialog(
+                                      bloc.errorDialog(
                                           'Erro ao tentar apagar o ficheiro!\n ERRO: ${resp['exception']}',
                                           context);
                                     }
-
-                                    ///TODO fazer de forma a ter o path parent ou forma de fazer refresh depois de apagar
-                                    //Navigator.push(context, MaterialPageRoute(builder: (context)=> Content(unitContent: content,)));
                                   });
                                 },
                                 child: Text('Sim')),

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,9 +13,8 @@ class SaveLocally extends Object{
     });
 
     preferences.setStringList(key, jsonList);
-    
-    print("SAVE LOCALLY");
-    print(preferences.getStringList(key));
+
+    print("SAVED LOCALLY");
 
   }
 

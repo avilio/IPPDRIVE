@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:simple_permissions/simple_permissions.dart';
 
@@ -9,7 +8,7 @@ class DevicePermissions {
   Future<bool> checkWriteExternalStorage() async {
     bool externalStoragePermissionOkay = false;
     //todo tbm deve dar permissoes para ler
-    if (Platform.isAndroid) {
+   // if (Platform.isAndroid) {
       SimplePermissions
           .checkPermission(Permission.WriteExternalStorage)
           .then((checkOkay) {
@@ -26,15 +25,15 @@ class DevicePermissions {
           externalStoragePermissionOkay = checkOkay;
         }
       });
-    }
+   // }
     return externalStoragePermissionOkay;
   }
 
   ///
   Future<bool> checkReadExternalStorage() async {
     bool externalStoragePermissionOkay = false;
-    //todo tbm deve dar permissoes para ler
-    if (Platform.isAndroid) {
+
+    //if (Platform.isAndroid) {
       SimplePermissions
           .checkPermission(Permission.ReadExternalStorage)
           .then((checkOkay) {
@@ -51,7 +50,7 @@ class DevicePermissions {
           externalStoragePermissionOkay = checkOkay;
         }
       });
-    }
+   // }
     return externalStoragePermissionOkay;
   }
 
