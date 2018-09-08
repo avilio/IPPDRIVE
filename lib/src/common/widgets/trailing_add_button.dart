@@ -65,8 +65,10 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     //todo fazer caso offline
     Requests request = Requests();
 
-     await request.uploadFile(file, bloc.paeUser.session).then((resp) {
+     await request.uploadFile(file, bloc.paeUser.session).then((resp) async {
       Slugify slug = Slugify();
+
+      print(resp);
  
       Map object = {
         "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
@@ -80,11 +82,27 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
         "cols": 12
       };
       print(widget.content);
-      return request.addFile(object, widget.content['id'], bloc.paeUser.session);
+      return await request.addFile(object, widget.content['id'], bloc.paeUser.session);
     });
 
-    bloc.errorDialog("Ficheiro ${widget.content['title']} adicionado!", context);
+    //Navigator.pop(context);
 
+   // bloc.errorDialog("Ficheiro ${widget.content['title']} adicionado!", context);
+   /* showDialog(context: context,
+        barrierDismissible: false,
+        child: SafeArea(
+          child: AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('Ficheiro ${widget.content['title']} adicionado!')
+              ],
+            ),
+          ),
+        )
+    );*/
+
+  //  Navigator.pop(context);
     Navigator.push(
         context,
         MaterialPageRoute(

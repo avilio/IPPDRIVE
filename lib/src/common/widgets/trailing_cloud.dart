@@ -36,6 +36,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
         _cloudFlag = bloc.sharedPrefs.getBool(
                 "cloud/${widget.content['path']}/${widget.content['title']}") ??
             false;
+        _isModified = bloc.sharedPrefs.getBool("cloud/${widget.content['path']}/${widget.content['id']}") ?? false;
       });
     });
   }

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../common/dialogs.dart';
 import '../common/error401.dart';
 import '../common/utilities.dart';
+import '../common/widgets/progress_indicator.dart';
 import '../models/user.dart';
 import '../resources/apiCalls.dart';
 import '../saveLocally.dart';
@@ -207,13 +208,30 @@ class Bloc extends Object
 ///
         //print(preferences.get("home"));
         //return _response.value['childs'];
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    HomePage(
-                        unitsCourseList: _response.value['childs'],
-                        paeUser: paeUser)));
+        showDialog(context: context,
+            barrierDismissible: false,
+            child: AlertDialog(
+              content: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  AdaptiveProgressIndicator(),
+                  Text('      Loading...')
+                ],
+              ),
+            )
+        );
+
+        Future.delayed(Duration(seconds: 3),(){
+          Navigator.pop(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      HomePage(
+                          unitsCourseList: _response.value['childs'],
+                          paeUser: paeUser)));
+        });
+
       } else
         errorDialog(_response.value, context);
     }

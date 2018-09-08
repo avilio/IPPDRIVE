@@ -30,7 +30,7 @@ Route routes(RouteSettings settings){
   switch(settings.name){
     case "/" : return MaterialPageRoute(
         builder: (context) {
-          return Index();
+          return SafeArea(child: Index());
            /* if(b) {
               //todo criar outro widget de Entrada para estetica do autologin
               return AutoLogin();
@@ -39,14 +39,14 @@ Route routes(RouteSettings settings){
         }
     );break;
     case "/home" : return MaterialPageRoute(
-        builder: (context)=> HomePage()
+        builder: (context)=> SafeArea(child: HomePage())
     );break;
     case "/content" : return MaterialPageRoute(
         builder: (context){
           //get do id para ir buscar cadeiras
          // settings.name.replaceFirst("/", "");
 
-          return Content();}
+          return SafeArea(child: Content());}
     );break;
   }
   return null;

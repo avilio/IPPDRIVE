@@ -1,5 +1,18 @@
 
 /*
+import 'package:async_loader/async_loader.dart';
+import 'package:flutter/material.dart';
+
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splashscreen/splashscreen.dart';
+
+import '../blocs/bloc.dart';
+import '../blocs/bloc_provider.dart';
+import '../screens/login.dart';
+import '../screens/home.dart';
+import '../common/widgets/progress_indicator.dart';
+
 class AutoLogin extends StatefulWidget {
   @override
   _AutoLoginState createState() => _AutoLoginState();
@@ -11,40 +24,45 @@ class _AutoLoginState extends State<AutoLogin> {
 
   @override
   Widget build(BuildContext context) {
+
     final bloc = BlocProvider.of(context);
-    init(context, bloc);
+    bool b = false;
+
 
     return Scaffold(
-      body: Center(
-        child: _submitButton(bloc, context),
-      ),
-    );
-  }
+      body: AsyncLoader(
+        initState: () async{
 
-  Widget _submitButton(Bloc bloc, BuildContext context) {
-    return new Container(
-      padding: _padding,
-      child: new RaisedButton(
-        onPressed: () {
-          //!bloc.connectionStatus.contains('none')?
-          bloc.submit(bloc.username,
-              bloc.password, context);
-          // : bloc.errorDialog('Sem acesso a Internet', context);
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          b = pref.get("memoUser") ?? false;
+          bloc.setIsMemo(b);
+          bloc.setUsername(pref.get("username"));
+          bloc.setPassword(pref.get("password"));
+          bloc.submit(bloc.username, bloc.password, context);
         },
-        child: new Text('AutoLogin'),
-        elevation: 2.0,
-        shape: BeveledRectangleBorder(
-            borderRadius: new BorderRadius.circular(5.0)),
-      ),
+        renderLoad: () => Center(child: AdaptiveProgressIndicator()),
+        renderSuccess:({data}) {
+
+          if(b) {
+
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        HomePage(
+                            unitsCourseList: bloc.response['childs'],
+                            paeUser: bloc.paeUser)));
+          }else
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginPage()));
+        },
+      )
     );
   }
-  void init(BuildContext context, Bloc bloc)async{
 
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    bool b = pref.get("memoUser") ?? false;
-    bloc.setIsMemo(b);
-    bloc.setUsername(pref.get("username"));
-    bloc.setPassword(pref.get("password"));
-  }
+
 }
 */
+

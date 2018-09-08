@@ -14,6 +14,7 @@ import '../../blocs/bloc_provider.dart';
 import '../../common/error401.dart';
 import '../../common/permissions.dart';
 import '../../common/slugify.dart';
+import '../../common/themes/colorsThemes.dart';
 import '../../common/widgets/dialog.dart';
 import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/progress_indicator.dart';
@@ -160,22 +161,11 @@ class ContentBodyState extends State<ContentBody>
                       
                         bloc.questionDialog("Deseja substituir o ficheiro ${items['title']} que tem disponivel offline?", context, );
                       }*/
-                    String dir = await bloc.buildFileDirectory(items['path']);
 
-                    File localFile = new File('$dir/${items['title']}');
-                    DateTime dataModify = await localFile.lastModified();
-                    dataModify.millisecondsSinceEpoch;
-                    if (dataModify.millisecondsSinceEpoch > items['dateSaveDate'] ||
-                      dataModify.millisecondsSinceEpoch > items['dateUpdateDate']){
-
-                      bloc.questionDialog("Deseja substituir o ficheiro ${items['title']} no PAE?", context,fileOfflineToOnline(bloc, localFile, items));
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text("O ficheiro ${items['title']} substituido!")));
-                    }
-
-                      //todo perguntar se quer substituir o offline
-                    
-
+                   //todo arranjar maneira de fazer refresh e ver se o conteudo foi mesmo modificado
                     File file = await bloc.getFiles(bloc.paeUser.session, items);
+
+                    await _dialogLocalFileModified(bloc, items, context, file);
 
                     print(file.path);
                     OpenFile.open(file.path);
@@ -204,6 +194,29 @@ class ContentBodyState extends State<ContentBody>
     ]);
 
     return bodyList;
+  }
+
+  Future _dialogLocalFileModified(Bloc bloc, items, BuildContext context, File file) async {
+
+
+    String dir = await bloc.buildFileDirectory(items['path']);
+
+    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
+
+      DateTime dataModify = await file.lastModified();
+      //todo apagar prints
+      print(dataModify.millisecondsSinceEpoch);
+      print(items['dateSaveDate']);
+
+      if (dataModify.millisecondsSinceEpoch > items['dateSaveDate'] ||
+          dataModify.millisecondsSinceEpoch > items['dateUpdateDate']) {
+        bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
+        //todo mudar isto para o on tap no icon de alert
+        questionOffToOnFileDialog(
+            "Deseja substituir o ficheiro ${items['title']} no PAE?",
+            file, context, items, bloc);
+      }
+    }
   }
 
   Future fileOfflineToOnline(Bloc bloc, File localFile, items) async{
@@ -268,5 +281,54 @@ class ContentBodyState extends State<ContentBody>
           } else
             _controller.reverse();
         });
+  }
+
+
+  ///
+  void questionOffToOnFileDialog(String message, File localFile, BuildContext context, items, Bloc bloc){
+
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text(
+            'IppDrive',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            message,
+            textAlign: TextAlign.justify,
+          ),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () async {
+                  await fileOfflineToOnline(bloc, localFile, items);
+                  bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", false);
+                  Navigator.pop(context);
+                  Scaffold.of(context).showSnackBar(new SnackBar(
+                      content: Text( "O ficheiro ${items['title']} substituido!",
+                        style: TextStyle(color: cAppBlackish),
+                      ),
+                      duration: Duration(milliseconds: 1000),
+                      backgroundColor: cAppYellowish));
+                },
+                child: Text('Sim'),
+                color: cAppYellowish,
+                shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.circular(3.0))),
+            FlatButton(
+                onPressed: () {
+
+                    Navigator.pop(context);
+                  },
+                child: Text('Nao'),
+                color: cAppYellowish,
+                shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.circular(3.0)))
+          ],
+        ));
+  }
+
+  void discardFileOffline(Bloc bloc, ){
+
   }
 }

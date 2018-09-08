@@ -8,7 +8,7 @@ import './themes/colorsThemes.dart';
 class ExceptionDialog {
 
 ///
-  void questionDialog(String message, BuildContext context, Future sim){
+  void questionDialog(String message,String scafoldText ,BuildContext context, Future sim){
 
     showDialog(
         context: context,
@@ -23,7 +23,16 @@ class ExceptionDialog {
           ),
           actions: <Widget>[
             FlatButton(
-                onPressed: () async => await sim,
+                onPressed: () async {
+                  await sim;
+                  Navigator.pop(context);
+                  Scaffold.of(context).showSnackBar(new SnackBar(
+                      content: Text(scafoldText,
+                        style: TextStyle(color: cAppBlackish),
+                      ),
+                      duration: Duration(milliseconds: 1000),
+                      backgroundColor: cAppYellowish));
+                  },
                 child: Text('Sim'),
                 color: cAppYellowish,
                 shape: BeveledRectangleBorder(
