@@ -55,6 +55,9 @@ class ContentBodyState extends State<ContentBody>
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     super.initState();
+
+
+    
   }
 
   @override
@@ -127,6 +130,7 @@ class ContentBodyState extends State<ContentBody>
           items: courseUnitsContent,
           itemBuilder: (context, items) {
             if (items['directory']) {
+              //todo diretorias nao podem ser apagadas
               folder = Folders.fromJson(items);
               return new ListTile(
                   dense: true,
@@ -163,9 +167,15 @@ class ContentBodyState extends State<ContentBody>
                       }*/
 
                    //todo arranjar maneira de fazer refresh e ver se o conteudo foi mesmo modificado
+                    //todo apenas mostar isto caso tenha permissao para enviar
                     File file = await bloc.getFiles(bloc.paeUser.session, items);
+                    //todo a flag para dizer que algo tem data maior tem que ser posta tbm no caso de o ficheiro estar guardado local e o que  vem  online seja maior subistuir o local
 
-                    await _dialogLocalFileModified(bloc, items, context, file);
+
+                   await dialogOnlineModified(bloc, items, file, context);
+
+                    if(items['clearances']['addFiles'])
+                      await _dialogLocalFileModified(bloc, items, context, file);
 
                     print(file.path);
                     OpenFile.open(file.path);
@@ -196,6 +206,71 @@ class ContentBodyState extends State<ContentBody>
     return bodyList;
   }
 
+
+  Widget canRemove(items) {
+    if(!items['clearances']['removeFiles'])
+      return SyncCloudOffline(content: items);
+    else
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          SyncCloudOffline(
+              controller: _controller, content: items),
+          TrailingRemoveButton(
+            controller: _controller,
+              content: items,
+              parentId: widget.id,
+              canRemove: items['clearances']
+              ['removeFiles']),
+          _buildIconButton()
+        ],
+      );
+  }
+
+  IconButton _buildIconButton() {
+    return IconButton(
+        icon: AnimatedBuilder(
+            animation: _controller.view,
+            builder: (BuildContext context, Widget child) {
+              return Transform(
+                  alignment: FractionalOffset.center,
+                  transform:
+                  Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+                  child: Icon(
+                    _controller.isDismissed ? Icons.more_horiz : Icons.close,
+                    color: _controller.isDismissed
+                        ? Theme.of(context).accentColor
+                        : Theme.of(context).errorColor,
+                  ));
+            }),
+        onPressed: () {
+          if (_controller.isDismissed) {
+            _controller.forward();
+          } else
+            _controller.reverse();
+        });
+  }
+
+  Future dialogOnlineModified(Bloc bloc, items, File file, BuildContext context) async {
+      String dir = await bloc.buildFileDirectory(items['path']);
+
+    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
+
+      DateTime dataModify = file.lastModifiedSync();
+      //todo apagar prints
+      print(dataModify.millisecondsSinceEpoch);
+      print(items['dateSaveDate']);
+
+      if (dataModify.millisecondsSinceEpoch < items['dateSaveDate'] ||
+          dataModify.millisecondsSinceEpoch < items['dateUpdateDate']) {
+        bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
+        //todo mudar isto para o on tap no icon de alert
+        questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${items['title']} no dispositivo?", context, items, bloc, fileOnlineToOffline(bloc,file, items) );
+      }
+    }
+  }
+
   Future _dialogLocalFileModified(Bloc bloc, items, BuildContext context, File file) async {
 
 
@@ -203,7 +278,7 @@ class ContentBodyState extends State<ContentBody>
 
     if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
 
-      DateTime dataModify = await file.lastModified();
+      DateTime dataModify = file.lastModifiedSync();
       //todo apagar prints
       print(dataModify.millisecondsSinceEpoch);
       print(items['dateSaveDate']);
@@ -212,13 +287,13 @@ class ContentBodyState extends State<ContentBody>
           dataModify.millisecondsSinceEpoch > items['dateUpdateDate']) {
         bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
         //todo mudar isto para o on tap no icon de alert
-        questionOffToOnFileDialog(
-            "Deseja substituir o ficheiro ${items['title']} no PAE?",
-            file, context, items, bloc);
+        questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${items['title']} no PAE?", context, items, bloc, fileOfflineToOnline(bloc, file, items));
       }
     }
   }
 
+  ///
   Future fileOfflineToOnline(Bloc bloc, File localFile, items) async{
        bloc.uploadFile(localFile, bloc.paeUser.session).then((resp){
 
@@ -240,52 +315,19 @@ class ContentBodyState extends State<ContentBody>
     });
   }
 
-  Widget canRemove(items) {
-     if(!items['clearances']['removeFiles'])
-      return SyncCloudOffline(content: items);
-    else
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SyncCloudOffline(
-              controller: _controller, content: items),
-          TrailingRemoveButton(
-              content: items,
-              parentId: widget.id,
-              canRemove: items['clearances']
-                  ['removeFiles']),
-          _buildIconButton()
-        ],
-      );
-  }
 
-  IconButton _buildIconButton() {
-    return IconButton(
-        icon: AnimatedBuilder(
-            animation: _controller.view,
-            builder: (BuildContext context, Widget child) {
-              return Transform(
-                  alignment: FractionalOffset.center,
-                  transform:
-                      Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
-                  child: Icon(
-                    _controller.isDismissed ? Icons.more_horiz : Icons.close,
-                    color: _controller.isDismissed
-                        ? Theme.of(context).accentColor
-                        : Theme.of(context).errorColor,
-                  ));
-            }),
-        onPressed: () {
-          if (_controller.isDismissed) {
-            _controller.forward();
-          } else
-            _controller.reverse();
-        });
-  }
+  Future fileOnlineToOffline(Bloc bloc, File file, items) async {
 
+    File file = await bloc.getFiles(bloc.paeUser.session, items);
+
+    print(file.path);
+    bloc.sharedPrefs.remove(items['id'].toString());
+
+    bloc.sharedPrefs.setString(items['id'].toString(), jsonEncode(items));
+  }
 
   ///
-  void questionOffToOnFileDialog(String message, File localFile, BuildContext context, items, Bloc bloc){
+  void questionOffOnFileDialog(String message, BuildContext context, items, Bloc bloc, Future function){
 
     showDialog(
         context: context,
@@ -301,7 +343,7 @@ class ContentBodyState extends State<ContentBody>
           actions: <Widget>[
             FlatButton(
                 onPressed: () async {
-                  await fileOfflineToOnline(bloc, localFile, items);
+                  await function;
                   bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", false);
                   Navigator.pop(context);
                   Scaffold.of(context).showSnackBar(new SnackBar(
@@ -328,7 +370,4 @@ class ContentBodyState extends State<ContentBody>
         ));
   }
 
-  void discardFileOffline(Bloc bloc, ){
-
-  }
 }

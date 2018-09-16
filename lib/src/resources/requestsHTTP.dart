@@ -1,18 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:async/async.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-class REST {
+class HTTPRequests {
 
   ///creates a singleton
-  static final REST _instance = new REST.internal();
+  static final HTTPRequests _instance = new HTTPRequests.internal();
 
-  REST.internal();
+  HTTPRequests.internal();
 
-  factory REST() => _instance;
+  factory HTTPRequests() => _instance;
 
   /// Sends a POST request to a given [url] with the [jsonMap] as a payload
   /// and returns a json as a string [reply]

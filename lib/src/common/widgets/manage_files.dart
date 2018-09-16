@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/trailing_add_button.dart';
-import '../../common/widgets/trailing_remove_button.dart';
 
 
 class ManageFiles extends StatefulWidget {
@@ -54,7 +53,8 @@ class _ManageFilesState extends State<ManageFiles> {
                     SizedBox(
                       height: 5.0,
                     ),
-                    TrailingRemoveButton(content: widget.content,parentId: widget.parentId,canRemove: true,)
+                   //todo comentado mas mudar apenas para mostrar o add buton
+                   // TrailingRemoveButton(content: widget.content,parentId: widget.parentId,canRemove: true,)
                   ],
                 ),
               ],

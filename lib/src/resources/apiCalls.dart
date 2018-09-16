@@ -7,7 +7,7 @@ import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'REST.dart';
+import 'requestsHTTP.dart';
 
 /// Due to the simulation purposes, the Android VM simulator does not recognize localhost as
 /// localhost, so the address 10.0.2.2 have to replace the original address, in order to work
@@ -17,7 +17,7 @@ var host = 'http://$server:8080/baco';
 //var host = 'https://pae.ipportalegre.pt';
 
 class Requests {
-  final rest = REST.internal();
+  final rest = HTTPRequests.internal();
 
   /// Create a body JSON to send a post request to the api and returns a [Map] obtained as response,
   /// this is the first phase of user authentication, in order to 'login' into to the app.
