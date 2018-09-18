@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -123,8 +124,8 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
         Map object = {
           "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
           "id": 0,
-          "tempFile": resp['uploadedFiles'][0],
-          "repositoryId": 0,
+          "tmpFile": resp['uploadedFiles'][0],
+          //"repositoryId": 0,
           "title": resp['uploadedFiles'][0]['fileName'],
           "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
           "repositoryFile4JsonView": null,

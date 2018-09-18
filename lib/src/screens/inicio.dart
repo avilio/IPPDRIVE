@@ -58,14 +58,13 @@ class _IndexState extends State<Index> {
       padding: _padding,
       child: new RaisedButton(
         onPressed: () async {
-
           SharedPreferences pref = await SharedPreferences.getInstance();
           bool b = pref.get("memoUser") ?? false;
           bloc.setIsMemo(b);
           bloc.setUsername(pref.get("username"));
           bloc.setPassword(pref.get("password"));
            if(b)
-             bloc.submit(bloc.username,
+          bloc.submit(bloc.username,
               bloc.password, context);
            else
              Navigator.push(
