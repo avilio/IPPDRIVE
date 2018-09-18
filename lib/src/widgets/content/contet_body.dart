@@ -85,6 +85,10 @@ class ContentBodyState extends State<ContentBody>
           },
           renderSuccess: ({data}) {
             List online = data['response']['childs'];
+            //Map resp = data;
+
+            //resp.forEach((k,v)=> print("$k: $v"));
+
             if (online.isNotEmpty) {
 
               if( bloc.sharedPrefs
@@ -177,6 +181,7 @@ class ContentBodyState extends State<ContentBody>
                       canAdd: items['clearances']['addFiles'],
                       folder: folder,
                       content: items,
+                      controller: _controller,
                       parentId: widget.id),
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => new Content(

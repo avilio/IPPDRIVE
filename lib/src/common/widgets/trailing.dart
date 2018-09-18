@@ -1,19 +1,23 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:ippdrive/src/common/permissions.dart';
 
 import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
 import '../../models/folders.dart';
+import '../../common/widgets/trailing_add_button.dart';
 
 class Trailing extends StatefulWidget {
   final bool canAdd;
   final Folders folder;
   final Map content;
   final int parentId;
+  final AnimationController controller;
 
-  Trailing({this.canAdd, this.folder, this.content, this.parentId, Key key})
+  Trailing({this.canAdd, this.folder, this.content, this.parentId,this.controller, Key key})
       : super(key: key);
 
   @override
@@ -23,12 +27,14 @@ class Trailing extends StatefulWidget {
 }
 
 class TrailingState extends State<Trailing> with TickerProviderStateMixin {
-  AnimationController _controller;
+
 
   @override
   void initState() {
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    Future.delayed(Duration.zero,()async{
+      DevicePermissions permiss = DevicePermissions();
+      await permiss.checkWriteExternalStorage();
+    });
     super.initState();
   }
 
@@ -41,10 +47,12 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
     if (status.contains('none')) {
       if (widget.canAdd) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          ManageFiles(
+          TrailingAddButton(content: widget.content,controller: widget.controller,),
+
+          /*ManageFiles(
               content: widget.content,
               controller: _controller,
-              parentId: widget.parentId),
+              parentId: widget.parentId),*/
           _buildIconButton()
         ]);
       } else
@@ -55,13 +63,14 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
           /*SyncCloudOffline(controller: _controller,
             content: widget.content,
             folders: widget.folder,),*/
-          ManageFiles(
+          /* ManageFiles(
               content: widget.content,
               controller: _controller,
-              parentId: widget.parentId),
+              parentId: widget.parentId),*/
+          TrailingAddButton(content: widget.content,controller: widget.controller,),
           status.contains('none')
               ? null
-              : Favorites(folders: widget.folder, controller: _controller),
+              : Favorites(folders: widget.folder, controller: widget.controller),
           _buildIconButton()
         ]);
       } else
@@ -77,24 +86,24 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
   IconButton _buildIconButton() {
     return IconButton(
         icon: AnimatedBuilder(
-            animation: _controller.view,
+            animation: widget.controller.view,
             builder: (BuildContext context, Widget child) {
               return Transform(
                   alignment: FractionalOffset.center,
                   transform:
-                      Matrix4.rotationZ(_controller.value * 0.5 * math.pi),
+                      Matrix4.rotationZ(widget.controller.value * 0.5 * math.pi),
                   child: Icon(
-                    _controller.isDismissed ? Icons.more_horiz : Icons.close,
-                    color: _controller.isDismissed
+                    widget.controller.isDismissed ? Icons.more_horiz : Icons.close,
+                    color: widget.controller.isDismissed
                         ? Theme.of(context).accentColor
                         : Theme.of(context).errorColor,
                   ));
             }),
         onPressed: () {
-          if (_controller.isDismissed) {
-            _controller.forward();
+          if (widget.controller.isDismissed) {
+            widget.controller.forward();
           } else
-            _controller.reverse();
+            widget.controller.reverse();
         });
   }
 }

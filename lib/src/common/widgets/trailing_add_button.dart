@@ -14,12 +14,14 @@ import '../../blocs/bloc_provider.dart';
 import '../../common/permissions.dart';
 import '../../common/slugify.dart';
 import '../../resources/apiCalls.dart';
+import '../permissions.dart';
 
 
 class TrailingAddButton extends StatefulWidget {
   final Map content;
+  final AnimationController controller;
 
-  TrailingAddButton({this.content});
+  TrailingAddButton({this.content, this.controller});
 
   @override
   TrailingAddButtonState createState() {
@@ -32,10 +34,12 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, ()
+    Future.delayed(Duration.zero, () async
     {
       final bloc = BlocProvider.of(context);
       bloc.onConnectionChange();
+      DevicePermissions permiss = DevicePermissions();
+      await permiss.checkWriteExternalStorage();
     });
   }
 
@@ -43,6 +47,27 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
   Widget build(BuildContext context) {
   final bloc = BlocProvider.of(context);
 
+  return  Container(
+    child: ScaleTransition(
+      scale: CurvedAnimation(
+          parent: widget.controller.view,
+          curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
+      child:  IconButton(
+        onPressed: () async {
+          DevicePermissions permiss = DevicePermissions();
+          bool permit = false;
+          permit = await permiss.checkWriteExternalStorage();
+          _filePicker(bloc);
+        },
+        icon: Icon(
+          Icons.add,
+          color: Colors.green,
+        ),
+      ),
+      alignment: FractionalOffset.center,
+    ),
+  );
+/*
    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -60,8 +85,8 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
             ),
           )
         ],
-    );
-  }
+    );*/
+}
 
    _filePicker(Bloc bloc) async {
      List<dynamic> docPaths;

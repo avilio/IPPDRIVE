@@ -46,10 +46,10 @@ class _ManageFilesState extends State<ManageFiles> {
               shrinkWrap: true,
               padding: EdgeInsets.all(50.0),
               children: <Widget>[
-                Column(
+                Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                   TrailingAddButton(content: widget.content,),
+                   TrailingAddButton(content: widget.content,controller: widget.controller,),
                     SizedBox(
                       height: 5.0,
                     ),
