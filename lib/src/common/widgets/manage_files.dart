@@ -36,9 +36,9 @@ class _ManageFilesState extends State<ManageFiles> {
   _openFilePicker() {
     final bloc = BlocProvider.of(context);
     //todo alterar isto pois o modo de fazer isto offline vai ser diferente
-    if(bloc.connectionStatus.contains('none'))
-      bloc.errorDialog("Sem acesso a Internet", context);
-    else {
+   /* if(bloc.connectionStatus.contains('none'))
+      bloc.errorDialog("Sem acesso a Internet", context);*/
+//    else {
       showModalBottomSheet(
           context: context,
           builder: (BuildContext context) {
@@ -60,7 +60,7 @@ class _ManageFilesState extends State<ManageFiles> {
               ],
             );
           });
-    }
+    //}
   }
 
   @override

@@ -13,8 +13,6 @@ import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/error401.dart';
 import '../../common/permissions.dart';
-import '../../common/slugify.dart';
-import '../../common/themes/colorsThemes.dart';
 import '../../common/widgets/dialog.dart';
 import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/progress_indicator.dart';
@@ -56,8 +54,6 @@ class ContentBodyState extends State<ContentBody>
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     super.initState();
 
-
-    
   }
 
   @override
@@ -69,7 +65,7 @@ class ContentBodyState extends State<ContentBody>
 
     if (bloc.connectionStatus.contains('none') &&
         (bloc.sharedPrefs.get(widget.id.toString()) != null)) {
-      bloc.sharedPrefs.getStringList(widget.id.toString());
+
 
       List newList = new List();
       bloc.sharedPrefs
@@ -88,13 +84,54 @@ class ContentBodyState extends State<ContentBody>
             return new Text('ERROR LOANDING DATA');
           },
           renderSuccess: ({data}) {
-            List checker = data['response']['childs'];
-            if (checker.isNotEmpty) {
+            List online = data['response']['childs'];
+            if (online.isNotEmpty) {
+
+              if( bloc.sharedPrefs
+                  .getStringList(widget.id.toString())!= null) {
+
+                List offline = bloc.sharedPrefs
+                    .getStringList(widget.id.toString()).map((valor) =>
+                    jsonDecode(valor)).toList() ?? [];
+
+              //  offline.forEach((f) => debugPrint("OFFLINE ->" + f['title']));
+
+                //online.forEach((f) => debugPrint("ONLINE ->" + f['title']));
+
+                print(online.last['title']);
+                print(offline.last['title']);
+
+                if(offline.last['title']!= online.last['title']) {
+                  online.add(offline.last);
+                  bloc.checkLocalFileModified(offline.last, context);
+                  bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['id']}", true);
+                  bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['title']}", true);
+                  bloc.sharedPrefs.setBool("newFile/${offline.last['id']}", true);
+                 // bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['id']}", true);
+                }
+
+
+                //print("VALOR DIFFENRE " + );
+              }
+
               ///
               bloc.saveListLocally(
-                  this.widget.id.toString(), checker, bloc.sharedPrefs);
+                  this.widget.id.toString(), online, bloc.sharedPrefs);
 
-              return createList(checker, context, bloc);
+              online.forEach((items){
+
+                if(items['file']) {
+                  bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
+                  bloc.checkOnlineModified(items, context);
+
+                  if (items['clearances']['addFiles'])
+                    bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
+                    bloc.checkLocalFileModified(items, context);
+                }
+
+              });
+
+              return createList(online, context, bloc);
             } else
               return DialogAlert(message: 'Pasta vazia');
           });
@@ -171,12 +208,6 @@ class ContentBodyState extends State<ContentBody>
                     File file = await bloc.getFiles(bloc.paeUser.session, items);
                     //todo a flag para dizer que algo tem data maior tem que ser posta tbm no caso de o ficheiro estar guardado local e o que  vem  online seja maior subistuir o local
 
-
-                   await dialogOnlineModified(bloc, items, file, context);
-
-                    if(items['clearances']['addFiles'])
-                      await _dialogLocalFileModified(bloc, items, context, file);
-
                     print(file.path);
                     OpenFile.open(file.path);
                   } else {
@@ -249,125 +280,6 @@ class ContentBodyState extends State<ContentBody>
           } else
             _controller.reverse();
         });
-  }
-
-  Future dialogOnlineModified(Bloc bloc, items, File file, BuildContext context) async {
-      String dir = await bloc.buildFileDirectory(items['path']);
-
-    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
-
-      DateTime dataModify = file.lastModifiedSync();
-      //todo apagar prints
-      print(dataModify.millisecondsSinceEpoch);
-      print(items['dateSaveDate']);
-
-      if (dataModify.millisecondsSinceEpoch < items['dateSaveDate'] ||
-          dataModify.millisecondsSinceEpoch < items['dateUpdateDate']) {
-        bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
-        //todo mudar isto para o on tap no icon de alert
-        questionOffOnFileDialog(
-            "Deseja substituir o ficheiro ${items['title']} no dispositivo?", context, items, bloc, fileOnlineToOffline(bloc,file, items) );
-      }
-    }
-  }
-
-  Future _dialogLocalFileModified(Bloc bloc, items, BuildContext context, File file) async {
-
-
-    String dir = await bloc.buildFileDirectory(items['path']);
-
-    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
-
-      DateTime dataModify = file.lastModifiedSync();
-      //todo apagar prints
-      print(dataModify.millisecondsSinceEpoch);
-      print(items['dateSaveDate']);
-
-      if (dataModify.millisecondsSinceEpoch > items['dateSaveDate'] ||
-          dataModify.millisecondsSinceEpoch > items['dateUpdateDate']) {
-        bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
-        //todo mudar isto para o on tap no icon de alert
-        questionOffOnFileDialog(
-            "Deseja substituir o ficheiro ${items['title']} no PAE?", context, items, bloc, fileOfflineToOnline(bloc, file, items));
-      }
-    }
-  }
-
-  ///
-  Future fileOfflineToOnline(Bloc bloc, File localFile, items) async{
-       bloc.uploadFile(localFile, bloc.paeUser.session).then((resp){
-
-      Slugify slug = Slugify();
-
-      Map object = {
-        "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
-        "id": 0,
-        "tempFile": resp['uploadedFiles'][0],
-        "repositoryId": 0,
-        "title": resp['uploadedFiles'][0]['fileName'],
-        "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
-        "repositoryFile4JsonView": null,
-        "visible": true,
-        "cols": 12
-      };
-      print(items);
-      return bloc.editFile(object, items['id'], bloc.paeUser.session);
-    });
-  }
-
-
-  Future fileOnlineToOffline(Bloc bloc, File file, items) async {
-
-    File file = await bloc.getFiles(bloc.paeUser.session, items);
-
-    print(file.path);
-    bloc.sharedPrefs.remove(items['id'].toString());
-
-    bloc.sharedPrefs.setString(items['id'].toString(), jsonEncode(items));
-  }
-
-  ///
-  void questionOffOnFileDialog(String message, BuildContext context, items, Bloc bloc, Future function){
-
-    showDialog(
-        context: context,
-        child: AlertDialog(
-          title: Text(
-            'IppDrive',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            message,
-            textAlign: TextAlign.justify,
-          ),
-          actions: <Widget>[
-            FlatButton(
-                onPressed: () async {
-                  await function;
-                  bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", false);
-                  Navigator.pop(context);
-                  Scaffold.of(context).showSnackBar(new SnackBar(
-                      content: Text( "O ficheiro ${items['title']} substituido!",
-                        style: TextStyle(color: cAppBlackish),
-                      ),
-                      duration: Duration(milliseconds: 1000),
-                      backgroundColor: cAppYellowish));
-                },
-                child: Text('Sim'),
-                color: cAppYellowish,
-                shape: BeveledRectangleBorder(
-                    borderRadius: new BorderRadius.circular(3.0))),
-            FlatButton(
-                onPressed: () {
-
-                    Navigator.pop(context);
-                  },
-                child: Text('Nao'),
-                color: cAppYellowish,
-                shape: BeveledRectangleBorder(
-                    borderRadius: new BorderRadius.circular(3.0)))
-          ],
-        ));
   }
 
 }

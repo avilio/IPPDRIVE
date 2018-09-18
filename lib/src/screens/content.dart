@@ -36,6 +36,7 @@ class Content extends StatelessWidget {
         body: ContentBody(tapGestureRecognizer: tapGestureRecognizer,school: school,course: course,id: unitID));
   }
 
+
 }
 
 

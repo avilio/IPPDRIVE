@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/dialogs.dart';
 import '../common/error401.dart';
+import '../common/slugify.dart';
 import '../common/utilities.dart';
 import '../common/widgets/progress_indicator.dart';
 import '../models/user.dart';
@@ -161,7 +163,6 @@ class Bloc extends Object
     route2Home(context, password);
   }
 
-
    route2Home(BuildContext context, String password) async {
     var contentYear;
 ///todo
@@ -235,6 +236,100 @@ class Bloc extends Object
       } else
         errorDialog(_response.value, context);
     }
+  }
+
+  Future checkOnlineModified(items, BuildContext context) async {
+    String dir = await buildFileDirectory(items['path']);
+
+    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
+
+      Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
+      //todo apagar prints
+    //  print(localFile['dateSaveDate']);
+      //print(items['dateSaveDate']);
+
+      if (localFile['dateSaveDate'] < items['dateSaveDate'] ||
+          localFile['dateUpdateDate'] < items['dateUpdateDate']) {
+ //       sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
+        //todo mudar isto para o on tap no icon de alert
+        /*questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${items['title']} no dispositivo?", context, items, this, fileOnlineToOffline(this,file, items) );*/
+      }
+    }else {
+    // sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
+      //sharedPrefs.setBool("cloud/${items['path']}/${items['title']}", true);
+    }
+  }
+
+  Future checkLocalFileModified( items, BuildContext context) async {
+
+    String dir = await buildFileDirectory(items['path']);
+
+    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
+
+      Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
+      //todo apagar prints
+    //  print(localFile['dateSaveDate']);
+      //print(items['dateSaveDate']);
+
+      if (localFile['dateSaveDate'] > items['dateSaveDate'] ||
+          localFile['dateUpdateDate'] > items['dateUpdateDate']) {
+ //       sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
+        //todo mudar isto para o on tap no icon de alert
+        /*questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${items['title']} no PAE?", context, items, this, fileOfflineToOnline(this, file, items));*/
+      }
+    }else {
+     // sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
+     // sharedPrefs.setBool("cloud/${items['path']}/${items['title']}", true);
+    }
+  }
+
+
+
+  ///
+  Future fileOfflineToOnline(Bloc bloc, items) async{
+
+    bloc.sharedPrefs.remove("cloud/${items['path']}/${items['id']}");
+    bloc.sharedPrefs.remove("newFile/${items['id']}");
+
+    File localFile = await bloc.getFiles(bloc.paeUser.session, items);
+
+    bloc.uploadFile(localFile, bloc.paeUser.session).then((resp){
+
+      Slugify slug = Slugify();
+
+      Map object = {
+        "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
+        "id": 0,
+        "tempFile": resp['uploadedFiles'][0],
+        "repositoryId": 0,
+        "title": resp['uploadedFiles'][0]['fileName'],
+        "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
+        "repositoryFile4JsonView": null,
+        "visible": true,
+        "cols": 12
+      };
+      print(items);
+        Future<Map> map  =  bloc.addFile(object, items['id'], bloc.paeUser.session);
+
+        map.then((map){
+          map.forEach((key,value)=>  print("$key : $value"));
+        });
+
+      return map;
+    });
+  }
+
+
+  Future fileOnlineToOffline(Bloc bloc, items) async {
+
+    File file = await bloc.getFiles(bloc.paeUser.session, items);
+
+    print(file.path);
+    bloc.sharedPrefs.remove(items['id'].toString());
+
+    bloc.sharedPrefs.setString(items['id'].toString(), jsonEncode(items));
   }
 
   dispose() {

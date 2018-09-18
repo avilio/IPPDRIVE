@@ -143,19 +143,23 @@ class Requests {
   ///
   Future<Map> addFile(Map object, int parentId, String session) async {
  //todo apagar prints
-  print(jsonEncode(object));
+
     var url = '$host/user/vfs.do';
     var body = {
       "BACOSESS": session,
       "data": {
         "command": "addFiles",
-        "object":jsonEncode(object),
+        "object": jsonEncode(object),
         "parentId" : parentId,
       },
       "serviceJson": "vfscommand"
     };
-      print(jsonEncode(body));
-    return await rest.post(url, body);
+      print("JSONENCODE" +jsonEncode(body));
+      Map map  = await rest.post(url, body);
+
+     // map['response'].forEach((key,value)=>print("$key: $value"));
+
+    return map;
   }
 
   ///

@@ -23,6 +23,8 @@ class SyncCloudOffline extends StatefulWidget {
 class _SyncCloudOfflineState extends State<SyncCloudOffline> {
   bool _cloudFlag = false;
   bool _isModified = false;
+  bool _isNew = false;
+  bool _isRecent = false;
   String connectStatus = "";
 
   @override
@@ -37,6 +39,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
                 "cloud/${widget.content['path']}/${widget.content['title']}") ??
             false;
         _isModified = bloc.sharedPrefs.getBool("cloud/${widget.content['path']}/${widget.content['id']}") ?? false;
+        _isNew = bloc.sharedPrefs.getBool("newFile/${widget.content['id']}")  ??  false;
       });
     });
   }
@@ -97,6 +100,16 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     if (!bloc.connectionStatus.contains('none')) {
       if (!_cloudFlag)
         await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
+      if(_isModified) {
+        if (_isNew) {
+          //todo ficheiro novo  o nome nao vem  no  conteudo
+          bloc.questionOffOnFileDialog("Deseja adicionar o ficheiro ${widget.content['title']} no PAE?", context, widget.content, bloc,
+              bloc.fileOfflineToOnline(bloc, widget.content));
+        }else
+        bloc.questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${widget.content['title']}", context,
+            widget.content, bloc, bloc.fileOnlineToOffline(bloc, widget.content));
+      }
       else
         await _cloudDeleteOfflineDialog(bloc, bloc.sharedPrefs);
     }
