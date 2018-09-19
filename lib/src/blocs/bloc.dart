@@ -297,6 +297,8 @@ class Bloc extends Object
   ///
   Future fileOfflineToOnline(Bloc bloc, items) async{
 
+    bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", false);
+    bloc.sharedPrefs.setBool("newFile/${items['id']}", false);
     bloc.sharedPrefs.remove("cloud/${items['path']}/${items['id']}");
     bloc.sharedPrefs.remove("newFile/${items['id']}");
 
@@ -316,7 +318,7 @@ class Bloc extends Object
         "visible": true,
         "cols": 12
       };
-      print(items);
+      //print(items);
         Future<Map> map  =  bloc.addFile(object, items['id'], bloc.paeUser.session);
 
       /*  map.then((map){
@@ -335,7 +337,7 @@ class Bloc extends Object
     print(file.path);
     bloc.sharedPrefs.remove(items['id'].toString());
 
-    bloc.sharedPrefs.setString(items['id'].toString(), jsonEncode(items));
+    //bloc.sharedPrefs.setString(items['id'].toString(), jsonEncode(items));
   }
 
   dispose() {

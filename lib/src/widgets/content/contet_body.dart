@@ -18,7 +18,7 @@ import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/progress_indicator.dart';
 import '../../common/widgets/trailing.dart';
 import '../../common/widgets/trailing_cloud.dart';
-import '../../common/widgets/trailing_remove_button.dart';
+import '../../common/widgets/trailing_remove_file.dart';
 import '../../models/folders.dart';
 import '../../screens/content.dart';
 import '../../widgets/content/content_pathBuilder.dart';
@@ -129,7 +129,7 @@ class ContentBodyState extends State<ContentBody>
                   bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
                   bloc.checkOnlineModified(items, context);
 
-                  if (items['clearances']['addFiles'])
+                  if (items['clearances']['addFiles'] || items['clearances']['add'] || items['clearances']['remove'])
                     bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
                     bloc.checkLocalFileModified(items, context);
                 }
@@ -180,7 +180,7 @@ class ContentBodyState extends State<ContentBody>
                   title: new Text(items['title']),
                   leading: new Icon(Icons.folder_open),
                   trailing: Trailing(
-                      canAdd: items['clearances']['addFiles'],
+                      clearances: items['clearances'],
                       folder: folder,
                       content: items,
                       parentId: widget.id),
@@ -255,7 +255,7 @@ class ContentBodyState extends State<ContentBody>
         children: <Widget>[
           SyncCloudOffline(
               controller: _controller, content: items),
-          TrailingRemoveButton(
+          RemoveFile(
             controller: _controller,
               content: items,
               parentId: widget.id,

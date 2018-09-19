@@ -62,14 +62,7 @@ class HomePageState extends State<HomePage> {
           unitsCourseList: widget.unitsCourseList,
           children: <Widget>[
             new Padding(padding: EdgeInsets.all(0.5)),
-           semestres.semester1.length > 1? new Container(
-                decoration: new BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  border:
-                      Border.all(style: BorderStyle.solid, color: cAppBlackish),
-                ),
-                child: HomeExpansionTiles(child: semestres.semester1)) :
-           Column(
+           widget.unitsCourseList.length < 1 ? Column(
              mainAxisAlignment: MainAxisAlignment.center,
              crossAxisAlignment: CrossAxisAlignment.center,
              mainAxisSize: MainAxisSize.min,
@@ -80,7 +73,14 @@ class HomePageState extends State<HomePage> {
                  child: Text("Nao tem conteudos disponiveis",textScaleFactor: 1.5),
                ),
              ],
-           ),
+           ):
+           semestres.semester1.length > 1? new Container(
+                decoration: new BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  border:
+                      Border.all(style: BorderStyle.solid, color: cAppBlackish),
+                ),
+                child: HomeExpansionTiles(child: semestres.semester1)) :Container(),
             semestres.semester2.length> 1 ? new Container(
                 decoration: new BoxDecoration(
                   shape: BoxShape.rectangle,

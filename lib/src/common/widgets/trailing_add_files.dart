@@ -26,12 +26,12 @@ class AddFiles extends StatefulWidget {
   AddFiles({this.content});
 
   @override
-  TrailingAddButtonState createState() {
-    return new TrailingAddButtonState();
+  AddFileState createState() {
+    return new AddFileState();
   }
 }
 
-class TrailingAddButtonState extends State<AddFiles> {
+class AddFileState extends State<AddFiles> {
 
   @override
   void initState() {
@@ -88,7 +88,7 @@ class TrailingAddButtonState extends State<AddFiles> {
      if (!mounted) return;
 
      File file;
-     Map resp;
+     Map resp = new Map();
 
      docPaths.forEach((data) async {
        file = File(data);
@@ -115,7 +115,6 @@ class TrailingAddButtonState extends State<AddFiles> {
           )
       );
 
-      Future.delayed(Duration(seconds: 1), () {
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -126,7 +125,6 @@ class TrailingAddButtonState extends State<AddFiles> {
                           : bloc.sharedPrefs.getStringList(
                           widget.content['id'].toString()),
                     )));
-      });
     }
      }
 

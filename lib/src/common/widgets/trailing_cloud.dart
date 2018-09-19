@@ -36,9 +36,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       final bloc = BlocProvider.of(context);
 
       setState(() {
-        _cloudFlag = bloc.sharedPrefs.getBool(
-                "cloud/${widget.content['path']}/${widget.content['title']}") ??
-            false;
+        _cloudFlag = bloc.sharedPrefs.getBool("cloud/${widget.content['path']}/${widget.content['title']}") ?? false;
         _isModified = bloc.sharedPrefs.getBool("cloud/${widget.content['path']}/${widget.content['id']}") ?? false;
         _isNew = bloc.sharedPrefs.getBool("newFile/${widget.content['id']}")  ??  false;
       });
@@ -103,11 +101,10 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
         await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
       else if(_isModified) {
         if (_isNew) {
-          //todo ficheiro novo  o nome nao vem  no  conteudo
-          bloc.questionOffOnFileDialog("Deseja adicionar o ficheiro ${widget.content['title']} no PAE?", context, widget.content, bloc,
+          questionOffOnFileDialog("Deseja adicionar o ficheiro ${widget.content['title']} no PAE?", context, widget.content, bloc,
               bloc.fileOfflineToOnline(bloc, widget.content));
         }else
-          bloc.questionOffOnFileDialog(
+          questionOffOnFileDialog(
             "Deseja substituir o ficheiro ${widget.content['title']}", context,
             widget.content, bloc, bloc.fileOnlineToOffline(bloc, widget.content));
       }
@@ -235,4 +232,52 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
         duration: Duration(milliseconds: 1000),
         backgroundColor: cAppYellowish));
   }
+
+  void questionOffOnFileDialog(String message, BuildContext context, items, Bloc bloc, Future function){
+
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text(
+            'IppDrive',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            message,
+            textAlign: TextAlign.justify,
+          ),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () async {
+                  await function;
+                  setState(() {
+                    _isNew = false;
+                  });
+                  bloc.sharedPrefs.remove("cloud/${items['path']}/${items['id']}");
+                  bloc.sharedPrefs.remove("newFile/${items['id']}");
+                  Navigator.pop(context);
+                  Scaffold.of(context).showSnackBar(new SnackBar(
+                      content: Text( "O ficheiro ${items['title']} adicionado!",
+                        style: TextStyle(color: cAppBlackish),
+                      ),
+                      duration: Duration(milliseconds: 1000),
+                      backgroundColor: cAppYellowish));
+                },
+                child: Text('Sim'),
+                color: cAppYellowish,
+                shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.circular(3.0))),
+            FlatButton(
+                onPressed: () {
+
+                  Navigator.pop(context);
+                },
+                child: Text('Nao'),
+                color: cAppYellowish,
+                shape: BeveledRectangleBorder(
+                    borderRadius: new BorderRadius.circular(3.0)))
+          ],
+        ));
+  }
+
 }

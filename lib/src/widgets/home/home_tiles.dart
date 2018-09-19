@@ -31,7 +31,7 @@ class HomeExpansionTiles extends StatelessWidget {
           textScaleFactor: 1.5,
         ),
         children: child.map((courseUnits) {
-          ///
+
           Folders folder = Folders.fromJson(courseUnits);
           return new ListTile(
             title: Container(
@@ -42,7 +42,7 @@ class HomeExpansionTiles extends StatelessWidget {
                   color: cAppBlueAccent),
               child: new ListTile(
                 trailing: Trailing(folder: folder,
-                  canAdd: courseUnits['clearances']['addFiles'],
+                  clearances: courseUnits['clearances'],
                   content: courseUnits,),
                 onTap: () {
                   if (!homeBloc.connectionStatus.contains('none') ||

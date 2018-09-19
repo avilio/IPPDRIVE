@@ -227,6 +227,24 @@ class Requests {
   }
 
   ///
+  Future<Map> removeFolder(Map object, int parentId, String session) async {
+    print(parentId);
+    var url = '$host/user/vfs.do';
+    var body = {
+      "BACOSESS": session,
+      "data": {
+        "command": "removeSection",
+        "object":jsonEncode(object),
+        "parentId" : parentId,
+      },
+      "serviceJson": "vfscommand"
+    };
+
+    return await rest.post(url, body);
+  }
+
+
+  ///
   Future<Map> uploadFile(File file, String session) async {
     final mimeTypeData = lookupMimeType(file.path).split('/');
     final fileUploadfile = await rest.multipartRequest(session, mimeTypeData, '$host/filesUpload', file);

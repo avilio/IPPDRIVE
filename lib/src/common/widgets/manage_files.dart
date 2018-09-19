@@ -54,6 +54,7 @@ class _ManageFilesState extends State<ManageFiles> {
                      Container(child: AddFiles(content: widget.content),decoration: BoxDecoration(border:Border.all()),),
                      SizedBox(height: 5.0,),
                      Container(child: AddFolders(content:widget.content),decoration: BoxDecoration(border:Border.all()),),
+
                       SizedBox(
                         height: 5.0,
                       ),

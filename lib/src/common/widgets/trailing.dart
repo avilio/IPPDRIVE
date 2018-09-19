@@ -11,12 +11,12 @@ import '../../models/folders.dart';
 import '../../common/widgets/trailing_add_files.dart';
 
 class Trailing extends StatefulWidget {
-  final bool canAdd;
+  final Map clearances;
   final Folders folder;
   final Map content;
   final int parentId;
 
-  Trailing({this.canAdd, this.folder, this.content, this.parentId, Key key})
+  Trailing({this.clearances, this.folder, this.content, this.parentId, Key key})
       : super(key: key);
 
   @override
@@ -42,7 +42,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
     String status = bloc.connectionStatus;
 
     if (status.contains('none')) {
-      if (widget.canAdd) {
+      if (widget.clearances.containsKey("add")) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
           ManageFiles(
               content: widget.content,
@@ -53,7 +53,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
       } else
         return Row(mainAxisSize: MainAxisSize.min);
     } else {
-      if (widget.canAdd) {
+      if (widget.clearances.containsKey("add")) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
           /*SyncCloudOffline(controller: _controller,
             content: widget.content,

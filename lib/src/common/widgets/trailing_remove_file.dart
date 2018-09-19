@@ -4,22 +4,22 @@ import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../permissions.dart';
 
-class TrailingRemoveButton extends StatefulWidget {
+class RemoveFile extends StatefulWidget {
   final content;
   final parentId;
   final canRemove;
   final AnimationController controller;
 
-  TrailingRemoveButton(
+  RemoveFile(
       {this.content, this.parentId, this.canRemove, this.controller});
 
   @override
-  TrailingRemoveButtonState createState() {
-    return new TrailingRemoveButtonState();
+  RemoveFileState createState() {
+    return new RemoveFileState();
   }
 }
 
-class TrailingRemoveButtonState extends State<TrailingRemoveButton> {
+class RemoveFileState extends State<RemoveFile> {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.of(context);
