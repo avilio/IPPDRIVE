@@ -10,18 +10,15 @@ class PaeUser{
   String password;
   /// Ano Corrent
   String anoCorrente;
-  ///escola
-  String escola;
 
   /// Constructor
   PaeUser(this.username, this.session, this.name,this.password, this.anoCorrente);
   /// Constructor apartir do Json
-  PaeUser.fromJson(Map json, {String password, String anoCorrente, String escola})
+  PaeUser.fromJson(Map json, {String password, String anoCorrente})
       : username = json['username'],
         name = json['name'],
         session = json['BACOSESS'],
         password = password ?? "dummy",
-        escola = escola ?? "estgp",
         anoCorrente = anoCorrente ?? DateTime.now().year;
 
   @override

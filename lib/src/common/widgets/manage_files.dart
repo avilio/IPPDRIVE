@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../common/widgets/trailling_add_folders.dart';
 import '../../blocs/bloc_provider.dart';
-import '../../common/widgets/trailing_add_button.dart';
+import '../../common/widgets/trailing_add_files.dart';
 
 
 class ManageFiles extends StatefulWidget {
@@ -46,16 +47,20 @@ class _ManageFilesState extends State<ManageFiles> {
               shrinkWrap: true,
               padding: EdgeInsets.all(50.0),
               children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                   TrailingAddButton(content: widget.content),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                   //todo comentado mas mudar apenas para mostrar o add buton
-                   // TrailingRemoveButton(content: widget.content,parentId: widget.parentId,canRemove: true,)
-                  ],
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                     Container(child: AddFiles(content: widget.content),decoration: BoxDecoration(border:Border.all()),),
+                     SizedBox(height: 5.0,),
+                     Container(child: AddFolders(content:widget.content),decoration: BoxDecoration(border:Border.all()),),
+                      SizedBox(
+                        height: 5.0,
+                      ),
+                     //todo comentado mas mudar apenas para mostrar o add buton
+                     // TrailingRemoveButton(content: widget.content,parentId: widget.parentId,canRemove: true,)
+                    ],
+                  ),
                 ),
               ],
             );
@@ -83,3 +88,4 @@ class _ManageFilesState extends State<ManageFiles> {
     );
   }
 }
+

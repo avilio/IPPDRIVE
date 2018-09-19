@@ -8,7 +8,7 @@ import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
 import '../../models/folders.dart';
-import '../../common/widgets/trailing_add_button.dart';
+import '../../common/widgets/trailing_add_files.dart';
 
 class Trailing extends StatefulWidget {
   final bool canAdd;

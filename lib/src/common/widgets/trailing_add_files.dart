@@ -20,10 +20,10 @@ import '../../resources/apiCalls.dart';
 import '../permissions.dart';
 
 
-class TrailingAddButton extends StatefulWidget {
+class AddFiles extends StatefulWidget {
   final Map content;
 
-  TrailingAddButton({this.content});
+  AddFiles({this.content});
 
   @override
   TrailingAddButtonState createState() {
@@ -31,7 +31,7 @@ class TrailingAddButton extends StatefulWidget {
   }
 }
 
-class TrailingAddButtonState extends State<TrailingAddButton> {
+class TrailingAddButtonState extends State<AddFiles> {
 
   @override
   void initState() {
@@ -49,23 +49,32 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
   Widget build(BuildContext context) {
   final bloc = BlocProvider.of(context);
 
-   return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          IconButton(
-            onPressed: () async {
-              DevicePermissions permiss = DevicePermissions();
-              await permiss.checkWriteExternalStorage();
-              _filePicker(bloc);
-            },
-            icon: Icon(
-              Icons.add,
-              color: Colors.green,
-            ),
-          )
-        ],
-    );
+   return GestureDetector(
+     onTap: () async {
+       DevicePermissions permiss = DevicePermissions();
+       await permiss.checkWriteExternalStorage();
+       _filePicker(bloc);
+       },
+     child: Center(
+       child: Row(
+         children: <Widget>[
+           IconButton(
+             iconSize: 25.0,
+             onPressed: () async {
+               DevicePermissions permiss = DevicePermissions();
+               await permiss.checkWriteExternalStorage();
+               _filePicker(bloc);
+             },
+             icon: Icon(
+               Icons.add,
+               color: Colors.green,
+             ),
+           ),
+           Text("Adicionar ficheiro",textScaleFactor: 1.75,)
+         ],
+       ),
+     ),
+   );
   }
 
    _filePicker(Bloc bloc) async {
@@ -79,41 +88,46 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
      if (!mounted) return;
 
      File file;
+     Map resp;
 
      docPaths.forEach((data) async {
        file = File(data);
 
+
        //todo fazer caso offline
        if (!bloc.connectionStatus.contains('none'))
-         await _addFilesOnline(file, bloc);
+          resp = await _addFilesOnline(file, bloc);
        else
-         await _addFilesOffline(file, bloc);
+         resp = await _addFilesOffline(file, bloc);
      });
 
+    if(resp!=null) {
+      showDialog(context: context,
+          barrierDismissible: false,
+          child: AlertDialog(
+            content: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                AdaptiveProgressIndicator(),
+                Text('      Loading...')
+              ],
+            ),
+          )
+      );
 
-       showDialog(context: context,
-           barrierDismissible: false,
-           child: AlertDialog(
-             content: Row(
-               mainAxisSize: MainAxisSize.max,
-               children: <Widget>[
-                 AdaptiveProgressIndicator(),
-                 Text('      Loading...')
-               ],
-             ),
-           )
-       );
-     
-     Future.delayed(Duration(seconds: 2),(){
-       Navigator.push(
-           context,
-           MaterialPageRoute(
-               builder: (context) =>
-                   Content(
-                     unitContent: !bloc.connectionStatus.contains('none') ? widget.content  :  bloc.sharedPrefs.getStringList(widget.content['id'].toString()),
-                   )));
-
-     });
+      Future.delayed(Duration(seconds: 1), () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Content(
+                      unitContent: !bloc.connectionStatus.contains('none')
+                          ? widget.content
+                          : bloc.sharedPrefs.getStringList(
+                          widget.content['id'].toString()),
+                    )));
+      });
+    }
      }
 
      Future _addFilesOnline(File file, Bloc bloc) async {
@@ -171,6 +185,7 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     bloc.sharedPrefs.setString("${localNewFile['path']}/${localNewFile['title']}", jsonEncode(localNewFile));
     bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${widget.content['title']}",true);
   }
+
 
 }
 

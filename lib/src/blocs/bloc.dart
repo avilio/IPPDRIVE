@@ -183,10 +183,8 @@ class Bloc extends Object
 
 
         var map = await getYears(_response.value["BACOSESS"]);
-        var escola = _response.value['email'].toString().split("@")[1].split(".")[0];
         //todo este escola é para mudar porque na realidade esta a ir ao mail que no caso d aluno tem ippportalgre
-        print(escola);
-        setPaeUser(PaeUser.fromJson(_response.value,escola: escola,password: password,anoCorrente: map['response']['importYear']));
+        setPaeUser(PaeUser.fromJson(_response.value,password: password,anoCorrente: map['response']['importYear']));
 
         sharedPrefs.setString("username", paeUser.username);
         sharedPrefs.setString("password", password);

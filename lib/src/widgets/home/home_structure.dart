@@ -37,7 +37,7 @@ class HomeStructure extends StatelessWidget {
         drawerBloc.setSchool('');
       }
     }else {
-      drawerBloc.setSchool(homeBloc.paeUser.escola);
+      drawerBloc.setSchool("IPPortalegre");
       drawerBloc.setCourse("");
     }
     return new Scaffold(
