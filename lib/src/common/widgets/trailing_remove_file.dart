@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../screens/content.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../permissions.dart';
@@ -98,6 +99,19 @@ class RemoveFileState extends State<RemoveFile> {
                           print(resp);
                           Navigator.pop(context);
                           bloc.errorDialog('Ficheiro Apagado!', context);
+                          Future.delayed(Duration(seconds: 1), () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Content(
+                                          unitContent: !bloc.connectionStatus.contains('none')
+                                              ? widget.content
+                                              : bloc.sharedPrefs.getStringList(
+                                              widget.content['id'].toString()),
+                                        )));
+                          });
+
                         } else {
                           print(resp);
                           Navigator.pop(context);

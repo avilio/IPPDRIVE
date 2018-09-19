@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:ippdrive/src/common/permissions.dart';
 
+import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/widgets/favorites.dart';
 import '../../common/widgets/manage_files.dart';
@@ -42,7 +43,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
     String status = bloc.connectionStatus;
 
     if (status.contains('none')) {
-      if (widget.clearances.containsKey("add")) {
+      if (widget.clearances['add']) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
           ManageFiles(
               content: widget.content,
@@ -53,7 +54,7 @@ class TrailingState extends State<Trailing> with TickerProviderStateMixin {
       } else
         return Row(mainAxisSize: MainAxisSize.min);
     } else {
-      if (widget.clearances.containsKey("add")) {
+      if (widget.clearances['add']) {
         return new Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
           /*SyncCloudOffline(controller: _controller,
             content: widget.content,

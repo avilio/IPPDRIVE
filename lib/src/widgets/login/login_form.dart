@@ -65,11 +65,9 @@ class LoginFormState extends State<LoginForm> {
 
   ///
   Future isMemoUserLogin(bool memo, String username) async {
-    //todo mudar o memouser para o numero de aluno para poder memorizar o login a cada utilizador em vez de geral
-    //todo se meter o user name - para um valor bool permite guardar varios logins memorize
     memo ?? false;
     SharedPreferences prefs = await _prefs;
-    prefs.setBool(username, memo);
+    prefs.setBool("memoUser", memo);
     print(prefs.getBool(username));
   }
 

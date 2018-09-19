@@ -93,7 +93,6 @@ class AddFileState extends State<AddFiles> {
      docPaths.forEach((data) async {
        file = File(data);
 
-
        //todo fazer caso offline
        if (!bloc.connectionStatus.contains('none'))
           resp = await _addFilesOnline(file, bloc);
@@ -102,19 +101,7 @@ class AddFileState extends State<AddFiles> {
      });
 
     if(resp!=null) {
-      showDialog(context: context,
-          barrierDismissible: false,
-          child: AlertDialog(
-            content: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                AdaptiveProgressIndicator(),
-                Text('      Loading...')
-              ],
-            ),
-          )
-      );
-
+      Future.delayed(Duration(seconds: 1), () {
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -122,9 +109,10 @@ class AddFileState extends State<AddFiles> {
                     Content(
                       unitContent: !bloc.connectionStatus.contains('none')
                           ? widget.content
-                          : bloc.sharedPrefs.getStringList(
+                          : bloc.sharedPrefs.get(
                           widget.content['id'].toString()),
                     )));
+      });
     }
      }
 
@@ -151,6 +139,7 @@ class AddFileState extends State<AddFiles> {
         Map map  = await request.addFile(
             object, widget.content['id'], bloc.paeUser.session);
 
+        bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${object['title']}", true);
        // map['response'].forEach((key,value)=>  print("$key : $value"));
 
         return map;
@@ -179,9 +168,11 @@ class AddFileState extends State<AddFiles> {
     print("LOCAL  FILE  --> "+localNewFile['path']);
     print(dir);
 
-    bloc.sharedPrefs.getStringList(widget.content['id'].toString()).add( jsonEncode(localNewFile));
+
+    bloc.sharedPrefs.getStringList(widget.content['id'].toString()).add(jsonEncode(localNewFile));
     bloc.sharedPrefs.setString("${localNewFile['path']}/${localNewFile['title']}", jsonEncode(localNewFile));
-    bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${widget.content['title']}",true);
+
+    bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${localNewFile['title']}",true);
   }
 
 

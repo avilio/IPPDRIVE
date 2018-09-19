@@ -25,7 +25,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
   bool _cloudFlag = false;
   bool _isModified = false;
   bool _isNew = false;
-  bool _isRecent = false;
+  bool _isLocalBigger = false;
   String connectStatus = "";
 
   @override
@@ -35,10 +35,14 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     Future.delayed(Duration.zero, () {
       final bloc = BlocProvider.of(context);
 
+      bloc.checkOnlineIsGreaterThanLocal(widget.content, context);
+      print(widget.content['path']);
+
       setState(() {
         _cloudFlag = bloc.sharedPrefs.getBool("cloud/${widget.content['path']}/${widget.content['title']}") ?? false;
-        _isModified = bloc.sharedPrefs.getBool("cloud/${widget.content['path']}/${widget.content['id']}") ?? false;
+        _isModified = bloc.sharedPrefs.getBool("isModify/${widget.content['path']}/${widget.content['id']}") ?? false;
         _isNew = bloc.sharedPrefs.getBool("newFile/${widget.content['id']}")  ??  false;
+        _isLocalBigger = bloc.sharedPrefs.get("localFile/${widget.content['path']}/${widget.content['id']}") ?? false;
       });
     });
   }
@@ -71,9 +75,11 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
   Icon iconBuilder(String connectStatus) {
 
     if (_cloudFlag) {
-      //todo caso o offline seja mais recente fazer o tap no botao para enviar para o online
       if (_isModified)
         return Icon(Icons.warning, color: cAppYellowish);
+      if(_isLocalBigger)
+        //return Icon(Icons.warning, color: cAppYellowish)
+        return Icon(Icons.cloud_upload, color: cAppYellowish);
       else
         return connectStatus.contains('none')
             ? Icon(Icons.cloud,color: Colors.green,)
@@ -99,9 +105,9 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     if (!bloc.connectionStatus.contains('none')) {
       if (!_cloudFlag)
         await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
-      else if(_isModified) {
-        if (_isNew) {
-          questionOffOnFileDialog("Deseja adicionar o ficheiro ${widget.content['title']} no PAE?", context, widget.content, bloc,
+      else if(_isModified || _isLocalBigger) {
+        if (_isNew || _isLocalBigger) {
+          questionOffOnFileDialog("Este ficheiro é recente.\nDeseja fazer upload do ficheiro ${widget.content['title']} para o PAE?", context, widget.content, bloc,
               bloc.fileOfflineToOnline(bloc, widget.content));
         }else
           questionOffOnFileDialog(
@@ -186,18 +192,20 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       Bloc bloc, SharedPreferences sharedPreferences) async {
     File file = await bloc.getFiles(bloc.paeUser.session, widget.content);
 
-    await file.setLastModified(DateTime.fromMillisecondsSinceEpoch(widget.content['dateUpdateDate']));
-
-    print(file.path);
     setState(() {
       _cloudFlag = true;
     });
+
+    Map local =jsonDecode(sharedPreferences.get("${widget.content['path']}/${widget.content['title']}"));
+
+    local['dateUpdateDate'] =file.lastModifiedSync().millisecondsSinceEpoch;
+
+    sharedPreferences.remove("${widget.content['path']}/${widget.content['title']}");
+    sharedPreferences.setString("${widget.content['path']}/${widget.content['title']}", jsonEncode(local));
+
     sharedPreferences.setBool(
         "cloud/${widget.content['path']}/${widget.content['title']}",
         _cloudFlag);
-
-    bloc.sharedPrefs.setString(
-        widget.content['id'].toString(), jsonEncode(widget.content));
 
     Scaffold.of(context).showSnackBar(new SnackBar(
         content: Text(
@@ -220,10 +228,8 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     setState(() {
       _cloudFlag = false;
     });
-    sharedPreferences.setBool(
-        "cloud/${widget.content['path']}/${widget.content['title']}",
-        _cloudFlag);
-
+    //sharedPreferences.setBool("cloud/${widget.content['path']}/${widget.content['title']}", _cloudFlag);
+    sharedPreferences.remove("cloud/${widget.content['path']}/${widget.content['title']}");
     bloc.sharedPrefs.remove(widget.content['id'].toString());
 
     Scaffold.of(context).showSnackBar(new SnackBar(
@@ -250,11 +256,21 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
             FlatButton(
                 onPressed: () async {
                   await function;
-                  setState(() {
-                    _isNew = false;
-                  });
-                  bloc.sharedPrefs.remove("cloud/${items['path']}/${items['id']}");
-                  bloc.sharedPrefs.remove("newFile/${items['id']}");
+                  if(_isNew && _isModified) {
+                    setState(() {
+                      _isNew = false;
+                      _isModified = false;
+                    });
+                    bloc.sharedPrefs.remove(
+                        "isModify/${items['path']}/${items['id']}");
+                    bloc.sharedPrefs.remove("newFile/${items['id']}");
+                  }
+                  if(_isLocalBigger) {
+                    setState(() {
+                      _isLocalBigger = false;
+                    });
+                    bloc.sharedPrefs.remove("localFile/${widget.content['path']}/${widget.content['id']}");
+                  }
                   Navigator.pop(context);
                   Scaffold.of(context).showSnackBar(new SnackBar(
                       content: Text( "O ficheiro ${items['title']} adicionado!",

@@ -45,14 +45,18 @@ class ContentBodyState extends State<ContentBody>
 
   @override
   void initState() {
-    Future.delayed(Duration.zero, () {
+    Future.delayed(Duration.zero, ()async {
       final bloc = BlocProvider.of(context);
       bloc.onConnectionChange();
+      DevicePermissions permiss = DevicePermissions();
+      await permiss.checkWriteExternalStorage();
     });
 
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     super.initState();
+
+
 
   }
 
@@ -86,9 +90,6 @@ class ContentBodyState extends State<ContentBody>
           renderSuccess: ({data}) {
 
             List online = data['response']['childs'];
-            //Map resp = data;
-
-            //resp.forEach((k,v)=> print("$k: $v"));
 
             if (online.isNotEmpty) {
 
@@ -99,24 +100,17 @@ class ContentBodyState extends State<ContentBody>
                     .getStringList(widget.id.toString()).map((valor) =>
                     jsonDecode(valor)).toList() ?? [];
 
-              //  offline.forEach((f) => debugPrint("OFFLINE ->" + f['title']));
-
-                //online.forEach((f) => debugPrint("ONLINE ->" + f['title']));
-
                 print(online.last['title']);
                 print(offline.last['title']);
 
                 if(offline.last['title']!= online.last['title']) {
                   online.add(offline.last);
-                  bloc.checkLocalFileModified(offline.last, context);
-                  bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['id']}", true);
+                  //bloc.checkOnlineIsGreaterThanLocal(o, context);
+                  //bloc.sharedPrefs.setBool("isModify/${offline.last['path']}/${offline.last['id']}", true);
                   bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['title']}", true);
                   bloc.sharedPrefs.setBool("newFile/${offline.last['id']}", true);
                  // bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['id']}", true);
                 }
-
-
-                //print("VALOR DIFFENRE " + );
               }
 
               ///
@@ -127,13 +121,13 @@ class ContentBodyState extends State<ContentBody>
 
                 if(items['file']) {
                   bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
-                  bloc.checkOnlineModified(items, context);
+                  bloc.checkOnlineIsGreaterThanLocal(items, context);
 
                   if (items['clearances']['addFiles'] || items['clearances']['add'] || items['clearances']['remove'])
                     bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
-                    bloc.checkLocalFileModified(items, context);
+                    bloc.checkOnlineIsGreaterThanLocal(items, context);
                 }
-                bloc.sharedPrefs.setInt( "parentId/${items['path']}/${items['title']}", data['response']['parentId']);
+              //  bloc.sharedPrefs.setInt( "parentId/${items['path']}/${items['title']}", data['response']['parentId']);
               });
 
               return createList(online, context, bloc, widget.id);
@@ -197,36 +191,42 @@ class ContentBodyState extends State<ContentBody>
                   DevicePermissions permiss = DevicePermissions();
                   await permiss.checkWriteExternalStorage();
                   if (!bloc.connectionStatus.contains('none')) {
-                    //todo verificar se o que vem do online tem data maior que a do offline, se sim perguntar ao user se quer a versao  do offline ou online, o mesmo  se passa
-                    //todo quando  o user  mudou algo offline e quando for  online se for diferente perguntar
-                    
-                   /* Map jsonFile = jsonDecode(bloc.sharedPrefs.get(items['id'].toString()));
-                    
-                    if(jsonFile!= null)
-                      if (jsonFile['dateSaveDate'] < items['dateSaveDate'] ||
-                          jsonFile['dateUpdateDate'] < items['dateUpdateDate']){
-                      
-                        bloc.questionDialog("Deseja substituir o ficheiro ${items['title']} que tem disponivel offline?", context, );
-                      }*/
 
-                   //todo arranjar maneira de fazer refresh e ver se o conteudo foi mesmo modificado
-                    //todo apenas mostar isto caso tenha permissao para enviar
-                    File file = await bloc.getFiles(bloc.paeUser.session, items);
-                    //todo a flag para dizer que algo tem data maior tem que ser posta tbm no caso de o ficheiro estar guardado local e o que  vem  online seja maior subistuir o local
+                    String dir = await bloc.buildFileDirectory(items['path']);
+                    File file;
 
-                    print(file.path);
+                    if(await FileSystemEntity.type(dir) != FileSystemEntityType.NOT_FOUND){
+
+                      try {
+                        file = await bloc.getFiles(bloc.paeUser.session, items);
+                        Map local =jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['title']}"));
+                        DateTime lastMod = await file.lastModified();
+
+                        local['dateUpdateDate'] = lastMod.millisecondsSinceEpoch;
+
+                        bloc.sharedPrefs.remove("${items['path']}/${items['title']}");
+                        bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(local));
+                        bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['title']}",true);
+                      } catch (e) {
+                        print(e);
+                      }
+
+                      print(file.path);
+                    }else{
+
+                      file = new File('$dir/${items['title']}');
+                    }
+
                     OpenFile.open(file.path);
-                    await file.setLastModified(DateTime.fromMillisecondsSinceEpoch(items['dateUpdateDate']));
+
                   } else {
-                    //todo verificar se o ficheiro esta disponivel para abrir offline ou nao e usar uma flag como indicador de inco no trailing a indicar essa informaçao
-                    //todo no caso de a pessoa editar o ficheiro,ver o last  modified e comparar com o local e alterar(caso esteja disponivel offline)
+
                     String dir = await bloc.buildFileDirectory(items['path']);
 
                     File file = new File('$dir/${items['title']}');
 
                     print(file.path);
                     OpenFile.open(file.path);
-                    await file.setLastModified(DateTime.fromMillisecondsSinceEpoch(items['dateUpdateDate']));
                   }
                 },
                 title: new Text(

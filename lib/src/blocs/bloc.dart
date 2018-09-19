@@ -4,9 +4,12 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../common/permissions.dart';
 import '../common/dialogs.dart';
 import '../common/error401.dart';
 import '../common/slugify.dart';
@@ -18,7 +21,7 @@ import '../saveLocally.dart';
 import '../screens/home.dart';
 
 class Bloc extends Object
-    with Utilities, Requests, ExceptionDialog, Connectivity, SaveLocally,Error401 {
+    with Utilities, Requests, ExceptionDialog, Connectivity, SaveLocally,Error401, DevicePermissions {
   final _response = BehaviorSubject<dynamic>();
   final _paeUser = BehaviorSubject<PaeUser>();
   final _connectivityStatus = BehaviorSubject<String>();
@@ -88,7 +91,7 @@ class Bloc extends Object
     bool b = false;
     SharedPreferences pref = await SharedPreferences.getInstance();
       b = pref.get("memoUser") ?? false;
-
+print(b);
     if(b)
       auth(user, password, context);
     else {
@@ -215,7 +218,6 @@ class Bloc extends Object
 
         saveListLocally("home", lista, sharedPrefs);
 ///
-
         showDialog(context: context,
             barrierDismissible: false,
             child: AlertDialog(
@@ -229,6 +231,8 @@ class Bloc extends Object
             )
         );
 
+        await checkWriteExternalStorage();
+        await checkReadExternalStorage();
         Future.delayed(Duration(seconds: 3),(){
           Navigator.pop(context);
           Navigator.push(
@@ -245,61 +249,42 @@ class Bloc extends Object
     }
   }
 
-  Future checkOnlineModified(items, BuildContext context) async {
-    String dir = await buildFileDirectory(items['path']);
-
-    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
-
-      Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
-      //todo apagar prints
-    //  print(localFile['dateSaveDate']);
-      //print(items['dateSaveDate']);
-
-      if (localFile['dateSaveDate'] < items['dateSaveDate'] ||
-          localFile['dateUpdateDate'] < items['dateUpdateDate']) {
- //       sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
-        //todo mudar isto para o on tap no icon de alert
-        /*questionOffOnFileDialog(
-            "Deseja substituir o ficheiro ${items['title']} no dispositivo?", context, items, this, fileOnlineToOffline(this,file, items) );*/
-      }
-    }else {
-    // sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
-      //sharedPrefs.setBool("cloud/${items['path']}/${items['title']}", true);
-    }
-  }
-
-  Future checkLocalFileModified( items, BuildContext context) async {
+  Future checkOnlineIsGreaterThanLocal(items, BuildContext context) async {
 
     String dir = await buildFileDirectory(items['path']);
 
-    if(FileSystemEntity.typeSync(dir) != FileSystemEntityType.NOT_FOUND) {
+    try {
+      if(await FileSystemEntity.type(dir) != FileSystemEntityType.notFound) {
+            Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
+            File file = new File('$dir/${items['title']}');
+            DateTime lastMod = file.lastModifiedSync();
+            //todo
+            print(lastMod);
+            print("${localFile['dateUpdateDate'].toString()}  ->  ${lastMod.millisecondsSinceEpoch.toString()}");
 
-      Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
-      //todo apagar prints
-    //  print(localFile['dateSaveDate']);
-      //print(items['dateSaveDate']);
-
-      if (localFile['dateSaveDate'] > items['dateSaveDate'] ||
-          localFile['dateUpdateDate'] > items['dateUpdateDate']) {
- //       sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
-        //todo mudar isto para o on tap no icon de alert
-        /*questionOffOnFileDialog(
-            "Deseja substituir o ficheiro ${items['title']} no PAE?", context, items, this, fileOfflineToOnline(this, file, items));*/
-      }
-    }else {
-     // sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", true);
-     // sharedPrefs.setBool("cloud/${items['path']}/${items['title']}", true);
+            if(localFile['dateUpdateDate'] ==  lastMod.millisecondsSinceEpoch){
+              //todo apagar
+              print(items['title']+" sao iguais");
+              if (localFile['dateUpdateDate'] < items['dateUpdateDate'])
+                //todo sendo o online maior arranjar outra flag
+                sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", true);
+            }else {
+              //todo apagar print
+              print(items['title']+" modificaçao local");
+              sharedPrefs.setBool("localFile/${items['path']}/${items['id']}", true);
+            }
+          }
+    } catch (e) {
+      print(e);
     }
   }
-
-
 
   ///
   Future fileOfflineToOnline(Bloc bloc, items) async{
 
-    bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['id']}", false);
+    bloc.sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", false);
     bloc.sharedPrefs.setBool("newFile/${items['id']}", false);
-    bloc.sharedPrefs.remove("cloud/${items['path']}/${items['id']}");
+    bloc.sharedPrefs.remove("isModify/${items['path']}/${items['id']}");
     bloc.sharedPrefs.remove("newFile/${items['id']}");
 
     File localFile = await bloc.getFiles(bloc.paeUser.session, items);

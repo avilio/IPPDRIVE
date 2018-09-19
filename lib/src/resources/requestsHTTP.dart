@@ -21,8 +21,6 @@ class HTTPRequests {
               headers: {"Content-Type": "application/json"},
               body: jsonEncode(jsonMap))
           .then((response) {
-           // jsonDecode(response.body)['response'].forEach((key,value)=>print("$key: $value"));
-
         if (response.statusCode == 200)
           return jsonDecode(response.body);
         else
