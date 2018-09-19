@@ -9,9 +9,12 @@ class SemestersBuilder{
    semester1 = List();
    semester2 = List();
    list.map((item) {
+
+     item.forEach((val,k)=>print("$val: $k"));
+
      if (item['courseUnitsList'][0]['semestre'] == "S1")
        this.semester1.add(item);
-     else
+     else if (item['courseUnitsList'][0]['semestre'] == "S2")
        this.semester2.add(item);
    }).toList();
  }

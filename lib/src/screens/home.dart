@@ -32,10 +32,6 @@ class HomePageState extends State<HomePage> {
     Future.delayed(Duration.zero, () {
       final bloc = BlocProvider.of(context);
       bloc.onConnectionChange();
-
-      /* onConnectivityChanged.listen((ConnectivityResult result){
-        loginBloc.setConnectionStatus(result.toString());
-      });*/
     });
   }
 
@@ -46,10 +42,10 @@ class HomePageState extends State<HomePage> {
     favBloc.setPaeUser(bloc.paeUser);
     bloc.onConnectionChange();
 
-    if (widget.unitsCourseList.length > 1) {
-      return discentesDocentes(context, bloc);
-    } else
+    if (!bloc.isNumeric(bloc.paeUser.username) && widget.unitsCourseList.length<=1) {
       return funcionarios(context, bloc);
+    } else
+      return discentesDocentes(context, bloc);
   }
 
   ///
@@ -61,24 +57,37 @@ class HomePageState extends State<HomePage> {
         onWillPop: () async {
           bloc.quitDialog(context);
         },
-        child: HomeStructure(
+        child:HomeStructure(
+          anoCorrente: bloc.paeUser.anoCorrente,
           unitsCourseList: widget.unitsCourseList,
           children: <Widget>[
             new Padding(padding: EdgeInsets.all(0.5)),
-            new Container(
+           semestres.semester1.length > 1? new Container(
                 decoration: new BoxDecoration(
                   shape: BoxShape.rectangle,
                   border:
                       Border.all(style: BorderStyle.solid, color: cAppBlackish),
                 ),
-                child: HomeExpansionTiles(child: semestres.semester1)),
-            new Container(
+                child: HomeExpansionTiles(child: semestres.semester1)) :
+           Column(
+             mainAxisAlignment: MainAxisAlignment.center,
+             crossAxisAlignment: CrossAxisAlignment.center,
+             mainAxisSize: MainAxisSize.min,
+             children: <Widget>[
+               Icon(Icons.warning,color: Colors.red,size: 50.0,),
+               Padding(
+                 padding: const EdgeInsets.all(20.0),
+                 child: Text("Nao tem conteudos disponiveis",textScaleFactor: 1.5),
+               ),
+             ],
+           ),
+            semestres.semester2.length> 1 ? new Container(
                 decoration: new BoxDecoration(
                   shape: BoxShape.rectangle,
                   border:
                       Border.all(style: BorderStyle.solid, color: cAppBlackish),
                 ),
-                child: HomeExpansionTiles(child: semestres.semester2))
+                child: HomeExpansionTiles(child: semestres.semester2)): Container()
           ],
         ));
   }
@@ -92,6 +101,7 @@ class HomePageState extends State<HomePage> {
         },
         child: HomeStructure(
           appBarTitle: '${widget.unitsCourseList[0]['title']}',
+          //anoCorrente: bloc.paeUser.anoCorrente,
           unitsCourseList: widget.unitsCourseList,
           children: <Widget>[
             new Padding(padding: EdgeInsets.all(0.5)),

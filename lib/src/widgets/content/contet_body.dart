@@ -72,7 +72,7 @@ class ContentBodyState extends State<ContentBody>
           .getStringList(widget.id.toString())
           .forEach((value) => newList.add(jsonDecode(value)));
 
-      return createList(newList, context, bloc);
+      return createList(newList, context, bloc,widget.id);
     } else if (!bloc.connectionStatus.contains('none'))
       return new AsyncLoader(
           initState: () async => await bloc.courseUnitsFoldersContents(
@@ -84,6 +84,7 @@ class ContentBodyState extends State<ContentBody>
             return new Text('ERROR LOANDING DATA');
           },
           renderSuccess: ({data}) {
+
             List online = data['response']['childs'];
             //Map resp = data;
 
@@ -132,10 +133,10 @@ class ContentBodyState extends State<ContentBody>
                     bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
                     bloc.checkLocalFileModified(items, context);
                 }
-
+                bloc.sharedPrefs.setInt( "parentId/${items['path']}/${items['title']}", data['response']['parentId']);
               });
 
-              return createList(online, context, bloc);
+              return createList(online, context, bloc, widget.id);
             } else
               return DialogAlert(message: 'Pasta vazia');
           });
@@ -155,10 +156,11 @@ class ContentBodyState extends State<ContentBody>
       );
   }
 
-  Widget createList(List courseUnitsContent, context, Bloc bloc) {
+  Widget createList(List courseUnitsContent, context, Bloc bloc, int parentId) {
     Folders folder;
     Widget bodyList;
     String status = bloc.connectionStatus;
+
 
     bodyList = new Column(children: <Widget>[
       new ContentPathBuilder(
@@ -181,7 +183,6 @@ class ContentBodyState extends State<ContentBody>
                       canAdd: items['clearances']['addFiles'],
                       folder: folder,
                       content: items,
-                      controller: _controller,
                       parentId: widget.id),
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => new Content(
@@ -215,6 +216,7 @@ class ContentBodyState extends State<ContentBody>
 
                     print(file.path);
                     OpenFile.open(file.path);
+                    await file.setLastModified(DateTime.fromMillisecondsSinceEpoch(items['dateUpdateDate']));
                   } else {
                     //todo verificar se o ficheiro esta disponivel para abrir offline ou nao e usar uma flag como indicador de inco no trailing a indicar essa informaçao
                     //todo no caso de a pessoa editar o ficheiro,ver o last  modified e comparar com o local e alterar(caso esteja disponivel offline)
@@ -224,13 +226,14 @@ class ContentBodyState extends State<ContentBody>
 
                     print(file.path);
                     OpenFile.open(file.path);
+                    await file.setLastModified(DateTime.fromMillisecondsSinceEpoch(items['dateUpdateDate']));
                   }
                 },
                 title: new Text(
                     items['title'] ?? items['repositoryFile4JsonView']['name']),
                 leading: new Icon(Icons.description),
                 trailing: status.contains('none')
-                    ? SyncCloudOffline(content: items)
+                    ? SyncCloudOffline(content: items, parentId: widget.id)
                     : canRemove(items),
               );
             }

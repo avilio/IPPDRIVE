@@ -49,7 +49,7 @@ class _ManageFilesState extends State<ManageFiles> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                   TrailingAddButton(content: widget.content,controller: widget.controller,),
+                   TrailingAddButton(content: widget.content),
                     SizedBox(
                       height: 5.0,
                     ),

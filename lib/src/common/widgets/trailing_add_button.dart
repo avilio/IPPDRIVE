@@ -6,9 +6,12 @@ import 'dart:io';
 import 'package:documents_picker/documents_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
+import '../../common/widgets/progress_indicator.dart';
+import '../../screens/content.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/permissions.dart';
@@ -19,9 +22,8 @@ import '../permissions.dart';
 
 class TrailingAddButton extends StatefulWidget {
   final Map content;
-  final AnimationController controller;
 
-  TrailingAddButton({this.content, this.controller});
+  TrailingAddButton({this.content});
 
   @override
   TrailingAddButtonState createState() {
@@ -47,27 +49,6 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
   Widget build(BuildContext context) {
   final bloc = BlocProvider.of(context);
 
-  return  Container(
-    child: ScaleTransition(
-      scale: CurvedAnimation(
-          parent: widget.controller.view,
-          curve: Interval(0.0, 1.0, curve: Curves.easeOut)),
-      child:  IconButton(
-        onPressed: () async {
-          DevicePermissions permiss = DevicePermissions();
-          bool permit = false;
-          permit = await permiss.checkWriteExternalStorage();
-          _filePicker(bloc);
-        },
-        icon: Icon(
-          Icons.add,
-          color: Colors.green,
-        ),
-      ),
-      alignment: FractionalOffset.center,
-    ),
-  );
-/*
    return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -75,8 +56,7 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
           IconButton(
             onPressed: () async {
               DevicePermissions permiss = DevicePermissions();
-              bool permit = false;
-              permit = await permiss.checkWriteExternalStorage();
+              await permiss.checkWriteExternalStorage();
               _filePicker(bloc);
             },
             icon: Icon(
@@ -85,8 +65,8 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
             ),
           )
         ],
-    );*/
-}
+    );
+  }
 
    _filePicker(Bloc bloc) async {
      List<dynamic> docPaths;
@@ -110,32 +90,30 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
          await _addFilesOffline(file, bloc);
      });
 
-       //Navigator.pop(context);
 
-       // bloc.errorDialog("Ficheiro ${widget.content['title']} adicionado!", context);
-       /* showDialog(context: context,
-        barrierDismissible: false,
-        child: SafeArea(
-          child: AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text('Ficheiro ${widget.content['title']} adicionado!')
-              ],
-            ),
-          ),
-        )
-    );*/
-
-       //todo fazer apenas o sucesso no ficheiro adicionado
-       //  Navigator.pop(context);
-       /*Navigator.push(
+       showDialog(context: context,
+           barrierDismissible: false,
+           child: AlertDialog(
+             content: Row(
+               mainAxisSize: MainAxisSize.max,
+               children: <Widget>[
+                 AdaptiveProgressIndicator(),
+                 Text('      Loading...')
+               ],
+             ),
+           )
+       );
+     
+     Future.delayed(Duration(seconds: 2),(){
+       Navigator.push(
            context,
            MaterialPageRoute(
                builder: (context) =>
                    Content(
                      unitContent: !bloc.connectionStatus.contains('none') ? widget.content  :  bloc.sharedPrefs.getStringList(widget.content['id'].toString()),
-                   )));*/
+                   )));
+
+     });
      }
 
      Future _addFilesOnline(File file, Bloc bloc) async {
@@ -150,7 +128,6 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
           "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
           "id": 0,
           "tmpFile": resp['uploadedFiles'][0],
-          //"repositoryId": 0,
           "title": resp['uploadedFiles'][0]['fileName'],
           "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
           "repositoryFile4JsonView": null,
@@ -177,7 +154,6 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     Map localNewFile = {
       "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
       "id": 0,
-      "repositoryId": 0,
       "title": p.context.basename(file.path),
       "dateSaveDate": DateTime.now().millisecondsSinceEpoch,
       "dateUpdateDate": DateTime.now().millisecondsSinceEpoch,
@@ -190,12 +166,10 @@ class TrailingAddButtonState extends State<TrailingAddButton> {
     print("NEW  FILE  --> "+file.path);
     print("LOCAL  FILE  --> "+localNewFile['path']);
     print(dir);
-    //print(widget.content['id']);
+
     bloc.sharedPrefs.getStringList(widget.content['id'].toString()).add( jsonEncode(localNewFile));
     bloc.sharedPrefs.setString("${localNewFile['path']}/${localNewFile['title']}", jsonEncode(localNewFile));
-
-    //bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${localNewFile['title']}", true);
-    //bloc.sharedPrefs.setBool("newFile/${localNewFile['id']}", true);
+    bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${widget.content['title']}",true);
   }
 
 }

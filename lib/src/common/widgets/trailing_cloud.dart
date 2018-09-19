@@ -13,8 +13,9 @@ import '../../common/themes/colorsThemes.dart';
 class SyncCloudOffline extends StatefulWidget {
   final AnimationController controller;
   final Map content;
+  final int parentId;
 
-  SyncCloudOffline({this.controller, this.content});
+  SyncCloudOffline({this.controller, this.content, this.parentId});
 
   @override
   _SyncCloudOfflineState createState() => _SyncCloudOfflineState();
@@ -100,13 +101,13 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     if (!bloc.connectionStatus.contains('none')) {
       if (!_cloudFlag)
         await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
-      if(_isModified) {
+      else if(_isModified) {
         if (_isNew) {
           //todo ficheiro novo  o nome nao vem  no  conteudo
           bloc.questionOffOnFileDialog("Deseja adicionar o ficheiro ${widget.content['title']} no PAE?", context, widget.content, bloc,
               bloc.fileOfflineToOnline(bloc, widget.content));
         }else
-        bloc.questionOffOnFileDialog(
+          bloc.questionOffOnFileDialog(
             "Deseja substituir o ficheiro ${widget.content['title']}", context,
             widget.content, bloc, bloc.fileOnlineToOffline(bloc, widget.content));
       }
@@ -187,6 +188,8 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
   Future _addFilesToOffline(
       Bloc bloc, SharedPreferences sharedPreferences) async {
     File file = await bloc.getFiles(bloc.paeUser.session, widget.content);
+
+    await file.setLastModified(DateTime.fromMillisecondsSinceEpoch(widget.content['dateUpdateDate']));
 
     print(file.path);
     setState(() {

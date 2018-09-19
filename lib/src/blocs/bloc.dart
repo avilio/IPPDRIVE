@@ -122,7 +122,8 @@ class Bloc extends Object
         "session" : "",
         "name" : preferences.get("name")
       };
-      setPaeUser(PaeUser.fromJson(json, password: password));
+      //todo escola
+      setPaeUser(PaeUser.fromJson(json, password: password,anoCorrente: preferences.get("anoCorrente")));
 
       print(paeUser.toString());
 
@@ -180,11 +181,17 @@ class Bloc extends Object
     }else {
       if (_response.value.runtimeType != String) {
 
-        setPaeUser(PaeUser.fromJson(_response.value, password: password));
+
+        var map = await getYears(_response.value["BACOSESS"]);
+        var escola = _response.value['email'].toString().split("@")[1].split(".")[0];
+        //todo este escola é para mudar porque na realidade esta a ir ao mail que no caso d aluno tem ippportalgre
+        print(escola);
+        setPaeUser(PaeUser.fromJson(_response.value,escola: escola,password: password,anoCorrente: map['response']['importYear']));
 
         sharedPrefs.setString("username", paeUser.username);
         sharedPrefs.setString("password", password);
         sharedPrefs.setString("name", paeUser.name);
+        sharedPrefs.setString("anoCorrente", paeUser.anoCorrente);
 
         ///todo
     /*    if (sharedPrefs.getBool("memoLoginUser") != null &&
@@ -197,9 +204,12 @@ class Bloc extends Object
             ? _response.sink.add(contentYear['exception'])
             : _response.sink.add(contentYear['response']);
 
-        _response.value['childs'].isEmpty
-            ? contentYear = await wsReadMyDefaultFoldersFolders(paeUser.session)
-            : contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
+        if(_response.value['childs'].isEmpty) {
+            if(!isNumeric(paeUser.username))
+              contentYear = await wsReadMyDefaultFoldersFolders(paeUser.session);
+        }
+         else
+           contentYear = await wsYearsCoursesUnitsFolders(paeUser.session);
 
         _response.sink.add(contentYear['response']);
 
@@ -207,8 +217,7 @@ class Bloc extends Object
 
         saveListLocally("home", lista, sharedPrefs);
 ///
-        //print(preferences.get("home"));
-        //return _response.value['childs'];
+
         showDialog(context: context,
             barrierDismissible: false,
             child: AlertDialog(
@@ -302,8 +311,7 @@ class Bloc extends Object
       Map object = {
         "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
         "id": 0,
-        "tempFile": resp['uploadedFiles'][0],
-        "repositoryId": 0,
+        "tmpFile": resp['uploadedFiles'][0],
         "title": resp['uploadedFiles'][0]['fileName'],
         "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
         "repositoryFile4JsonView": null,
@@ -313,9 +321,9 @@ class Bloc extends Object
       print(items);
         Future<Map> map  =  bloc.addFile(object, items['id'], bloc.paeUser.session);
 
-        map.then((map){
+      /*  map.then((map){
           map.forEach((key,value)=>  print("$key : $value"));
-        });
+        });*/
 
       return map;
     });

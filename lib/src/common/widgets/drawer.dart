@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../blocs/bloc.dart';
@@ -10,7 +12,7 @@ import '../../widgets/drawer/drawer_ippDrive_list.dart';
 import '../../widgets/drawer/drawer_years_list.dart';
 import '../themes/colorsThemes.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
   final PaeUser paeUser;
 
   final dynamic courseUnits;
@@ -18,6 +20,25 @@ class MyDrawer extends StatelessWidget {
   MyDrawer(
       {this.paeUser, this.courseUnits, Key key})
       : super(key: key);
+
+  @override
+  MyDrawerState createState() {
+    return new MyDrawerState();
+  }
+}
+
+class MyDrawerState extends State<MyDrawer> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      final bloc = BlocProvider.of(context);
+      bloc.onConnectionChange();
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +49,7 @@ class MyDrawer extends StatelessWidget {
       child: new ListView(
         physics: PageScrollPhysics(),
         children: <Widget>[
-          _myDrawerHeader(drawerBloc.school, paeUser.username, paeUser.name, drawerBloc.course, homeBloc),
+          _myDrawerHeader(drawerBloc.school, widget.paeUser.username, widget.paeUser.name, drawerBloc.course, homeBloc),
           DrawerYearsList(),
           DrawerFavoritesList(school: drawerBloc.school, course: drawerBloc.course),
           IppDriveList(school: drawerBloc.school, course: drawerBloc.course),
@@ -75,4 +96,6 @@ class MyDrawer extends StatelessWidget {
             (Route<dynamic> route) => false),
         trailing: new Icon(Icons.exit_to_app),
       );
+
+
 }

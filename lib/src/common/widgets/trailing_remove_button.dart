@@ -87,12 +87,14 @@ class TrailingRemoveButtonState extends State<TrailingRemoveButton> {
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
+
+                      //todo remover de todo o lado nao so do pae remover local se for o caso
                       bloc
                           .removeFile(widget.content, widget.parentId,
                               bloc.paeUser.session)
                           .then((resp) {
                         ///
-                        if (resp.containsKey("ok")) {
+                        if (resp.containsKey("service") && resp['service'].toString().contains("ok")) {
                           print(resp);
                           Navigator.pop(context);
                           bloc.errorDialog('Ficheiro Apagado!', context);
@@ -104,6 +106,9 @@ class TrailingRemoveButtonState extends State<TrailingRemoveButton> {
                               context);
                         }
                       });
+
+                      bloc.sharedPrefs.remove("cloud/${widget.content['path']}/${widget.content['title']}");
+                      bloc.sharedPrefs.remove(widget.content['id'].toString());
                     },
                     child: Text('Sim')),
                 FlatButton(
