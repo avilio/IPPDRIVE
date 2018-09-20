@@ -103,18 +103,22 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     final bloc = BlocProvider.of(context);
 
     if (!bloc.connectionStatus.contains('none')) {
-      if (!_cloudFlag)
-        await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
-      else if(_isModified || _isLocalBigger) {
+      if (!_cloudFlag) {
+        await _addFilesToOffline(bloc, bloc.sharedPrefs);
+      //await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
         if (_isNew || _isLocalBigger) {
-          questionOffOnFileDialog("Este ficheiro é recente.\nDeseja fazer upload do ficheiro ${widget.content['title']} para o PAE?", context, widget.content, bloc,
-              bloc.fileOfflineToOnline(bloc, widget.content));
-        }else
-          questionOffOnFileDialog(
-            "Deseja substituir o ficheiro ${widget.content['title']}", context,
-            widget.content, bloc, bloc.fileOnlineToOffline(bloc, widget.content));
+        questionOffOnFileDialog(
+            "Este ficheiro é recente.\nDeseja fazer upload do ficheiro ${widget
+                .content['title']} para o PAE?", context, widget.content, bloc,
+            bloc.fileOfflineToOnline(bloc, widget.content));
       }
-      else
+      else if (_isModified) {
+        questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${widget.content['title']}", context,
+            widget.content, bloc,
+            bloc.fileOnlineToOffline(bloc, widget.content));
+      }
+    }else
         await _cloudDeleteOfflineDialog(bloc, bloc.sharedPrefs);
     }
   }
@@ -199,6 +203,8 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     Map local =jsonDecode(sharedPreferences.get("${widget.content['path']}/${widget.content['title']}"));
 
     local['dateUpdateDate'] =file.lastModifiedSync().millisecondsSinceEpoch;
+    //todo apagar
+    print("JSON ${local['dateUpdateDate']}  -> LOCAL ${file.lastModifiedSync().millisecondsSinceEpoch};");
 
     sharedPreferences.remove("${widget.content['path']}/${widget.content['title']}");
     sharedPreferences.setString("${widget.content['path']}/${widget.content['title']}", jsonEncode(local));
@@ -221,16 +227,16 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       Bloc bloc, SharedPreferences sharedPreferences) async {
     String dir = await bloc.buildFileDirectory(widget.content['path']);
 
-    File file =
-        await File('$dir/${widget.content['title']}').delete(recursive: true);
+    File file = await new File('$dir/${widget.content['title']}').delete(recursive: true);
+
 
     print(file.path + " deleted");
     setState(() {
       _cloudFlag = false;
     });
-    //sharedPreferences.setBool("cloud/${widget.content['path']}/${widget.content['title']}", _cloudFlag);
-    sharedPreferences.remove("cloud/${widget.content['path']}/${widget.content['title']}");
-    bloc.sharedPrefs.remove(widget.content['id'].toString());
+
+    bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${widget.content['title']}", _cloudFlag);
+    bloc.sharedPrefs.remove("cloud/${widget.content['path']}/${widget.content['title']}");
 
     Scaffold.of(context).showSnackBar(new SnackBar(
         content: Text('Ficheiro ${widget.content['title']} apagado!',

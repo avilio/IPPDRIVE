@@ -254,24 +254,28 @@ print(b);
     String dir = await buildFileDirectory(items['path']);
 
     try {
-      if(await FileSystemEntity.type(dir) != FileSystemEntityType.notFound) {
-            Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
-            File file = new File('$dir/${items['title']}');
-            DateTime lastMod = file.lastModifiedSync();
-            //todo
-            print(lastMod);
-            print("${localFile['dateUpdateDate'].toString()}  ->  ${lastMod.millisecondsSinceEpoch.toString()}");
+      if(await FileSystemEntity.type("$dir/${items["title"]}") != FileSystemEntityType.notFound) {
+            try {
+              Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
+              File file = new File('$dir/${items['title']}');
+              //DateTime lastMod = file.lastModifiedSync();
+              //todo
 
-            if(localFile['dateUpdateDate'] ==  lastMod.millisecondsSinceEpoch){
-              //todo apagar
-              print(items['title']+" sao iguais");
-              if (localFile['dateUpdateDate'] < items['dateUpdateDate'])
-                //todo sendo o online maior arranjar outra flag
-                sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", true);
-            }else {
-              //todo apagar print
-              print(items['title']+" modificaçao local");
-              sharedPrefs.setBool("localFile/${items['path']}/${items['id']}", true);
+              print("JSON ${localFile['dateUpdateDate']}  -> LOCAL ${file.lastModifiedSync().millisecondsSinceEpoch};");
+
+              if(localFile['dateUpdateDate'] ==  file.lastModifiedSync()){
+                //todo apagar
+                print(items['title']+" sao iguais");
+                if (localFile['dateUpdateDate'] < items['dateUpdateDate'])
+                  //todo sendo o online maior arranjar outra flag
+                  sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", true);
+              }else {
+                //todo apagar print
+                print(items['title']+" modificaçao local");
+                sharedPrefs.setBool("localFile/${items['path']}/${items['id']}", true);
+              }
+            } catch (e) {
+              print(e);
             }
           }
     } catch (e) {

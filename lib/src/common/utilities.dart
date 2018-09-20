@@ -37,7 +37,7 @@ class Utilities {
 
     if (parent != null) {
 
-      if ( parent['pathParent'].split('/').length > 7) {
+      if ( parent['pathParent'].split('/').length != parent['pathParent'].split('/').length) {
         List fields =  parent['pathParent'].split('/');
         String path = '';
         for (var j = 7; j < fields.length; j++) {

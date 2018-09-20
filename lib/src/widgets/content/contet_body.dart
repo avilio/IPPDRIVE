@@ -112,7 +112,6 @@ class ContentBodyState extends State<ContentBody>
                  // bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['id']}", true);
                 }
               }
-
               ///
               bloc.saveListLocally(
                   this.widget.id.toString(), online, bloc.sharedPrefs);
@@ -188,36 +187,35 @@ class ContentBodyState extends State<ContentBody>
                   Folders.fromJson(items);
               return new ListTile(
                 onTap: () async {
-                  DevicePermissions permiss = DevicePermissions();
-                  await permiss.checkWriteExternalStorage();
+
                   if (!bloc.connectionStatus.contains('none')) {
 
                     String dir = await bloc.buildFileDirectory(items['path']);
-                    File file;
 
-                    if(await FileSystemEntity.type(dir) != FileSystemEntityType.NOT_FOUND){
 
+                    if(await FileSystemEntity.type("$dir/${items["title"]}") == FileSystemEntityType.notFound){
                       try {
-                        file = await bloc.getFiles(bloc.paeUser.session, items);
-                        Map local =jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['title']}"));
-                        DateTime lastMod = await file.lastModified();
+                        File file = await bloc.getFiles(bloc.paeUser.session, items);
 
-                        local['dateUpdateDate'] = lastMod.millisecondsSinceEpoch;
-
-                        bloc.sharedPrefs.remove("${items['path']}/${items['title']}");
-                        bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(local));
+                        bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(items));
                         bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['title']}",true);
+                        await OpenFile.open(file.path);
                       } catch (e) {
                         print(e);
                       }
 
-                      print(file.path);
                     }else{
+                      File file = new File('$dir/${items['title']}');
+                      Map local =jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['title']}"));
+                      DateTime lastMod = await file.lastModified();
 
-                      file = new File('$dir/${items['title']}');
+                      local['dateUpdateDate'] = lastMod.millisecondsSinceEpoch;
+
+                      bloc.sharedPrefs.remove("${items['path']}/${items['title']}");
+                      bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(local));
+
+                      await OpenFile.open(file.path);
                     }
-
-                    OpenFile.open(file.path);
 
                   } else {
 
@@ -226,7 +224,8 @@ class ContentBodyState extends State<ContentBody>
                     File file = new File('$dir/${items['title']}');
 
                     print(file.path);
-                    OpenFile.open(file.path);
+                    await OpenFile.open(file.path);
+
                   }
                 },
                 title: new Text(

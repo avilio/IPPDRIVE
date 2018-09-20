@@ -101,7 +101,7 @@ class AddFileState extends State<AddFiles> {
      });
 
     if(resp!=null) {
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration(seconds:2), () {
         Navigator.push(
             context,
             MaterialPageRoute(
