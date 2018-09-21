@@ -77,7 +77,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
     if (_cloudFlag) {
       if (_isModified)
         return Icon(Icons.warning, color: cAppYellowish);
-      if(_isLocalBigger)
+      if(_isLocalBigger || _isNew)
         //return Icon(Icons.warning, color: cAppYellowish)
         return Icon(Icons.cloud_upload, color: cAppYellowish);
       else
@@ -102,6 +102,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
   Future _onOrOff() async {
     final bloc = BlocProvider.of(context);
 
+
     if (!bloc.connectionStatus.contains('none')) {
       if (!_cloudFlag) {
         await _addFilesToOffline(bloc, bloc.sharedPrefs);
@@ -118,7 +119,18 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
             widget.content, bloc,
             bloc.fileOnlineToOffline(bloc, widget.content));
       }
-    }else
+    } else if (_cloudFlag && (_isNew || _isLocalBigger)) {
+        questionOffOnFileDialog(
+            "Este ficheiro é recente.\nDeseja fazer upload do ficheiro ${widget
+                .content['title']} para o PAE?", context, widget.content,
+            bloc,
+            bloc.fileOfflineToOnline(bloc, widget.content));
+      } else if (_cloudFlag && _isModified)
+        questionOffOnFileDialog(
+            "Deseja substituir o ficheiro ${widget.content['title']}", context,
+            widget.content, bloc,
+            bloc.fileOnlineToOffline(bloc, widget.content));
+      else
         await _cloudDeleteOfflineDialog(bloc, bloc.sharedPrefs);
     }
   }
@@ -192,7 +204,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
   }
 
   ///
-  Future _addFilesToOffline(
+  Future  _addFilesToOffline(
       Bloc bloc, SharedPreferences sharedPreferences) async {
     File file = await bloc.getFiles(bloc.paeUser.session, widget.content);
 
@@ -200,14 +212,15 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       _cloudFlag = true;
     });
 
-    Map local =jsonDecode(sharedPreferences.get("${widget.content['path']}/${widget.content['title']}"));
+    //Map local = jsonDecode(sharedPreferences.get("${widget.content['path']}/${widget.content['title']}"));
+    sharedPreferences.setInt("${widget.content['path']}/${widget.content['title']}/localTime",file.lastModifiedSync().millisecondsSinceEpoch);
 
-    local['dateUpdateDate'] =file.lastModifiedSync().millisecondsSinceEpoch;
+    //local['dateUpdateDate'] =file.lastModifiedSync().millisecondsSinceEpoch;
     //todo apagar
-    print("JSON ${local['dateUpdateDate']}  -> LOCAL ${file.lastModifiedSync().millisecondsSinceEpoch};");
+    print("JSON ${sharedPreferences.get("${widget.content['path']}/${widget.content['title']}/localTime")}  -> LOCAL ${file.lastModifiedSync().millisecondsSinceEpoch};");
 
     sharedPreferences.remove("${widget.content['path']}/${widget.content['title']}");
-    sharedPreferences.setString("${widget.content['path']}/${widget.content['title']}", jsonEncode(local));
+    //sharedPreferences.setString("${widget.content['path']}/${widget.content['title']}", jsonEncode(local));
 
     sharedPreferences.setBool(
         "cloud/${widget.content['path']}/${widget.content['title']}",

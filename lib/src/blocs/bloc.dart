@@ -215,7 +215,8 @@ print(b);
         _response.sink.add(contentYear['response']);
 
         List lista = _response.value['childs'];
-
+        //todo apagar o clear
+        //await sharedPrefs.clear();
         saveListLocally("home", lista, sharedPrefs);
 ///
         showDialog(context: context,
@@ -254,20 +255,23 @@ print(b);
     String dir = await buildFileDirectory(items['path']);
 
     try {
-      if(await FileSystemEntity.type("$dir/${items["title"]}") != FileSystemEntityType.notFound) {
+      if(
+      await FileSystemEntity.type("$dir/${items["title"]}") != FileSystemEntityType.notFound) {
             try {
-              Map localFile = jsonDecode(sharedPrefs.get("${items['path']}/${items['title']}"));
+              //sharedPrefs.get("${items['path']}/${items['title']}");
+              //Map localFile = jsonDecode(;
               File file = new File('$dir/${items['title']}');
               //DateTime lastMod = file.lastModifiedSync();
               //todo
 
-              print("JSON ${localFile['dateUpdateDate']}  -> LOCAL ${file.lastModifiedSync().millisecondsSinceEpoch};");
+              int localTime = sharedPrefs.get("${items['path']}/${items['title']}/localTime") ?? 0;
+              //print("JSON ${localFile['dateUpdateDate']}  -> LOCAL ${file.lastModifiedSync().millisecondsSinceEpoch};");
+              print("$localTime ->"+" ${file.lastModifiedSync().millisecondsSinceEpoch}");
 
-              if(localFile['dateUpdateDate'] ==  file.lastModifiedSync()){
-                //todo apagar
+              if(localTime ==  file.lastModifiedSync().millisecondsSinceEpoch){
+                //todo apagar print
                 print(items['title']+" sao iguais");
-                if (localFile['dateUpdateDate'] < items['dateUpdateDate'])
-                  //todo sendo o online maior arranjar outra flag
+                if (localTime < items['dateUpdateDate'])
                   sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", true);
               }else {
                 //todo apagar print
@@ -286,33 +290,32 @@ print(b);
   ///
   Future fileOfflineToOnline(Bloc bloc, items) async{
 
-    bloc.sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", false);
-    bloc.sharedPrefs.setBool("newFile/${items['id']}", false);
+
     bloc.sharedPrefs.remove("isModify/${items['path']}/${items['id']}");
     bloc.sharedPrefs.remove("newFile/${items['id']}");
 
     File localFile = await bloc.getFiles(bloc.paeUser.session, items);
 
-    bloc.uploadFile(localFile, bloc.paeUser.session).then((resp){
-
+    bloc.uploadFile(localFile, bloc.paeUser.session).then((resp)async {
       Slugify slug = Slugify();
 
-      Map object = {
-        "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
-        "id": 0,
-        "tmpFile": resp['uploadedFiles'][0],
-        "title": resp['uploadedFiles'][0]['fileName'],
-        "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
-        "repositoryFile4JsonView": null,
-        "visible": true,
-        "cols": 12
-      };
-      //print(items);
-        Future<Map> map  =  bloc.addFile(object, items['id'], bloc.paeUser.session);
+       Map object = {
+                  "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
+                  "id": 0,
+                  "tmpFile": resp['uploadedFiles'][0],
+                  "title": resp['uploadedFiles'][0]['fileName'],
+                  "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
+                  "repositoryFile4JsonView": null,
+                  "visible": true,
+                  "cols": 12
+                };
+      //Map object = items;
+     // object["tmpFile"] = resp['uploadedFiles'][0];
 
-      /*  map.then((map){
+        Map map = await bloc.addFile(object, items['id'], bloc.paeUser.session);
+
           map.forEach((key,value)=>  print("$key : $value"));
-        });*/
+
 
       return map;
     });

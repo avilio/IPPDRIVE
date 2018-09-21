@@ -109,8 +109,8 @@ class AddFileState extends State<AddFiles> {
                     Content(
                       unitContent: !bloc.connectionStatus.contains('none')
                           ? widget.content
-                          : bloc.sharedPrefs.get(
-                          widget.content['id'].toString()),
+                          : jsonDecode(bloc.sharedPrefs.get(
+                          "${widget.content['path']}/${widget.content['title']}")),
                     )));
       });
     }
@@ -135,9 +135,9 @@ class AddFileState extends State<AddFiles> {
           "cols": 12
         };
         print(widget.content);
-
+//todo bufg do adiciona ficheiros do offline para online
         Map map  = await request.addFile(
-            object, widget.content['id'], bloc.paeUser.session);
+            object, widget.content['nowParentId'], bloc.paeUser.session);
 
         bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${object['title']}", true);
        // map['response'].forEach((key,value)=>  print("$key : $value"));
@@ -170,9 +170,11 @@ class AddFileState extends State<AddFiles> {
 
 
     bloc.sharedPrefs.getStringList(widget.content['id'].toString()).add(jsonEncode(localNewFile));
-    bloc.sharedPrefs.setString("${localNewFile['path']}/${localNewFile['title']}", jsonEncode(localNewFile));
+  //  bloc.sharedPrefs.setString("${localNewFile['path']}/${localNewFile['title']}", jsonEncode(localNewFile));
 
+    bloc.sharedPrefs.setBool("newFile/${widget.content['id']}",true);
     bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${localNewFile['title']}",true);
+
   }
 
 

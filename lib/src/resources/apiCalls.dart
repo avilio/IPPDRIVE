@@ -189,7 +189,8 @@ class Requests {
   ///
   Future<Map> editFile(Map object, int parentId, String session) async {
     //todo apagar prints
-    print(jsonEncode(object));
+    print(parentId);
+
     var url = '$host/user/vfs.do';
     var body = {
       "BACOSESS": session,
@@ -207,7 +208,7 @@ class Requests {
 
   ///
   Future<Map> removeFile(Map object, int parentId, String session) async {
-    print(parentId);
+
     var url = '$host/user/vfs.do';
     var body = {
       "BACOSESS": session,

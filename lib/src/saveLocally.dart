@@ -1,21 +1,41 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SaveLocally extends Object{
 
-  void saveListLocally(String key, List listConvert, SharedPreferences preferences){
+  void saveListLocally(String key, List listConvert, SharedPreferences preferences)async {
 
-    List<String> jsonList = new List();
+    print("INICIO ${preferences.getKeys()}");
 
-    listConvert.forEach((value) {
-      jsonList.add(jsonEncode(value));
-    });
+    if (await preferences.get(key)!= null) {
 
-    preferences.setStringList(key, jsonList);
+      List localList = await preferences.get(key);
+      List<String> jsonList = new List();
 
-    print("SAVED LOCALLY");
+      listConvert.forEach((value) {
 
+        jsonList.add(jsonEncode(value));
+      });
+      if(!DeepCollectionEquality.unordered().equals(localList, jsonList)) {
+        await preferences.remove(key);
+        await preferences.setStringList(key, jsonList);
+        print("CHANGES TO LOCAL");
+      }
+    }else{
+
+      List<String> jsonList = new List();
+
+      listConvert.forEach((value) {
+
+          jsonList.add(jsonEncode(value));
+      });
+
+      await preferences.setStringList(key, jsonList);
+      print("SAVED LOCALLY");
+    }
+    print("FIM ${preferences.getKeys()}");
   }
 
 }

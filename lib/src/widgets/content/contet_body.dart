@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:async_loader/async_loader.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'package:open_file/open_file.dart';
 
+import '../../common/widgets/trailing_edit_file.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/error401.dart';
@@ -100,16 +104,26 @@ class ContentBodyState extends State<ContentBody>
                     .getStringList(widget.id.toString()).map((valor) =>
                     jsonDecode(valor)).toList() ?? [];
 
-                print(online.last['title']);
-                print(offline.last['title']);
+                //print(online.last['title']);
+                //print(offline.last['title']);
 
-                if(offline.last['title']!= online.last['title']) {
+                /*if(!DeepCollectionEquality.unordered().equals(offline,online)){
+                  offline.forEach((element){
+                    print(element['title']);
+
+                    if(online.contains(element)) {
+                      online.add(element);
+                      bloc.sharedPrefs.setBool("cloud/${element['path']}/${element['title']}", true);
+                      bloc.sharedPrefs.setBool("newFile/${element['id']}", true);
+                    }
+                  });*/
+
+
+                if(offline.last['title']!= online.last['title'] && offline.last['id']!= online.last['id']) {
                   online.add(offline.last);
-                  //bloc.checkOnlineIsGreaterThanLocal(o, context);
                   //bloc.sharedPrefs.setBool("isModify/${offline.last['path']}/${offline.last['id']}", true);
                   bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['title']}", true);
                   bloc.sharedPrefs.setBool("newFile/${offline.last['id']}", true);
-                 // bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['id']}", true);
                 }
               }
               ///
@@ -118,14 +132,33 @@ class ContentBodyState extends State<ContentBody>
 
               online.forEach((items){
 
+
                 if(items['file']) {
-                  bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
+                  bloc.sharedPrefs.setString( "${items['path']}/${items['id']}", jsonEncode(items));
+                  online.forEach((items) {
+                    if (bloc.sharedPrefs.get("${items['path']}/${items['id']}") != null) {
+                      Map localFile = jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['id']}"));
+                      if (localFile['id'] == items['id'] && localFile['title'] != items['title'])
+                        bloc.sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", true);
+                    }
+                  });
+
+                //todo no caso estar armazenado e é subsitituido online alterar o icon para o user poder subistuir o ficheiro
                   bloc.checkOnlineIsGreaterThanLocal(items, context);
 
                   if (items['clearances']['addFiles'] || items['clearances']['add'] || items['clearances']['remove'])
-                    bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
+                    bloc.sharedPrefs.setString( "${items['path']}/${items['id']}", jsonEncode(items));
+                  online.forEach((items) {
+                    if (bloc.sharedPrefs.get("${items['path']}/${items['id']}") != null) {
+                      Map localFile = jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['id']}"));
+                      if (localFile['id'] == items['id'] && localFile['title'] != items['title'])
+                        bloc.sharedPrefs.setBool("isModify/${items['path']}/${items['id']}", true);
+                    }
+                  });
                     bloc.checkOnlineIsGreaterThanLocal(items, context);
+
                 }
+
               //  bloc.sharedPrefs.setInt( "parentId/${items['path']}/${items['title']}", data['response']['parentId']);
               });
 
@@ -167,6 +200,7 @@ class ContentBodyState extends State<ContentBody>
           itemBuilder: (context, items) {
             if (items['directory']) {
               //todo diretorias nao podem ser apagadas
+              bloc.sharedPrefs.setString( "${items['path']}/${items['title']}", jsonEncode(items));
               folder = Folders.fromJson(items);
               return new ListTile(
                   dense: true,
@@ -197,7 +231,7 @@ class ContentBodyState extends State<ContentBody>
                       try {
                         File file = await bloc.getFiles(bloc.paeUser.session, items);
 
-                        bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(items));
+                        bloc.sharedPrefs.setInt("${items['path']}/${items['title']}/localTime",file.lastModifiedSync().millisecondsSinceEpoch);
                         bloc.sharedPrefs.setBool("cloud/${items['path']}/${items['title']}",true);
                         await OpenFile.open(file.path);
                       } catch (e) {
@@ -206,13 +240,16 @@ class ContentBodyState extends State<ContentBody>
 
                     }else{
                       File file = new File('$dir/${items['title']}');
-                      Map local =jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['title']}"));
+                     // Map local =jsonDecode(bloc.sharedPrefs.get("${items['path']}/${items['title']}"));
                       DateTime lastMod = await file.lastModified();
 
-                      local['dateUpdateDate'] = lastMod.millisecondsSinceEpoch;
+                      bloc.sharedPrefs.setInt("${items['path']}/${items['title']}/localTime",lastMod.millisecondsSinceEpoch);
 
-                      bloc.sharedPrefs.remove("${items['path']}/${items['title']}");
-                      bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(local));
+
+                      //local['dateUpdateDate'] = lastMod.millisecondsSinceEpoch;
+
+                      //bloc.sharedPrefs.remove("${items['path']}/${items['title']}");
+                      //bloc.sharedPrefs.setString("${items['path']}/${items['title']}", jsonEncode(local));
 
                       await OpenFile.open(file.path);
                     }
@@ -247,20 +284,22 @@ class ContentBodyState extends State<ContentBody>
 
   Widget canRemove(items) {
     if(!items['clearances']['removeFiles'])
-      return SyncCloudOffline(content: items);
+      return SyncCloudOffline(content: items,parentId: items['nowParentId'],);
     else
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           SyncCloudOffline(
-              controller: _controller, content: items),
+            //  controller: _controller,
+            content: items, parentId: items['nowParentId'],),
           RemoveFile(
-            controller: _controller,
+           // controller: _controller,
               content: items,
               parentId: widget.id,
               canRemove: items['clearances']
               ['removeFiles']),
-          _buildIconButton()
+         EditFile(content: items)
+         // _buildIconButton()
         ],
       );
   }
