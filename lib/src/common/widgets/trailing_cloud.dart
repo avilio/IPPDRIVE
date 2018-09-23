@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -109,8 +108,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       //await _cloudAddOfflineDialog(bloc, bloc.sharedPrefs);
         if (_isNew || _isLocalBigger) {
         questionOffOnFileDialog(
-            "Este ficheiro é recente.\nDeseja fazer upload do ficheiro ${widget
-                .content['title']} para o PAE?", context, widget.content, bloc,
+            "Enviar esta versão para o IPPDrive??", context, widget.content, bloc,
             bloc.fileOfflineToOnline(bloc, widget.content));
       }
       else if (_isModified) {
@@ -121,8 +119,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
       }
     } else if (_cloudFlag && (_isNew || _isLocalBigger)) {
         questionOffOnFileDialog(
-            "Este ficheiro é recente.\nDeseja fazer upload do ficheiro ${widget
-                .content['title']} para o PAE?", context, widget.content,
+            "Enviar esta versão para o IPPDrive?", context, widget.content,
             bloc,
             bloc.fileOfflineToOnline(bloc, widget.content));
       } else if (_cloudFlag && _isModified)
@@ -180,7 +177,7 @@ class _SyncCloudOfflineState extends State<SyncCloudOffline> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               content: Text(
-                'Tem a certeza que quer deixar de ver o conteudo offline??',
+                'Libertar versão local? O ficheiro continuará disponível na Nuvem do IPPDrive',
                 textAlign: TextAlign.justify,
               ),
               actions: <Widget>[
