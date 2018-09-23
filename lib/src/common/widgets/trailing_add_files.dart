@@ -6,17 +6,15 @@ import 'dart:io';
 import 'package:documents_picker/documents_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import '../../common/widgets/progress_indicator.dart';
-import '../../screens/content.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/permissions.dart';
 import '../../common/slugify.dart';
 import '../../resources/apiCalls.dart';
+import '../../screens/content.dart';
 import '../permissions.dart';
 
 
@@ -137,7 +135,7 @@ class AddFileState extends State<AddFiles> {
         print(widget.content);
 //todo bufg do adiciona ficheiros do offline para online
         Map map  = await request.addFile(
-            object, widget.content['nowParentId'], bloc.paeUser.session);
+            object, widget.content['id'], bloc.paeUser.session);
 
         bloc.sharedPrefs.setBool("cloud/${widget.content['path']}/${object['title']}", true);
        // map['response'].forEach((key,value)=>  print("$key : $value"));
@@ -161,15 +159,17 @@ class AddFileState extends State<AddFiles> {
       "path": localfile.path,
       "clearances": widget.content['clearances'],
       "directory": false,
-      "file": true
+      "file": true,
+      "nowParentId": widget.content['id']
     };
     //todo  apagar print
     print("NEW  FILE  --> "+file.path);
     print("LOCAL  FILE  --> "+localNewFile['path']);
     print(dir);
 
-
+   // bloc.sharedPrefs.getStringList(widget.content['id'].toString());
     bloc.sharedPrefs.getStringList(widget.content['id'].toString()).add(jsonEncode(localNewFile));
+    print(bloc.sharedPrefs.getStringList(widget.content['id'].toString()));
   //  bloc.sharedPrefs.setString("${localNewFile['path']}/${localNewFile['title']}", jsonEncode(localNewFile));
 
     bloc.sharedPrefs.setBool("newFile/${widget.content['id']}",true);

@@ -1,27 +1,23 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:async_loader/async_loader.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import 'package:open_file/open_file.dart';
 
-import '../../common/widgets/trailing_edit_file.dart';
 import '../../blocs/bloc.dart';
 import '../../blocs/bloc_provider.dart';
 import '../../common/error401.dart';
 import '../../common/permissions.dart';
-import '../../common/widgets/dialog.dart';
 import '../../common/widgets/list_item_builder.dart';
 import '../../common/widgets/progress_indicator.dart';
 import '../../common/widgets/trailing.dart';
 import '../../common/widgets/trailing_cloud.dart';
+import '../../common/widgets/trailing_edit_file.dart';
 import '../../common/widgets/trailing_remove_file.dart';
 import '../../models/folders.dart';
 import '../../screens/content.dart';
@@ -103,9 +99,10 @@ class ContentBodyState extends State<ContentBody>
                 List offline = bloc.sharedPrefs
                     .getStringList(widget.id.toString()).map((valor) =>
                     jsonDecode(valor)).toList() ?? [];
-
+                print("TESTE");
+                print(bloc.sharedPrefs.getStringList(widget.id.toString()));
                 //print(online.last['title']);
-                //print(offline.last['title']);
+              //  print(offline.last['title']);
 
                 /*if(!DeepCollectionEquality.unordered().equals(offline,online)){
                   offline.forEach((element){
@@ -119,11 +116,13 @@ class ContentBodyState extends State<ContentBody>
                   });*/
 
 
-                if(offline.last['title']!= online.last['title'] && offline.last['id']!= online.last['id']) {
-                  online.add(offline.last);
-                  //bloc.sharedPrefs.setBool("isModify/${offline.last['path']}/${offline.last['id']}", true);
-                  bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['title']}", true);
-                  bloc.sharedPrefs.setBool("newFile/${offline.last['id']}", true);
+                if (offline.isNotEmpty) {
+                  if(offline.last['title']!= online.last['title'] && offline.last['id']!= online.last['id']) {
+                    online.add(offline.last);
+                    //bloc.sharedPrefs.setBool("isModify/${offline.last['path']}/${offline.last['id']}", true);
+                    bloc.sharedPrefs.setBool("cloud/${offline.last['path']}/${offline.last['title']}", true);
+                    bloc.sharedPrefs.setBool("newFile/${offline.last['id']}", true);
+                  }
                 }
               }
               ///
@@ -163,8 +162,12 @@ class ContentBodyState extends State<ContentBody>
               });
 
               return createList(online, context, bloc, widget.id);
-            } else
-              return DialogAlert(message: 'Pasta vazia');
+            } else{
+
+              bloc.saveListLocally(this.widget.id.toString(), online, bloc.sharedPrefs);
+              return createList(online, context, bloc, widget.id);
+              //return DialogAlert(message: 'Pasta vazia');
+            }
           });
     else
       return Center(

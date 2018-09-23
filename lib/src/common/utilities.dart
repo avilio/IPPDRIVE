@@ -35,7 +35,7 @@ class Utilities {
   ///
   String pathBuilder(Map parent,List listPath) {
 
-    if (parent != null) {
+    if (parent['pathParent'] != null) {
 
       if ( parent['pathParent'].split('/').length != parent['pathParent'].split('/').length) {
         List fields =  parent['pathParent'].split('/');
@@ -55,7 +55,7 @@ class Utilities {
         return path;
       }
     }
-    return "";
+    return "Sem informaçao de path";
   }
 
   ///

@@ -4,14 +4,12 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../common/permissions.dart';
 import '../common/dialogs.dart';
 import '../common/error401.dart';
+import '../common/permissions.dart';
 import '../common/slugify.dart';
 import '../common/utilities.dart';
 import '../common/widgets/progress_indicator.dart';
@@ -311,8 +309,9 @@ print(b);
                 };
       //Map object = items;
      // object["tmpFile"] = resp['uploadedFiles'][0];
+      //todo testar com o now parent ID
 
-        Map map = await bloc.addFile(object, items['id'], bloc.paeUser.session);
+        Map map = await bloc.addFile(object, items['nowParentId'], bloc.paeUser.session);
 
           map.forEach((key,value)=>  print("$key : $value"));
 

@@ -20,7 +20,7 @@ class ContentPathBuilder extends StatelessWidget {
         return new GestureDetector(
           onTap: () => Navigator.of(context).pop(),
           child: new Text(
-            TextSpan(text: homeBloc.pathBuilder(units.current, listPath),
+            TextSpan(text: homeBloc.pathBuilder(units.current, listPath)  ??  "Sem informaçao de path",
                 recognizer: tapGestureRecognizer).text,
             style: new TextStyle(fontWeight: FontWeight.bold, color: cAppBlue),
           ),

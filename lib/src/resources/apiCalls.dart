@@ -14,7 +14,7 @@ import 'requestsHTTP.dart';
 final String server = defaultTargetPlatform == TargetPlatform.android ? "10.0.2.2" : "localhost";
 /// The [host] that contains the web service
 //var host = 'http://$server:8080/baco';
-var host = 'http://192.168.1.71:8080/baco';
+var host = 'http://192.168.1.67:8080/baco';
 //var host = 'http://172.20.107.87:80/baco';
 //var host = 'https://pae.ipportalegre.pt';
 
