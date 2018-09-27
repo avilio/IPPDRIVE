@@ -109,34 +109,33 @@ print(b);
   auth(String user, String password, BuildContext context) async {
     var paeAuth;
     var paeRLogin;
-
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     //print(connectionStatus);
-    if(connectionStatus.contains('none')) {
-      SharedPreferences preferences = await SharedPreferences.getInstance();
+    if(connectionStatus.contains('none') && preferences.get("home")!= null) {
 
       setSharedPref(preferences);
 
-      List list = preferences.get("home");
-      Map json = {
-        "username" : preferences.get("username"),
-        "password" : preferences.get("password"),
-        "session" : "",
-        "name" : preferences.get("name")
-      };
-      //todo escola
-      setPaeUser(PaeUser.fromJson(json, password: password,anoCorrente: preferences.get("anoCorrente")));
+        List list = preferences.get("home");
+        Map json = {
+          "username": preferences.get("username"),
+          "password": preferences.get("password"),
+          "session": "",
+          "name": preferences.get("name")
+        };
+        //todo escola
+        setPaeUser(PaeUser.fromJson(json, password: password,
+            anoCorrente: preferences.get("anoCorrente")));
 
-      print(paeUser.toString());
+        print(paeUser.toString());
 
 
-      List newList = new List();
-      list.forEach((value){
-        newList.add(jsonDecode(value));
-      });
+        List newList = new List();
+        list.forEach((value) {
+          newList.add(jsonDecode(value));
+        });
 
-      _response.sink.add(newList);
-
-    }else {
+        _response.sink.add(newList);
+    }else if(!connectionStatus.contains('none')){
       Timer timer = Timer(Duration(seconds: 10),(){ errorDialog("Algo correu mal!!\nVerifique se o PAE esta com os servidores UP!", context); });
 
       paeAuth = await wsAuth();
@@ -159,10 +158,16 @@ print(b);
 
       timer.cancel();
     }
+
+
     //todo mudar isto daqui e fazer um auth mesmo fora do bloc
+    if(sharedPrefs!= null) {
     setResponse(_response.value);
-    setConnectionStatus(connectionStatus);
+    setConnectionStatus(connectionStatus
+    );
     route2Home(context, password);
+    }else
+      errorDialog("Nao tem conexao a Internet!", context);
   }
 
    route2Home(BuildContext context, String password) async {
@@ -295,6 +300,9 @@ print(b);
     File localFile = await bloc.getFiles(bloc.paeUser.session, items);
 
     bloc.uploadFile(localFile, bloc.paeUser.session).then((resp)async {
+
+      resp.forEach((key,value)=>  print("$key : $value"));
+
       Slugify slug = Slugify();
 
        Map object = {
@@ -305,7 +313,7 @@ print(b);
                   "slug": slug.slugGenerator(resp['uploadedFiles'][0]['fileName']),
                   "repositoryFile4JsonView": null,
                   "visible": true,
-                  "cols": 12
+                  "cols": 12,
                 };
       //Map object = items;
      // object["tmpFile"] = resp['uploadedFiles'][0];
@@ -313,7 +321,7 @@ print(b);
 
         Map map = await bloc.addFile(object, items['nowParentId'], bloc.paeUser.session);
 
-          map.forEach((key,value)=>  print("$key : $value"));
+        //  map['response'].forEach((key,value)=>  print("$key : $value"));
 
 
       return map;

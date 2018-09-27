@@ -89,7 +89,10 @@ class AddFileState extends State<AddFiles> {
      Map resp = new Map();
 
      docPaths.forEach((data) async {
-       file = File(data);
+       File file =  await new File(data).create(recursive: true);
+       //file.copySync(data);
+       print(file.path);
+       print(file.lengthSync());
 
        //todo fazer caso offline
        if (!bloc.connectionStatus.contains('none'))
@@ -146,9 +149,15 @@ class AddFileState extends State<AddFiles> {
 
   _addFilesOffline(File file, Bloc bloc) async{
 
-    String dir = (await getExternalStorageDirectory()).path  +  widget.content['path'];
+    print(file.lengthSync());
 
-    File localfile = await new File('$dir/${p.context.basename(file.path)}').create(recursive: true);
+    String dir = (await getExternalStorageDirectory()).path  +  widget.content['path'];
+    file.copy('$dir/${p.context.basename(file.path)}');
+    //File localfile = await new File('$dir/${p.context.basename(file.path)}').create(recursive: true);
+
+    print(file.lengthSync());
+    print(file.path);
+    //print(localfile.lengthSync());
 
     Map localNewFile = {
       "@class": "pt.estgp.estgweb.domain.PageRepositoryFileImpl",
@@ -156,9 +165,9 @@ class AddFileState extends State<AddFiles> {
       "title": p.context.basename(file.path),
       "dateSaveDate": DateTime.now().millisecondsSinceEpoch,
       "dateUpdateDate": DateTime.now().millisecondsSinceEpoch,
-      "path": localfile.path,
+      "path": file.path,
       "clearances": widget.content['clearances'],
-      "directory": false,
+     // "directory": false,
       "file": true,
       "nowParentId": widget.content['id']
     };

@@ -19,7 +19,7 @@ class PaeUser{
         name = json['name'],
         session = json['BACOSESS'],
         password = password ?? "dummy",
-        anoCorrente = anoCorrente ?? DateTime.now().year;
+        anoCorrente = anoCorrente ?? DateTime.now().year.toString();
 
   @override
   String toString() {

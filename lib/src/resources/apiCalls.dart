@@ -27,7 +27,7 @@ class Requests {
   Future<Map> wsAuth() async{
     var url = '$host/wsjson/api/app/ws-authenticate';
   Map body = { "data": { "apikey": "1234567890"}};
- //Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
+// Map body = { "data": { "apikey": "#\$223567&jjad#46f.,-ayalker\\ergnermvf"}};
 
     return await rest.post(url, body);
   }
