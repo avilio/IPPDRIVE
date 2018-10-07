@@ -236,7 +236,7 @@ print(b);
         );
 
         await checkWriteExternalStorage();
-        await checkReadExternalStorage();
+      //  await checkReadExternalStorage();
         Future.delayed(Duration(seconds: 3),(){
           Navigator.pop(context);
           Navigator.push(

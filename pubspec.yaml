@@ -14,7 +14,7 @@ dependencies:
   path_provider: ^0.4.1
   rxdart: ^0.18.1
   share: ^0.5.3
-  simple_permissions: ^0.1.6
+  simple_permissions: ^0.1.8
   url_launcher: ^3.0.3
   connectivity: ^0.3.1
   android_intent: ^0.2.1

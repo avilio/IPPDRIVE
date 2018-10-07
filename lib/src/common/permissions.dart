@@ -11,16 +11,17 @@ class DevicePermissions {
    // if (Platform.isAndroid) {
       SimplePermissions
           .checkPermission(Permission.WriteExternalStorage)
-          .then((checkOkay) {
+          .then((checkOkay) async {
         if (!checkOkay) {
-          SimplePermissions
-              .requestPermission(Permission.WriteExternalStorage)
-              .then((okDone) {
-            if (okDone) {
+          var status = await SimplePermissions.requestPermission(Permission.WriteExternalStorage);
+          print(status);
+
+              /*.then((PermissionStatus okDone) {
+          /*  if (okDone) {
               print("$okDone");
               externalStoragePermissionOkay = okDone;
-            }
-          });
+            }*/
+          });*/
         } else {
           externalStoragePermissionOkay = checkOkay;
         }
@@ -36,16 +37,17 @@ class DevicePermissions {
     //if (Platform.isAndroid) {
       SimplePermissions
           .checkPermission(Permission.ReadExternalStorage)
-          .then((checkOkay) {
+          .then((checkOkay)async{
         if (!checkOkay) {
-          SimplePermissions
-              .requestPermission(Permission.ReadExternalStorage)
-              .then((okDone) {
-            if (okDone) {
+          var status = await SimplePermissions.requestPermission(Permission.WriteExternalStorage);
+          print(status);
+
+          /*.then((PermissionStatus okDone) {
+          /*  if (okDone) {
               print("$okDone");
               externalStoragePermissionOkay = okDone;
-            }
-          });
+            }*/
+          });*/
         } else {
           externalStoragePermissionOkay = checkOkay;
         }
